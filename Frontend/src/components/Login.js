@@ -11,8 +11,8 @@ const Login = () => {
                 <label htmlFor="password">mot de passe <span className="red">* </span></label>
                 <input type="password" id="password" />
                 <div className="error-password"> &lt; message d'erreur &gt;</div>
-                <button className="bt-connexion">Connexion</button>
-                <div className="signin-link">Vous n'avez pas de compte ? <a href="https://developer.mozilla.org/fr/docs/Web/CSS/display"> inscrivez-vous</a></div>
+                <button className="bt-valid">Connexion</button>
+                <div className="signin-link">Vous n'avez pas de compte ? <a href="signin.html"> inscrivez-vous</a></div>
                 <div className="required-field"><span className="red">* </span>Champs obligatoires</div>
             </form>
         </div>

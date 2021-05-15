@@ -1,0 +1,33 @@
+.header {
+    background-color: $color-4;
+    margin: auto;
+    display: flex;
+}
+
+.bg-big {
+    height: 150px;
+    width: 100%;
+}
+
+.bg-small {
+    height: 100px;
+    width: 100%;
+}
+
+.bg-logo {
+    background-image: url(../../assets/images/logo.svg);
+    background-repeat: no-repeat;
+}
+
+.logo-big {
+    height: 100%;
+    background-position: center;
+}
+
+.logo-small {
+    height: 58px;
+    width: 300px;
+    background-size: contain;
+    align-self: center;
+    margin-left: 20px;
+}

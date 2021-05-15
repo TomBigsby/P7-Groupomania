@@ -1,6 +1,8 @@
 const Header = () => {
     return (
-        <div className="header"></div>
+        <div className="header bg-big">
+            <div className="bg-logo logo-big"></div>
+        </div>
     );
 };
 

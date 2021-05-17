@@ -10,8 +10,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    // margin: 20px;
 }
 
+// ----  profile card only  ----
 .avatar-profile {
     width: 100px;
     height: 100px;
@@ -19,10 +21,6 @@
     border: 2px solid $color-1;
     border-radius: 50%;
     overflow: hidden;
-
-    & img {
-        width: 100%;
-    }
 }
 
 .name {
@@ -52,22 +50,116 @@
     width: 55px;
 
     & .picto {
-        width: 24px;
-        height: 24px;
-        opacity: 0.4;
+        opacity: 0.2;
+        font-size: 20px;
 
         &:hover {
-            opacity: 1;
+            opacity: 0.6;
             cursor: pointer;
         }
 
-        &-edit {
-            background: url(../../assets/images/picto-edit.svg);
+        &-edit {}
+
+        &-delete {}
+
+    }
+}
+
+.space {
+    flex-grow: 1;
+}
+
+.separatorH {
+    height: 1px;
+    width: 90%;
+    background-color: $color-3;
+}
+
+.delete-account {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.bt-delete-account {
+    margin-top: 20px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: $color-2;
+    font-size: 1.2em;
+
+    &:hover{
+        background-color: lighten($color-3, 15%);
+        cursor: pointer;
+    }
+}
+
+
+// ----  delete profile only  ----
+
+.sad-pic {
+    width: 126px;
+    height: 126px;
+    background: url(../../assets/images/emoji-sad.png) no-repeat;
+    margin-top: -60px;
+}
+
+.msg-quit {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.picto-warning {
+    width: 36px;
+    height: 37px;
+    background: url(../../assets/images/picto-warning.svg) no-repeat;
+    margin: 15px;
+}
+
+.text {
+    line-height: 1.3em;
+    text-align: center;
+
+    & strong {
+        font-weight: 600;
+        line-height: 2.4em;
+    }
+
+}
+
+.choices {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+
+    .bt {
+        width: 166px;
+        height: 41px;
+        border-radius: 5px;
+        border: none;
+        font-weight: 400;
+        font-size: 1em;
+        color: $color-4;
+        margin: 10px;
+        font-family: inherit;
+        transition: background 200ms;
+
+        &-stay {
+            background: #6FCF97;
+
+            &:hover {
+                background: darken(#6FCF97, 15%);
+                cursor: pointer;
+            }
         }
 
-        &-delete {
-            background: url(../../assets/images/picto-trash.svg);
-        }
+        &-quit {
+            background: $color-2;
 
+            &:hover {
+                background: darken($color-2, 15%);
+                cursor: pointer;
+            }
+        }
     }
 }

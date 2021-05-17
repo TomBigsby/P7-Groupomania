@@ -1,6 +1,6 @@
 const Login = () => {
     return (
-        <div className="main">
+        <div className="login-container">
             <div className="welcome">Bienvenue</div>
             <div className="filet"></div>
             <div className="connect">Connectez-vous</div>

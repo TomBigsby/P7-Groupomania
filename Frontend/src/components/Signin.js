@@ -2,7 +2,7 @@ import avatar from '../assets/images/avatar.svg'
 
 const Signin = () => {
     return (
-        <div className="main">
+        <div className="login-container">
             <div className="welcome">Inscription</div>
             <div className="filet"></div>
             <div className="connect">Rejoignez-nous</div>

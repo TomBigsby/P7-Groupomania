@@ -1,8 +1,13 @@
+import avatarRalph from '../assets/images/avatar-ralph.jpg'
+
 const HeaderSmall = () => {
     return (
-        <div className="header bg-small">
-            <div className="bg-logo logo-small"></div>
-            <div className="bg-avatar"></div>
+        <div>
+            <div className="header bg-small">
+                <div className="logo logo-small"></div>
+                <div className="bg-avatar"><img src={avatarRalph} alt="" /></div>
+            </div>
+            <div className="main-position bg-small"></div>
         </div>
     );
 };

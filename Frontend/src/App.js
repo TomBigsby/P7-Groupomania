@@ -2,18 +2,23 @@
 import HeaderSmall from "./components/HeaderSmall";
 // import Login from "./components/Login";
 // import Signin from "./components/Signin";
-// import Profile from "./components/Profile";
-import DeleteProfile from "./components/DeleteProfile";
+import Profile from "./components/Profile";
+// import DeleteProfile from "./components/DeleteProfile";
+// import Messages from "./components/Messages";
 
 function App() {
   return (
     <div className="App">
       {/* <Header /> */}
       <HeaderSmall />
-      {/* <Login/> */}
-      {/* <Signin/> */}
-      {/* <Profile /> */}
-      <DeleteProfile/>
+      <div className="main">
+        {/* <Login/> */}
+        {/* <Signin/> */}
+        <Profile />
+        {/* <DeleteProfile/> */}
+        {/* <Messages /> */}
+        {/* <Messages /> */}
+      </div>
     </div>
   );
 }

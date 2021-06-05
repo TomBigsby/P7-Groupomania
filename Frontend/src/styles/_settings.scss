@@ -8,6 +8,11 @@ $color-2: #CF525D;
 $color-3: #C4C4C4;
 $color-4: #FFFFFF;
 
+//  NOTE:  Breakpoints Media queries 
+$breakpoint-mobile: 375px;
+$breakpoint-tablet: 750px;
+$breakpoint-desktop: 751px;
+
 
 * {
   box-sizing: border-box;
@@ -28,8 +33,19 @@ a {
   cursor: pointer;
 }
 
-.main{
-  margin: 20px;
+.main {
+  margin: 30px;
+  margin-bottom: 100px;
+
+  @include tablet-only {
+    margin: 25px;
+    margin-bottom: 100px;
+  }
+
+  @include mobile-only {
+    margin: 20px;
+    margin-bottom: 60px;
+  }
 }
 
 *>img {

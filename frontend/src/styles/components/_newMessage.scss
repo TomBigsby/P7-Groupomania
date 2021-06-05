@@ -1,0 +1,61 @@
+.new-post-container {
+    max-width: 500px !important;
+}
+
+.post-new-message {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+
+    & input[type] {
+        @include field;
+        background-color: lighten($color-3, 15%);
+        color: #000;
+        font-family: $font-1;
+
+        &::placeholder {
+            color: darken($color-3, 15%);
+        }
+    }
+
+    & .new-post-load-image {
+        @include button($color-3);
+        margin: 20px;
+    }
+
+    & input[type="text"] {
+        width: 100%;
+    }
+
+    & .new-post-image {
+        margin-bottom: 20px;
+    }
+
+    & .navlink-bt-valid {
+        & .bt-valid {
+            @include button($color-2);
+            margin: 0;
+
+            &:hover {
+                @include button-hover($color-2);
+            }
+        }
+    }
+
+
+}
+
+/* 
+/  & .navlink-bt-valid {
+    align-self: center;
+}
+
+& .bt-valid {
+    @include button($color-2);
+    width: 230px;
+
+    &:hover {
+        cursor: pointer;
+    }
+} */

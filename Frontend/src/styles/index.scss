@@ -1,5 +1,8 @@
+@import "mixins";
 @import "settings";
 @import "components/headers";
-@import "components/login-signin";
+@import "components/login-signup";
 @import "components/profile";
 @import "components/messages";
+@import "components/newMessage";
+@import "components/page404";

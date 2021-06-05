@@ -1,0 +1,126 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    & .welcome {
+        font-weight: 500;
+        font-size: 2.75em;
+        line-height: 1.2em;
+        margin: 40px 0 18px 0;
+
+        @include mobile-only {
+            font-size: 2em;
+        }
+    }
+
+    & .filet {
+        height: 2px;
+        width: 200px;
+        background-color: $color-2;
+
+        @include mobile-only {
+            width: 150px;
+        }
+    }
+
+    & .connect {
+        font-weight: 500;
+        font-size: 1.5em;
+        line-height: 1em;
+        margin: 22px 0 25px 0;
+
+        @include mobile-only {
+            font-size: 1.2em;
+            line-height: 0.5em;
+        }
+    }
+
+    & label {
+        font-size: 0.9em;
+        align-self: flex-start;
+    }
+
+    & input[type] {
+        @include field;
+        width: 100%;
+    }
+
+    & .field-bloc {
+        width: 100%;
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+    & .error-msg {
+        position: absolute;
+        color: $color-2;
+        height: 20px;
+        font-size: 0.8em;
+        margin-bottom: 10px;
+        align-self: flex-start;
+    }
+
+    .corporate-domain {
+        position: absolute;
+        font-size: 0.9em;
+        color: $color-1;
+        top: 32px;
+        right: 25px;
+    }
+
+    & .navlink-bt-valid {
+        align-self: center;
+        margin: 15px 0 30px 0;
+    }
+
+    & .bt-valid {
+        @include button($color-2);
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    & .required-field {
+        text-align: center;
+        font-size: 0.7em;
+    }
+
+    & .red {
+        color: $color-2;
+    }
+}
+
+.login-form,
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 20px;
+    line-height: 1.6em;
+    font-weight: 300;
+    padding: 0 15px;
+}
+
+// ----  Login only ----
+.signup-link {
+    font-size: 0.9em;
+    text-align: center;
+    align-self: center;
+    margin-bottom: 30px;
+}
+
+// ----  SignUp only ----
+
+.signup-avatar {
+    width: 100px;
+    height: 100px;
+    margin: 25px;
+    @include round-avatar ($color-4);
+}

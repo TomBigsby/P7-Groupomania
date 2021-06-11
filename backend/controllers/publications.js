@@ -1,18 +1,31 @@
 const Publication = require('../models/Publication');
 
-// NOTE: Package fs pour la gestion de fichiers (images en l'occurence)
 const fs = require('fs');
 
 
-
-
+// test 
+/* exports.createPublication = (req, res, next) => {
+  res.status(201).json({ message: req.body });
+} */
 
 exports.createPublication = (req, res, next) => {
 
-  // res.status(201).json({ message: 'Sauce enregistrée !' }); 
-  res.status(201).json({ message: req.body }); 
+  // Debug
+  res.status(201).json({ message: req.body });
 
-}
+  const publicationObject = JSON.parse(req.body);
+  // NOTE: suppression de l'id généré automatiquement par MongoDB
+  delete publicationObject._id;
+  const publication = new Publication({
+    ...publicationObject,
+    // imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+    likes: 0,
+    dislikes: 0
+  });
+  publication.save()
+    .then(() => { res.status(201).json({ message: 'Publication ajoutée !' }); })
+    .catch((error) => { res.status(400).json({ error: error }); });
+};
 
 
 
@@ -71,7 +84,7 @@ exports.getAllSauces = (req, res, next) => {
     .catch((error) => { res.status(400).json({ error: error }); });
 };
 
-// Actions du like 
+// Actions du like
 exports.likeSauce = (req, res, next) => {
   const likeAction = (likeValue, action1, message1) => {
     if (likeValue) {

@@ -2,6 +2,7 @@
     border: 2px solid $colour;
     border-radius: 50%;
     overflow: hidden;
+    background-color: lighten($color-3, 12%);
 }
 
 @mixin field {
@@ -21,6 +22,7 @@
     font-size: 1em;
     font-weight: 400;
     border: none;
+    outline: none;
 }
 
 @mixin button-hover($colour) {
@@ -43,7 +45,13 @@
 @mixin picto($font-size) {
     color: $color-1;
     opacity: 0.2;
-    font-size: $font-size; 
+    font-size: $font-size;
+}
+
+@mixin pictoSurrounded($font-size) {
+    color: $color-5 !important;
+    opacity: 1 !important;
+    font-size: $font-size !important;
 }
 
 @mixin picto-hover {
@@ -51,6 +59,10 @@
     cursor: pointer;
 }
 
+@mixin picto-hoverSurrounded {
+    cursor: pointer;
+    color: darken($color-5, 10%)!important;
+}
 
 // NOTE:  Medias Queries
 @mixin mobile-only {

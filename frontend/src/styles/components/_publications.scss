@@ -124,12 +124,12 @@
         }
 
         &-up:hover {
-            color: green;
+            color:$color-5;
             cursor: pointer;
         }
 
         &-down:hover {
-            color: red;
+            color: $color-2;
             cursor: pointer;
         }
 
@@ -168,11 +168,9 @@
 }
 
 .post-comments {
-    border-top: 1px solid (lighten($color-3, 10%));
 
     & .post-comment {
-
-        padding: 10px 0 15px 0;
+        padding-bottom: 15px;
 
         &-bloc1 {
             display: flex;
@@ -224,7 +222,7 @@
             }
         }
 
-        &-message {
+        &-publication {
             margin-top: 15px;
 
             @include mobile-only {
@@ -232,6 +230,17 @@
                 ;
             }
         }
+    }
+
+    // séparateur
+    & .post-comment:before {
+        content: "";
+        width: calc(100% + 40px);
+        height: 1px;
+        margin-left: -20px;
+        background-color: lighten($color-3, 10%);
+        display: block;
+        margin-bottom: 10px;
     }
 }
 
@@ -268,22 +277,25 @@
         }
     }
 }
-.post-new-comment-send{
+
+.post-new-comment-send {
     position: absolute;
     right: 35px;
     color: darken($color-3, 10%);
     font-size: 0.7em;
     font-weight: 300;
+
     @include tablet-only {
         // display: none;
         // FIX: ajouter un MQ spécifique pour que texte reste dans le champs jusqu'a >461px puis >460px idem mobile-only
     }
+
     @include mobile-only {
         font-size: 0.55em;
     }
 }
 
-.bt-new-message {
+.bt-new-publication {
     position: fixed;
     background-color: $color-2;
     bottom: 20px;

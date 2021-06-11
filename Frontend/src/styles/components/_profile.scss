@@ -33,9 +33,10 @@
     @include round-avatar ($color-1);
 }
 
-.name {
+.username {
     font-weight: 600;
     max-width: 85%;
+    margin: 10px 0;
     font-size: 2em;
     position: relative;
     text-align: center;
@@ -43,12 +44,26 @@
     @include mobile-only {
         font-size: 1.5em;
     }
+
+    & .edit-field {
+        position: absolute;
+        left: calc(-5% /2);
+        color: lighten($color-1, 20%);
+        top: 0;
+        font-family: $font-1;
+        width: 105%;
+        height: 100%;
+        border-radius: 6px;
+        border: 1px solid $color-3;
+
+        font-weight: 600;
+        font-size: 1em;
+        text-align: center;
+    }
 }
 
-.subscription-date {
-    font-size: 0.9em;
-    padding-top: 10px;
-    margin-bottom: 15px;
+.hide {
+    display: none;
 }
 
 .service,
@@ -72,7 +87,7 @@
     margin-left: 15px;
     position: absolute;
     left: 100%;
-    top: calc(100% / 2 - 24px / 2);
+    top: calc(100% / 2 - 26px / 2);
     width: 55px;
 
     & .picto {
@@ -81,8 +96,18 @@
         &:hover {
             @include picto-hover;
         }
-
     }
+
+    & .picto-surrounded {
+        @include pictoSurrounded(30px);
+        margin-top: -6px;
+    }
+
+    & .picto-surrounded:hover {
+        @include picto-hoverSurrounded;
+    }
+
+
 }
 
 .separatorH {
@@ -154,7 +179,7 @@
     margin-top: 30px;
     flex-wrap: wrap;
     justify-content: center;
-    flex-grow:1;
+    flex-grow: 1;
 
     .bt {
         width: 166px;
@@ -162,13 +187,13 @@
         padding: 10px;
         font-family: inherit;
         transition: background 200ms;
-        
+
 
         &-stay {
-            background: #6FCF97;
+            background: $color-5;
 
             &:hover {
-                @include button-hover(#6FCF97)
+                @include button-hover($color-5)
             }
         }
 

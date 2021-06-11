@@ -2,13 +2,13 @@
     max-width: 500px !important;
 }
 
-.post-new-message {
+.post-new-publication {
     display: flex;
     flex-direction: column;
     padding: 20px;
     align-items: center;
 
-    & input[type] {
+    & input[type="text"] {
         @include field;
         background-color: lighten($color-3, 15%);
         color: #000;
@@ -31,31 +31,7 @@
     & .new-post-image {
         margin-bottom: 20px;
     }
-
-    & .navlink-bt-valid {
-        & .bt-valid {
-            @include button($color-2);
-            margin: 0;
-
-            &:hover {
-                @include button-hover($color-2);
-            }
-        }
-    }
-
-
 }
-
-/* 
-/  & .navlink-bt-valid {
-    align-self: center;
+.bt-valid:focus{
+    border: 2px solid $color-1;
 }
-
-& .bt-valid {
-    @include button($color-2);
-    width: 230px;
-
-    &:hover {
-        cursor: pointer;
-    }
-} */

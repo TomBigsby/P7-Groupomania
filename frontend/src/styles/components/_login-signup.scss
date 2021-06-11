@@ -63,25 +63,12 @@
         align-self: flex-start;
     }
 
-    .corporate-domain {
+    & .corporate-domain {
         position: absolute;
         font-size: 0.9em;
         color: $color-1;
         top: 32px;
         right: 25px;
-    }
-
-    & .navlink-bt-valid {
-        align-self: center;
-        margin: 15px 0 30px 0;
-    }
-
-    & .bt-valid {
-        @include button($color-2);
-
-        &:hover {
-            cursor: pointer;
-        }
     }
 
     & .required-field {

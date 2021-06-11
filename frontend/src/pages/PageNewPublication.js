@@ -1,15 +1,15 @@
 import HeaderSmall from "../components/HeaderSmall"
-import NewMessage from "../components/NewMessage"
+import NewPublication from "../components/NewPublication"
 
-const PageNewMessage = () => {
+const PageNewPublication = () => {
     return (
         <div>
             <HeaderSmall />
             <div className="main">
-                <NewMessage />
+                <NewPublication />
             </div>
         </div>
     );
 };
 
-export default PageNewMessage;
+export default PageNewPublication;

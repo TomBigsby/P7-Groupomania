@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const CryptoJS = require("crypto-js");
+const sanitize = require('mongo-sanitize')
 
 const User = require('../models/User');
 
@@ -49,6 +50,7 @@ exports.signup = (req, res, next) => {
         res.status(400).json({ message: "L'email ou le mot de passe ne sont pas renseignés" });
     }
 }
+
 
 // NOTE: login > compare l'email saisi avec celui enregistré dans la BDD. Pareil pour le MdP
 exports.login = (req, res, next) => {

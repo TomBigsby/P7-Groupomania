@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import avatarRalph from '../assets/images/avatar-ralph.jpg'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 const Profile = () => {
 
@@ -8,6 +8,8 @@ const Profile = () => {
     const username = useRef();
     const btEditUsername = useRef();
     const iconEdit = useRef();
+
+    const [isEditMode, setIsEditMode] = useState(false)
 
     const modif = () => {
         btEditUsername.current.classList.replace("fa-edit", "fa-check-square")
@@ -18,9 +20,13 @@ const Profile = () => {
         champModif.current.select()
     }
 
+
+
+    const modif2 = () => {
+
+    }
+
     
-
-
 
     // ---------   code pour valider les modif avec la touche ENTER  --------
     /* const pressEnter = useKeyPress("Enter");
@@ -47,31 +53,34 @@ const Profile = () => {
 
     return (
         <div className="container">
-            <div className="bt-close"><i class="fas fa-times"></i></div>
-            <NavLink exact to="/publications" className="bt-close"><i class="fas fa-times"></i></NavLink>
+            <div className="bt-close"><i className="fas fa-times"></i></div>
+            <NavLink exact to="/publications" className="bt-close"><i className="fas fa-times"></i></NavLink>
             <div className="avatar-profile"><img src={avatarRalph} alt="" /></div>
             <div className="username" ref={username}>Ralph EDWARDS
                     <div className="pictos">
-                    <div className="picto" ref={iconEdit} ><i class="fas fa-edit" onClick={modif} ref={btEditUsername}></i></div>
+                    {/* <div className="picto" ref={iconEdit} ><i className="fas fa-edit" onClick={modif} ref={btEditUsername}></i></div> */}
+                    <div className="picto" ><i className="fas fa-edit" onClick={modif2} ></i></div>
+
+                    {/* {isOpen ? (if true    ) : (if false  )} */}
 
                 </div>
                 <input type="text" className="edit-field hide" ref={champModif} />
             </div >
             <div className="service">Equipe web
                     <div className="pictos">
-                    <div className="picto"><i class="fas fa-edit"></i></div>
+                    <div className="picto"><i className="fas fa-edit"></i></div>
                 </div>
             </div>
 
             <div className="service">Développeur
                     <div className="pictos">
-                    <div className="picto"><i class="fas fa-edit"></i></div>
+                    <div className="picto"><i className="fas fa-edit"></i></div>
                 </div>
             </div>
             <div className="separatorH"></div>
             <div className="signout-delete-account">
-                <NavLink exact to="/" className="bt-signout-account"><i class="fas fa-sign-out-alt"></i></NavLink>
-                <NavLink exact to="/supression-profil" className="bt-delete-account"><i class="far fa-trash-alt"></i></NavLink>
+                <NavLink exact to="/" className="bt-signout-account"><i className="fas fa-sign-out-alt"></i></NavLink>
+                <NavLink exact to="/supression-profil" className="bt-delete-account"><i className="far fa-trash-alt"></i></NavLink>
             </div>
         </div >
     );

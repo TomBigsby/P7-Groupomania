@@ -3,7 +3,7 @@ import Header from "../components/Header";
 
 const Page404 = () => {
     return (
-        <div>
+        <>
            <Header />
             <div className="main">
                 <div className="page404">
@@ -12,7 +12,7 @@ const Page404 = () => {
                     <NavLink exact to="/">Retour à l'accueil</NavLink>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

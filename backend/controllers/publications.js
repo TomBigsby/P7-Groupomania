@@ -4,23 +4,26 @@ const fs = require('fs');
 
 
 // test 
-/* exports.createPublication = (req, res, next) => {
-  res.status(201).json({ message: req.body });
-} */
+// exports.createPublication = (req, res, next) => {
+//   res.status(201).json({ message: req.file });
+// }
 
 exports.createPublication = (req, res, next) => {
 
-  // Debug
-  res.status(201).json({ message: req.body });
+  const publicationObject = req.body;
+  // const publicationObject = JSON.parse(req.body.sauce);
 
-  const publicationObject = JSON.parse(req.body);
   // NOTE: suppression de l'id généré automatiquement par MongoDB
   delete publicationObject._id;
+
+  if (req.file !== undefined) {
+    var image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  }
   const publication = new Publication({
     ...publicationObject,
-    // imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-    likes: 0,
-    dislikes: 0
+    imageUrl: image,
+    like: 0,
+    dislike: 0
   });
   publication.save()
     .then(() => { res.status(201).json({ message: 'Publication ajoutée !' }); })
@@ -28,23 +31,14 @@ exports.createPublication = (req, res, next) => {
 };
 
 
-
-
-/* exports.createSauce = (req, res, next) => {
-  const sauceObject = JSON.parse(req.body.sauce);
-  // NOTE: suppression de l'id généré automatiquement par MongoDB
-  delete sauceObject._id;
-  const sauce = new Sauce({
-    ...sauceObject,
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-    likes: 0,
-    dislikes: 0
-  });
-  sauce.save()
-    .then(() => { res.status(201).json({ message: 'Sauce enregistrée !' }); })
+exports.getAllPublications = (req, res, next) => {
+  Publication.find()
+    .then((publications) => { res.status(200).json(publications); })
     .catch((error) => { res.status(400).json({ error: error }); });
 };
 
+
+/*
 exports.getOneSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => { res.status(200).json(sauce); })

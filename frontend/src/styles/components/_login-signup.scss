@@ -81,6 +81,23 @@
     }
 }
 
+
+.infobulle {
+    @include infobulle;
+    opacity: 0;
+    transition: opacity 300ms;
+}
+
+.infobulle:before {
+    @include infobulle-before;
+}
+
+
+.fa-info-circle:hover+.infobulle {
+    opacity: 1;
+    cursor: pointer;
+}
+
 .login-form,
 .signup-form {
     display: flex;
@@ -106,8 +123,44 @@
 // ----  SignUp only ----
 
 .signup-avatar {
+    position: relative;
+    background-color: $color-3;
     width: 100px;
     height: 100px;
     margin: 25px;
-    @include round-avatar ($color-4);
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+
+    & img {
+        transition: opacity 300ms;
+    }
+
+    &:hover img {
+        opacity: 0.2;
+    }
+
+    &-text-hover {
+        opacity: 0;
+        position: absolute;
+        color: $color-1;
+        font-weight: 500 !important;
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+        transition: opacity 300ms;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:hover  .signup-avatar-text-hover {
+        opacity: 1;
+    }
+
+    & input[type="file"] {
+        display: none;
+    }
 }

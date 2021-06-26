@@ -30,6 +30,7 @@
     cursor: pointer;
 }
 
+
 @mixin bt-icon($colour, $font-size) {
     padding: 10px 15px;
     border-radius: 5px;
@@ -61,8 +62,39 @@
 
 @mixin picto-hoverSurrounded {
     cursor: pointer;
-    color: darken($color-5, 10%)!important;
+    color: darken($color-5, 10%) !important;
 }
+
+@mixin infobulle {
+    position: absolute;
+    max-width: 260px;
+    background-color: lighten($color-3, 10%);
+    color: $color-1;
+    font-weight: 500 !important;
+    line-height: 1.5em;
+    font-size: 11px;
+    padding: 10px;
+    border-radius: 6px;
+    hyphens: auto;
+    font-family: $font-1!important;
+    z-index: 5;
+    box-shadow: 0 0 15px 0 #00000088;
+    transform: translateX(140px) translateY(calc(-50% - 14px));
+}
+@mixin infobulle-before {
+    position: absolute;
+    right: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: "";
+	height: 0;
+	width: 0;
+	border-color: #C4C4C400;
+	border-right-color: lighten($color-3, 10%);
+	border-width: 10px;
+	margin-top: -10px;
+}
+
 
 // NOTE:  Medias Queries
 @mixin mobile-only {

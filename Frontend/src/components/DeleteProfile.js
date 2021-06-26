@@ -7,8 +7,7 @@ const DeleteProfile = () => {
             <div className="picto-warning"></div>
             <div className="text">
                 <span><strong>Confirmez-vous la suppression du compte ?</strong></span><br />
-                <span>Cette action est irréversible.<br />
-                    Toutes vos publications seront supprimés. </span>
+                <span>Cette action est irréversible.</span>
             </div>
             <div className="choices">
                 <NavLink exact to="/profil"><button className="bt bt-stay">Non, je reste</button></NavLink>

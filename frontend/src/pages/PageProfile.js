@@ -3,12 +3,12 @@ import Profile from "../components/Profile"
 
 const PageProfile = () => {
     return (
-        <div>
+        <>
             <HeaderSmall />
             <div className="main">
                 <Profile />
             </div>
-        </div>
+        </>
     );
 };
 

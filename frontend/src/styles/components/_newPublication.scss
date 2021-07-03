@@ -10,6 +10,7 @@
 
     & input[type="text"] {
         @include field;
+        width: 100%;
         background-color: lighten($color-3, 15%);
         color: #000;
         font-family: $font-1;
@@ -20,17 +21,19 @@
         }
     }
 
-    & .new-post-load-image {
-
-        margin: 30px 0 20px;
+    & label {
+        margin-top: 10px;
     }
 
-    & input[type="text"] {
-        width: 100%;
-    }
+    & .upload-button {
+        @include button(darken($color-3, 20%));
+        margin: 15px 0 30px 0;
+        outline: none;
 
-    & .new-post-image {
-        margin-bottom: 20px;
+        &:before {
+            font-family: serif;
+
+        }
     }
 }
 

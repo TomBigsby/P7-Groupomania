@@ -1,32 +1,65 @@
 import { NavLink } from 'react-router-dom';
 import avatarRalph from '../assets/images/avatar-ralph.jpg'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 
 const Profile = () => {
 
-    const champModif = useRef();
-    const username = useRef();
-    const btEditUsername = useRef();
-    const iconEdit = useRef();
+    const usernameDiv = useRef();
+    const usernameInput = useRef();
+    const serviceDiv = useRef();
+    const serviceInput = useRef();
+    const jobDiv = useRef();
+    const jobInput = useRef();
 
-    const [isEditMode, setIsEditMode] = useState(false)
 
-    const modif = () => {
-        btEditUsername.current.classList.replace("fa-edit", "fa-check-square")
-        iconEdit.current.classList.replace("picto", "picto-surrounded")
-        champModif.current.classList.remove("hide")
-        champModif.current.value = username.current.textContent;
-        champModif.current.focus()
-        champModif.current.select()
+    let currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos")) || [];
+
+    let username
+    if (localStorage.getItem("currentUserInfos") === null) {
+        username = "bob"
+    } else {
+        username = currentUserInfos.username
     }
 
 
+    let userService = "Service Data"
+    let userJob = "Data analist"
 
-    const modif2 = () => {
+    const blocDisplay = useRef();
+    const blocEdit = useRef();
 
+
+    const editMode = () => {
+
+        blocDisplay.current.classList.add("invisible");
+        blocEdit.current.classList.remove("invisible");
+
+        usernameInput.current.focus();
+        usernameInput.current.select();
     }
 
+    const displayMode = () => {
+        blocEdit.current.classList.add("invisible");
+        blocDisplay.current.classList.remove("invisible");
+
+        username = usernameInput.current.value
+        usernameDiv.current.textContent = username
+        currentUserInfos={
+            username : username
+        }
+
+        localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+    }
+
+    /*     const displayMode = (elementDiv, elementVar, elementInput) => {
+            blocEdit.current.classList.add("invisible");
+            blocDisplay.current.classList.remove("invisible");
     
+            elementVar = elementInput.current.value
+            elementDiv.current.textContent = elementVar
+        } */
+
+
 
     // ---------   code pour valider les modif avec la touche ENTER  --------
     /* const pressEnter = useKeyPress("Enter");
@@ -56,27 +89,74 @@ const Profile = () => {
             <div className="bt-close"><i className="fas fa-times"></i></div>
             <NavLink exact to="/publications" className="bt-close"><i className="fas fa-times"></i></NavLink>
             <div className="avatar-profile"><img src={avatarRalph} alt="" /></div>
-            <div className="username" ref={username}>Ralph EDWARDS
-                    <div className="pictos">
-                    {/* <div className="picto" ref={iconEdit} ><i className="fas fa-edit" onClick={modif} ref={btEditUsername}></i></div> */}
-                    <div className="picto" ><i className="fas fa-edit" onClick={modif2} ></i></div>
 
-                    {/* {isOpen ? (if true    ) : (if false  )} */}
 
+
+            <div className="bloc-display" ref={blocDisplay}>
+                <div className="divRow">
+                    <div className="username" ref={usernameDiv}>{username} </div>
+                    <div className="picto" onClick={editMode}><i className="fas fa-edit"></i></div>
                 </div>
-                <input type="text" className="edit-field hide" ref={champModif} />
-            </div >
+            </div>
+
+            <div className="bloc-edit invisible" ref={blocEdit}>
+                <div className="divRow">
+                    <input className="edit-field" type="text" defaultValue={username} ref={usernameInput} />
+                    <div className="picto" onClick={displayMode}><i className="fas fa-check-square picto-surrounded"></i></div>
+                </div>
+            </div>
+
+
+
+
+            {/* 
+            <div className="bloc-display" ref={blocDisplay}>
+                <div className="divRow">
+                    <div className="service" ref={serviceDiv}>{userService} </div>
+                    <div className="picto" onClick={editMode(serviceInput)}><i className="fas fa-edit"></i></div>
+                </div>
+            </div>
+
+            <div className="bloc-edit invisible" ref={blocEdit}>
+                <div className="divRow">
+                    <input className="edit-field" type="text" defaultValue={userService} ref={serviceInput} />
+                    <div className="picto" onClick={displayMode(serviceDiv, userService, serviceInput)}><i className="fas fa-check-square picto-surrounded"></i></div>
+                </div>
+            </div>
+
+
+
+            <div className="bloc-display" ref={blocDisplay}>
+                <div className="divRow">
+                    <div className="job" ref={jobDiv}>{userJob} </div>
+                    <div className="picto" onClick={editMode(jobInput)}><i className="fas fa-edit"></i></div>
+                </div>
+            </div>
+
+            <div className="bloc-edit invisible" ref={blocEdit}>
+                <div className="divRow">
+                    <input className="edit-field" type="text" defaultValue={userJob} ref={jobInput} />
+                    <div className="picto" onClick={displayMode(jobDiv, userJob, jobInput)}><i className="fas fa-check-square picto-surrounded"></i></div>
+                </div>
+            </div> */}
+
+
+
+
+
+
+            {/* 
             <div className="service">Equipe web
-                    <div className="pictos">
+                <div className="pictos">
                     <div className="picto"><i className="fas fa-edit"></i></div>
                 </div>
             </div>
 
             <div className="service">Développeur
-                    <div className="pictos">
+                <div className="pictos">
                     <div className="picto"><i className="fas fa-edit"></i></div>
                 </div>
-            </div>
+            </div> */}
             <div className="separatorH"></div>
             <div className="signout-delete-account">
                 <NavLink exact to="/" className="bt-signout-account"><i className="fas fa-sign-out-alt"></i></NavLink>

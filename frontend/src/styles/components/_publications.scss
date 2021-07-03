@@ -126,26 +126,84 @@
         font-size: 1em;
         width: 40px;
 
-        &-up,
-        &-down {
+
+        // --------------
+        // ------  TEST
+        .wrg-toggle,
+        .wrg-toggle--checked {
+            padding: 10px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+
+
+        .wrg-toggle {
+            color: $color-1;
+
+            &:hover {
+                color: $color-1;
+            }
+        }
+
+        .wrg-toggle--checked {
+            color: $color-5;
+
+            &:hover {
+                color: $color-5;
+            }
+        }
+
+        // --------------
+
+
+
+
+
+        &-like,
+        &-dislike {
             display: flex;
             flex-direction: column;
             text-align: center;
         }
 
-        &-up:hover {
+
+        &-like:hover {
             color: $color-5;
             cursor: pointer;
         }
 
-        &-down:hover {
+        &-like--checked {
+            color: $color-5;
+
+            &:hover {
+                color: $color-5;
+                cursor: pointer;
+            }
+        }
+
+
+        &-dislike:hover {
             color: $color-2;
             cursor: pointer;
         }
 
+        &-dislike--checked {
+            color: $color-2;
 
-        &-up-number,
-        &-down-number {
+            &:hover {
+                color: $color-2;
+                cursor: pointer;
+            }
+        }
+
+
+
+
+        &-like-number,
+        &-dislike-number {
             font-family: $font-1;
             font-size: 0.65em;
             font-weight: 500;
@@ -218,10 +276,10 @@
             }
 
             & .post-comment-picto {
-                @include picto(16px);
+                // @include picto(16px);
 
                 &:hover {
-                    @include picto-hover;
+                    // @include picto-hover;
                 }
             }
 

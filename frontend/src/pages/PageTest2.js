@@ -17,21 +17,12 @@ const PageTest = () => {
         setPublication({ postTitle: e.target.value });
         console.log("titre : " + publication.postTitle);
         if (publication.postTitle !== "") {
-            console.log();
-        
         }
     }
     const onMessageChange = e => {
         setPublication({ message: e.target.value });
         console.log("message : " + publication.message);
     }
-
-
-    // const formData = new FormData();
-    // formData.append("postTitle", inputTitle.current.value);
-    // formData.append("image", image.imageUrl);
-
-
 
 
 

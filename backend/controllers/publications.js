@@ -3,7 +3,7 @@ const Publication = require('../models/Publication');
 const fs = require('fs');
 
 
-// test 
+// DEBUG 
 // exports.createPublication = (req, res, next) => {
 //   res.status(201).json({ message: req.file });
 // }
@@ -22,8 +22,8 @@ exports.createPublication = (req, res, next) => {
   const publication = new Publication({
     ...publicationObject,
     imageUrl: image,
-    like: 0,
-    dislike: 0
+    likes: 0,
+    dislikes: 0,
   });
   publication.save()
     .then(() => { res.status(201).json({ message: 'Publication ajoutée !' }); })
@@ -32,10 +32,12 @@ exports.createPublication = (req, res, next) => {
 
 
 exports.getAllPublications = (req, res, next) => {
-  Publication.find()
+  Publication.find().sort({ postDate: -1 })
     .then((publications) => { res.status(200).json(publications); })
     .catch((error) => { res.status(400).json({ error: error }); });
 };
+
+
 
 
 /*
@@ -77,14 +79,22 @@ exports.getAllSauces = (req, res, next) => {
     .then((sauces) => { res.status(200).json(sauces); })
     .catch((error) => { res.status(400).json({ error: error }); });
 };
+*/
+
 
 // Actions du like
-exports.likeSauce = (req, res, next) => {
+exports.likePublication = (req, res, next) => {
+
+
+
+  // Action du like si 1 ou -1
   const likeAction = (likeValue, action1, message1) => {
     if (likeValue) {
-      Sauce.findOne({ _id: req.params.id })
-        .then((sauce) => {
-          Sauce.updateOne({ _id: req.params.id }, action1)
+      console.log('userId - ON : ' + req.body.userId);
+      console.log(likeValue);
+      Publication.findOne({ _id: req.params.id })
+        .then((publication) => {
+          Publication.updateOne({ _id: req.params.id }, action1)
             .then(() => res.status(200).json(message1))
             .catch(error => res.status(400).json({ error }));
         })
@@ -92,17 +102,19 @@ exports.likeSauce = (req, res, next) => {
     }
   }
 
+  // Action du like si 0
   const likeAction0 = (likeValue) => {
     if (likeValue) {
-      Sauce.findOne({ _id: req.params.id })
-        .then((sauce) => {
-          if (sauce.usersLiked.includes(req.body.userId)) {
-            Sauce.updateOne({ _id: req.params.id }, { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } })
+      console.log('userId - OFF : ' + req.body.userId);
+      Publication.findOne({ _id: req.params.id })
+        .then((publication) => {
+          if (publication.usersLiked.includes(req.body.userId)) {
+            Publication.updateOne({ _id: req.params.id }, { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } })
               .then(() => res.status(200).json({ message: 'Annule le like !' }))
               .catch(error => res.status(400).json({ error }));
           }
-          if (sauce.usersDisliked.includes(req.body.userId)) {
-            Sauce.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: req.body.userId }, $inc: { dislikes: -1 } })
+          if (publication.usersDisliked.includes(req.body.userId)) {
+            Publication.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: req.body.userId }, $inc: { dislikes: -1 } })
               .then(() => res.status(200).json({ message: 'Annule le dislike !' }))
               .catch(error => res.status(400).json({ error }));
           }
@@ -110,6 +122,8 @@ exports.likeSauce = (req, res, next) => {
         .catch((error) => { res.status(404).json({ error: error }); });
     }
   }
+
+
   // Si je like, on ajoute l'userId dans l'array "usersLiked" et on incrémente le nombre total de likes
   likeAction(req.body.like === 1, { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 } }, { message: 'Like ajouté !' });
 
@@ -119,4 +133,4 @@ exports.likeSauce = (req, res, next) => {
   // Si j'annule le like ou dislike, on supprime l'userId de l'array "usersLiked" ou "usersDisLiked" et on décrémente le nombre total de likes/dislikes
   likeAction0(req.body.like === 0);
 
-}; */
+};

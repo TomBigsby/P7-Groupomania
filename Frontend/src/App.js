@@ -11,6 +11,7 @@ import PageNewPublication from "./pages/PageNewPublication";
 import PageTest1 from "./pages/PageTest1";
 import PageTest2 from "./pages/PageTest2";
 
+
 // import Page404 from "./pages/Page404";
 // import { useEffect } from 'react';
 
@@ -23,8 +24,8 @@ function App() {
       <BrowserRouter>
         <Switch>
 
-        <Route path="/test1" exact component={PageTest1} />
-        <Route path="/test2" exact component={PageTest2} />
+          <Route path="/test1" exact component={PageTest1} />
+          <Route path="/test2" exact component={PageTest2} />
 
 
           <Route path="/" exact component={PageLogin} />

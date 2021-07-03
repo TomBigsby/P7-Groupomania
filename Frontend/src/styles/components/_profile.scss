@@ -44,30 +44,23 @@
     @include mobile-only {
         font-size: 1.5em;
     }
-
-    & .edit-field {
-        position: absolute;
-        left: calc(-5% /2);
-        color: lighten($color-1, 20%);
-        top: 0;
-        font-family: $font-1;
-        width: 105%;
-        height: 100%;
-        border-radius: 6px;
-        border: 1px solid $color-3;
-
-        font-weight: 600;
-        font-size: 1em;
-        text-align: center;
-    }
 }
 
-.hide {
-    display: none;
+.edit-field {
+    color: lighten($color-1, 20%);
+    font-family: $font-1;
+    width: 105%;
+    height: 100%;
+    border-radius: 6px;
+    border: 1px solid $color-3;
+    font-weight: 600;
+    font-size: 2em;
+    text-align: center;
+    margin: 10px 0;
 }
 
 .service,
-.fonction {
+.job {
     font-weight: 500;
     font-size: 1.6em;
     margin: 10px 0;
@@ -80,35 +73,26 @@
     }
 }
 
-.pictos {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-left: 15px;
-    position: absolute;
-    left: 100%;
-    top: calc(100% / 2 - 26px / 2);
-    width: 55px;
 
-    & .picto {
-        @include picto(18px);
+.picto {
+    @include picto(22px);
 
-        &:hover {
-            @include picto-hover;
-        }
+    &:hover {
+        @include picto-hover;
     }
 
-    & .picto-surrounded {
+    &-surrounded {
         @include pictoSurrounded(30px);
         margin-top: -6px;
     }
 
-    & .picto-surrounded:hover {
+    &-surrounded:hover {
         @include picto-hoverSurrounded;
     }
-
-
 }
+
+
+
 
 .separatorH {
     height: 1px;
@@ -205,4 +189,12 @@
             }
         }
     }
+}
+
+
+
+.divRow {
+    display: flex;
+    flex-direction: row;
+    position: relative;
 }

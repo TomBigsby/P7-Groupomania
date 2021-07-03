@@ -50,25 +50,8 @@
 
     & .field-bloc {
         width: 100%;
-        margin-bottom: 30px;
+        margin-bottom: 5px;
         position: relative;
-    }
-
-    & .error-msg {
-        position: absolute;
-        color: $color-2;
-        height: 20px;
-        font-size: 0.8em;
-        margin-bottom: 10px;
-        align-self: flex-start;
-    }
-
-    & .corporate-domain {
-        position: absolute;
-        font-size: 0.9em;
-        color: $color-1;
-        top: 32px;
-        right: 25px;
     }
 
     & .required-field {
@@ -156,7 +139,7 @@
         cursor: pointer;
     }
 
-    &:hover  .signup-avatar-text-hover {
+    &:hover .signup-avatar-text-hover {
         opacity: 1;
     }
 

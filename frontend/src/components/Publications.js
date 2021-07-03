@@ -1,20 +1,37 @@
 import avatarRalph from '../assets/images/avatar-ralph.jpg';
-import { fr } from 'date-fns/locale';
-import { formatDistanceStrict } from 'date-fns';
 import { useState, useEffect } from 'react';
+import { fr } from 'date-fns/locale';
+import { formatDistanceToNow } from 'date-fns';
 
 const { zonedTimeToUtc } = require('date-fns-tz')
 
 
-
+// let currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos")) || [];
 // import myDatas from '../data/data.js';
 
 
 const Publications = () => {
 
     const [publications, setPublications] = useState([]);
+    const [likeValue, setLikeValue] = useState("");
+    // const [likeDisplay, setLikeDisplay] = useState(0);
+    // const [user, setUser] = useState(false)
 
-    // const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
+    let postId
+
+    const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
+
+
+    const triggerToggle = (likeValue, currentPostId) => {
+
+        setLikeValue(likeValue)
+
+        postId = currentPostId
+        sendLike(likeValue)
+    }
+
+
+
     // console.log(currentUserInfos.email);
 
 
@@ -22,6 +39,7 @@ const Publications = () => {
     // const savedUser = JSON.parse(localStorage.getItem('currentUserInfos'))
 
 
+    // on récupère les publications
     useEffect(() => {
         fetch('http://localhost:4200/api/publications')
             .then((res) => res.json())
@@ -30,18 +48,42 @@ const Publications = () => {
     }, []);
 
 
+
+
+    const sendLike = (likeValue) => {
+        // console.log('likeValue : ' + likeValue);
+        fetch('http://localhost:4200/api/publications/' + postId + '/like', {
+            method: 'POST',
+            body: JSON.stringify({
+                like: likeValue,
+                userId: currentUserInfos.userId
+            }),
+            headers: { 'Content-Type': 'application/json' }
+        })
+
+        /*    .then(res => res.json()
+               .then(json => setLikeDisplay(json)
+               )); */
+
+
+        // console.log(publications[1].username);
+    }
+
+
+
+
     // gestion de la date affiché au temps passé
     // Attention : conversion au fomat UTC nécessaire (install package date-fns-tz)
     const elapsedTime = (startDate) => {
-        return formatDistanceStrict(zonedTimeToUtc(startDate), zonedTimeToUtc(new Date()), { locale: fr });
+        return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
     }
-
 
     return (
         <>
             {publications.map((publication) => (
                 // key={user.id}
                 <div className="post-container">
+
                     <div className="post-author box">
                         <div className="post-author-avatar"><img src={publication.avatarUrl} alt="" /></div>
                         <div><span className="post-author-name">{publication.username} <span>&nbsp;</span><span className="post-author-date">il y a {elapsedTime(publication.postDate)}</span></span></div>
@@ -56,12 +98,21 @@ const Publications = () => {
                     </div>
                     <div className="post-interactions box">
                         <div className="post-interactions-votes">
-                            <div className="post-interactions-votes-up"><i className="far fa-thumbs-up"></i><span className="post-interactions-votes-up-number">{publication.like}</span></div>
-                            <div className="post-interactions-votes-down"><i className="far fa-thumbs-down"></i><span className="post-interactions-votes-down-number">{publication.dislike}</span></div>
+
+
+                            <div>{likeValue}</div>
+
+                            {/* Quand récup UserID OK > Dans le JSX, remplacer likeValue par publication.likes / publication.dislikes */}
+                            <div onClick={((e) => { triggerToggle(likeValue === 1 ? 0 : 1, publication._id) })} className={likeValue === 1 ? 'post-interactions-votes-like--checked' : 'post-interactions-votes-like'} >{likeValue === 1 ? <i className="fas fa-thumbs-up"></i> : <i className="far fa-thumbs-up"></i>}<span className="post-interactions-votes-like-number">{publication.likes}</span></div>
+
+                            <div onClick={((e) => { triggerToggle(likeValue === -1 ? 0 : -1, publication._id) })} className={likeValue === -1 ? 'post-interactions-votes-dislike--checked' : 'post-interactions-votes-dislike'} >{likeValue === -1 ? <i className="fas fa-thumbs-down"></i> : <i className="far fa-thumbs-down"></i>}<span className="post-interactions-votes-dislike-number">{publication.dislikes}</span> </div>
+
+
                         </div>
                         <div className="separatorV"></div>
                         <div className="post-interactions-comments">
                             <div className="post-interactions-comments-picto"><i className="far fa-comment "></i></div>
+
                             {/* <div className="post-interactions-comments-number">{publication.postComments.length} commentaires</div> */}
                         </div>
                     </div>
@@ -85,12 +136,12 @@ const Publications = () => {
                             </div>
                         ))}
                     </div> */}
-                    <div className="post-new-comment box">
+                    <div className="post-new-comment box" >
                         <div className="post-new-comment-avatar"><img src={avatarRalph} alt="" /></div>
                         <input type="text" className="post-new-comment-message" placeholder="Ecrivez un commentaire" />
                         <div className="post-new-comment-send">[Retour] pour envoyer</div>
                     </div>
-                </div>
+                </div >
             ))}
         </>
     );

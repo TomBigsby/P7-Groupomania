@@ -15,5 +15,7 @@ router.post('/publications', multer, publicationsCtrl.createPublication);
 
 router.post('/publications/:id/like', publicationsCtrl.likePublication);
 
+router.post('/publications/:id/comments', publicationsCtrl.commentsPublication);
+
 
 module.exports = router;

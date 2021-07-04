@@ -4,33 +4,34 @@ import { useRef } from 'react'
 
 const Profile = () => {
 
+
+    // const [isEditMode, setIsEditMode] = useState(false);
+    // const [userData, setUserData] = useState({ username: "", service: "", job: "" });
+
     const usernameDiv = useRef();
     const usernameInput = useRef();
-    const serviceDiv = useRef();
-    const serviceInput = useRef();
-    const jobDiv = useRef();
-    const jobInput = useRef();
+    const userServiceDiv = useRef();
+    const userServiceInput = useRef();
+    const userJobDiv = useRef();
+    const userJobInput = useRef();
+
+    const blocDisplay1 = useRef();
+    const blocEdit1 = useRef();
+    const blocDisplay2 = useRef();
+    const blocEdit2 = useRef();
+    const blocDisplay3 = useRef();
+    const blocEdit3 = useRef();
 
 
-    let currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos")) || [];
+    let currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
 
-    let username
-    if (localStorage.getItem("currentUserInfos") === null) {
-        username = "bob"
-    } else {
-        username = currentUserInfos.username
-    }
+    let username = currentUserInfos.username
+    let userService = "Service"
+    let userJob = "Poste occupé"
 
+   
 
-    let userService = "Service Data"
-    let userJob = "Data analist"
-
-    const blocDisplay = useRef();
-    const blocEdit = useRef();
-
-
-    const editMode = () => {
-
+    const editMode = (blocEdit, blocDisplay) => {
         blocDisplay.current.classList.add("invisible");
         blocEdit.current.classList.remove("invisible");
 
@@ -38,27 +39,46 @@ const Profile = () => {
         usernameInput.current.select();
     }
 
-    const displayMode = () => {
+    const displayMode = (blocDisplay, blocEdit, valueInput, valueDiv, valueVar, LSValue) => {
+
         blocEdit.current.classList.add("invisible");
         blocDisplay.current.classList.remove("invisible");
 
-        username = usernameInput.current.value
-        usernameDiv.current.textContent = username
-        currentUserInfos={
-            username : username
+        valueVar = valueInput.current.value
+        valueDiv.current.textContent = valueVar
+
+        console.log(LSValue + " = " + valueVar);
+        console.log(valueVar);
+
+        currentUserInfos = {
+            username: usernameDiv.current.textContent,
+            userservice: userServiceDiv.current.textContent,
+            userJob: userJobDiv.current.textContent
         }
 
         localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+
+        sendProfileData()
     }
 
-    /*     const displayMode = (elementDiv, elementVar, elementInput) => {
-            blocEdit.current.classList.add("invisible");
-            blocDisplay.current.classList.remove("invisible");
-    
-            elementVar = elementInput.current.value
-            elementDiv.current.textContent = elementVar
-        } */
 
+    
+
+
+    const sendProfileData = () => {
+
+        fetch('http://localhost:4200/api/auth/login', {
+            method: 'PUT',
+            body: JSON.stringify({
+                username: currentUserInfos.username,
+                userService: currentUserInfos.userService,
+                userJob: currentUserInfos.userJob
+            }),
+            headers: { 'Content-Type': 'application/json' },
+        })
+
+
+    }
 
 
     // ---------   code pour valider les modif avec la touche ENTER  --------
@@ -91,72 +111,47 @@ const Profile = () => {
             <div className="avatar-profile"><img src={avatarRalph} alt="" /></div>
 
 
-
-            <div className="bloc-display" ref={blocDisplay}>
+            <div className="blocDisplay" ref={blocDisplay1}>
                 <div className="divRow">
                     <div className="username" ref={usernameDiv}>{username} </div>
-                    <div className="picto" onClick={editMode}><i className="fas fa-edit"></i></div>
+                    <div className="picto" onClick={() => editMode(blocEdit1, blocDisplay1)}><i className="fas fa-edit"></i></div>
                 </div>
             </div>
-
-            <div className="bloc-edit invisible" ref={blocEdit}>
+            <div className="bloc-edit invisible" ref={blocEdit1}>
                 <div className="divRow">
                     <input className="edit-field" type="text" defaultValue={username} ref={usernameInput} />
-                    <div className="picto" onClick={displayMode}><i className="fas fa-check-square picto-surrounded"></i></div>
+                    <div className="picto" onClick={() => displayMode(blocDisplay1, blocEdit1, usernameInput, usernameDiv, username, currentUserInfos.username)}><i className="fas fa-check-square picto-surrounded"></i></div>
                 </div>
             </div>
 
 
-
-
-            {/* 
-            <div className="bloc-display" ref={blocDisplay}>
+            <div className="blocDisplay" ref={blocDisplay2}>
                 <div className="divRow">
-                    <div className="service" ref={serviceDiv}>{userService} </div>
-                    <div className="picto" onClick={editMode(serviceInput)}><i className="fas fa-edit"></i></div>
+                    <div className="username" ref={userServiceDiv}>{userService} </div>
+                    <div className="picto" onClick={() => editMode(blocEdit2, blocDisplay2)}><i className="fas fa-edit"></i></div>
                 </div>
             </div>
-
-            <div className="bloc-edit invisible" ref={blocEdit}>
+            <div className="bloc-edit invisible" ref={blocEdit2}>
                 <div className="divRow">
-                    <input className="edit-field" type="text" defaultValue={userService} ref={serviceInput} />
-                    <div className="picto" onClick={displayMode(serviceDiv, userService, serviceInput)}><i className="fas fa-check-square picto-surrounded"></i></div>
+                    <input className="edit-field" type="text" defaultValue={userService} ref={userServiceInput} />
+                    <div className="picto" onClick={() => displayMode(blocDisplay2, blocEdit2, userServiceInput, userServiceDiv, userService)}><i className="fas fa-check-square picto-surrounded"></i></div>
                 </div>
             </div>
 
 
-
-            <div className="bloc-display" ref={blocDisplay}>
+            <div className="blocDisplay" ref={blocDisplay3}>
                 <div className="divRow">
-                    <div className="job" ref={jobDiv}>{userJob} </div>
-                    <div className="picto" onClick={editMode(jobInput)}><i className="fas fa-edit"></i></div>
+                    <div className="username" ref={userJobDiv}>{userJob} </div>
+                    <div className="picto" onClick={() => editMode(blocEdit3, blocDisplay3)}><i className="fas fa-edit"></i></div>
                 </div>
             </div>
-
-            <div className="bloc-edit invisible" ref={blocEdit}>
+            <div className="bloc-edit invisible" ref={blocEdit3}>
                 <div className="divRow">
-                    <input className="edit-field" type="text" defaultValue={userJob} ref={jobInput} />
-                    <div className="picto" onClick={displayMode(jobDiv, userJob, jobInput)}><i className="fas fa-check-square picto-surrounded"></i></div>
-                </div>
-            </div> */}
-
-
-
-
-
-
-            {/* 
-            <div className="service">Equipe web
-                <div className="pictos">
-                    <div className="picto"><i className="fas fa-edit"></i></div>
+                    <input className="edit-field" type="text" defaultValue={userJob} ref={userJobInput} />
+                    <div className="picto" onClick={() => displayMode(blocDisplay3, blocEdit3, userJobInput, userJobDiv, userJob)}><i className="fas fa-check-square picto-surrounded"></i></div>
                 </div>
             </div>
 
-            <div className="service">Développeur
-                <div className="pictos">
-                    <div className="picto"><i className="fas fa-edit"></i></div>
-                </div>
-            </div> */}
             <div className="separatorH"></div>
             <div className="signout-delete-account">
                 <NavLink exact to="/" className="bt-signout-account"><i className="fas fa-sign-out-alt"></i></NavLink>

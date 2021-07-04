@@ -24,6 +24,7 @@ exports.createPublication = (req, res, next) => {
     imageUrl: image,
     likes: 0,
     dislikes: 0,
+    username: req.body.username
   });
   publication.save()
     .then(() => { res.status(201).json({ message: 'Publication ajoutée !' }); })
@@ -85,13 +86,9 @@ exports.getAllSauces = (req, res, next) => {
 // Actions du like
 exports.likePublication = (req, res, next) => {
 
-
-
   // Action du like si 1 ou -1
   const likeAction = (likeValue, action1, message1) => {
     if (likeValue) {
-      console.log('userId - ON : ' + req.body.userId);
-      console.log(likeValue);
       Publication.findOne({ _id: req.params.id })
         .then((publication) => {
           Publication.updateOne({ _id: req.params.id }, action1)
@@ -105,7 +102,6 @@ exports.likePublication = (req, res, next) => {
   // Action du like si 0
   const likeAction0 = (likeValue) => {
     if (likeValue) {
-      console.log('userId - OFF : ' + req.body.userId);
       Publication.findOne({ _id: req.params.id })
         .then((publication) => {
           if (publication.usersLiked.includes(req.body.userId)) {
@@ -134,3 +130,35 @@ exports.likePublication = (req, res, next) => {
   likeAction0(req.body.like === 0);
 
 };
+
+
+
+
+
+
+exports.commentsPublication = (req, res, next) => {
+  Publication.findOne({ _id: req.params.id })
+    .then((publication) => {
+      Publication.updateOne({ _id: req.params.id },
+        {
+          $push: {
+            postComments: {
+              commentAuthorId: req.params.commentAuthorId,
+              commentAuthorUserName: req.params.commentAuthorUserName,
+              commentAuthorAvatarUrl: req.params.commentAuthorAvatarUrl,
+              commentAuthorCommentDate: req.params.commentAuthorCommentDate,
+              commentAuthorMessage: req.params.commentAuthorMessage
+            }
+          }
+        })
+        .then(() => res.status(200).json({ message: 'Commentaire ajouté' }))
+        .catch(error => res.status(400).json({ error }));
+    })
+    .catch((error) => {
+      res.status(404).json({ error: error });
+    });
+}
+
+
+
+

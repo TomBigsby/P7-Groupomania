@@ -6,70 +6,89 @@ import { Redirect } from 'react-router'
 const SignUp = () => {
 
     const [user, setUser] = useState(false);
-    // const [error_msg, setError_msg] = useState({ error_email: "", error_password: "", error_username: "" });
-    const [error_msg, setError_msg] = useState("");
     const [image, setImage] = useState({ preview: "", imageUrl: "" })
     const [msgAlert, setMsgAlert] = useState({ email_error: "", password_error: "", username_error: "" });
 
+    
     const submit = e => {
         e.preventDefault()
 
 
-
         const formData = new FormData(e.target);
 
-        const checkInputs = (field, msg) => {
 
-            if (e.target.email.value !== "" && e.target.password.value !== "" && e.target.password.username !== "") {
-                setMsgAlert({ email_error: "", password_error: "" })
+        if (e.target.email.value !== "" && e.target.password.value !== "" && e.target.password.username !== "") {
+            setMsgAlert({ email_error: "", password_error: "", username_error: "" })
 
-                fetch('http://localhost:4200/api/auth/signup', {
-                    method: 'POST',
-                    body: formData,
-                    // headers: { 'Content-Type': 'multipart/form-data' }
-                })
-                    .then(res => res.json()
-                        .then(json => setUser(json)
-                        ));
+            fetch('http://localhost:4200/api/auth/signup', {
+                method: 'POST',
+                body: formData,
+                // headers: { 'Content-Type': 'multipart/form-data' }
+            })
+                .then(res => res.json()
+                    .then(json => setUser(json)
+                    ));
 
-                console.log(user._id);
-                // BUG : 'user' non reconnu (need userId + avatar)
+            console.log(user._id);
+            // BUG : 'user' non reconnu (need userId + avatar)
 
-                const currentUserInfos = {
-                    // userId: user.userId,
-                    username: e.target.username.value,
-                    userService: e.target.userService.value,
-                    userJob: e.target.userService.value,
-                    avatarUrl: e.target.image.value
-                }
+            const currentUserInfos = {
+                // userId: user.userId,
+                username: e.target.username.value,
+                userService: e.target.userService.value,
+                userJob: e.target.userService.value,
+                avatarUrl: e.target.image.value
+            }
 
-                localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+            localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
 
-            } else {
-                if (e.target.email.value === "") {
-                    setMsgAlert({ email_error: "Email manquant", password_error: "", username_error: "" })
-                }
-                if (e.target.password.value === "") {
-                    setMsgAlert({ email_error: "", password_error: "Mot de passe manquant", username_error: "" })
-                }
-                if (e.target.username.value === "") {
-                    setMsgAlert({ email_error: "", password_error: "", username_error: "Nom d'utilisateur manquant" })
-                }
-                // TODO: A optimiser > réduire le nombre de combinaisons
-                if (e.target.email.value === "" && e.target.password.value === "") {
-                    setMsgAlert({ email_error: "Email manquant", password_error: "Mot de passe manquant", username_error: "Nom d'utilisateur manquant" })
-                }
+        } else {
+            if (e.target.email.value === "") {
+                setMsgAlert({ email_error: "Email manquant", password_error: "", username_error: "" })
+            }
+            if (e.target.password.value === "") {
+                setMsgAlert({ email_error: "", password_error: "Mot de passe manquant", username_error: "" })
+            }
+            if (e.target.username.value === "") {
+                setMsgAlert({ email_error: "", password_error: "", username_error: "Nom d'utilisateur manquant" })
+            }
+
+            // TODO: A optimiser > réduire le nombre de combinaisons
+            if (e.target.email.value === "" && e.target.password.value === "") {
+                setMsgAlert({ email_error: "Email manquant", password_error: "Mot de passe manquant", username_error: "" })
+            }
+            if (e.target.email.value === "" && e.target.username.value === "") {
+                setMsgAlert({ email_error: "Email manquant", password_error: "", username_error: "Nom d'utilisateur manquant" })
+            }
+            if (e.target.password.value === "" && e.target.username.value === "") {
+                setMsgAlert({ password_error: "Mot de passe manquant", username_error: "Nom d'utilisateur manquant" })
+            }
+            if (e.target.email.value === "" && e.target.password.value === "" && e.target.username.value === "") {
+                setMsgAlert({ email_error: "Email manquant", password_error: "Mot de passe manquant", username_error: "Nom d'utilisateur manquant" })
             }
         }
 
-        // checkInputs(e.target.email.value, { error_password: "L'adresse email n'est pas renseignée" }, { error_email: "" })
-        // checkInputs(e.target.password.value, { error_password: "Le mot de passe n'est pas renseigné" }, { error_password: "" })
-        checkInputs(e.target.username.value, "Le nom d'utilisateur n'est pas renseigné")
+
+        // Gestion des messages d'erreur individuelle
+        /* const getErrorMessage = (state_error) => {
+            var nouveauTableau = [msgAlert].map((alert) => {
+                var bob = alert
+
+                console.log(state_error);
+                if (bob.state_error === "") {
+                    console.log("ok google");
+                    setMsgAlert({ ...msgAlert, email_error: "Email manquant" })
+                } else {
+                    console.log("oh no");
+                }
+            })
+        }
+        getErrorMessage(alert.email_error) */
+
+
     }
 
-
-
-
+    
     const getImageUrl = (e) => {
         if (e.target.files.length) {
             setImage({
@@ -78,6 +97,7 @@ const SignUp = () => {
             });
         }
     }
+
 
 
     return (

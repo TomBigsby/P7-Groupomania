@@ -51,6 +51,8 @@ const NewPublication = () => {
         }
     }
 
+
+    // Création de l'url de l'image et de sa preview
     const getImageUrl = (e) => {
         if (e.target.files.length) {
             setImage({
@@ -59,8 +61,6 @@ const NewPublication = () => {
             });
         }
     }
-
-
 
 
     return (

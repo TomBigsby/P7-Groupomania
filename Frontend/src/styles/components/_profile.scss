@@ -35,9 +35,9 @@
 
 .username {
     font-weight: 600;
-    max-width: 85%;
+    // max-width: 85%;
     margin: 10px 0;
-    font-size: 2em;
+    font-size: 1.7em;
     position: relative;
     text-align: center;
 
@@ -64,7 +64,7 @@
     font-weight: 500;
     font-size: 1.6em;
     margin: 10px 0;
-    max-width: 85%;
+    // max-width: 85%;
     position: relative;
     text-align: center;
 
@@ -125,11 +125,20 @@
 
 // ----  delete profile only  ----
 
-.sad-pic {
+.sad-pic,
+.cry-pic {
     width: 126px;
     height: 126px;
-    background: url(../../assets/images/emoji-sad.png) no-repeat;
     margin-top: -60px;
+}
+
+.sad-pic {
+    background: url(../../assets/images/emoji-sad.png) no-repeat;
+
+}
+.cry-pic {
+    background: url(../../assets/images/emoji-cry.png) no-repeat;
+
 }
 
 .msg-quit {

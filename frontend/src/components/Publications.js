@@ -14,8 +14,6 @@ const Publications = () => {
 
     const [publications, setPublications] = useState([]);
     const [likeValue, setLikeValue] = useState("");
-    // const [likeDisplay, setLikeDisplay] = useState(0);
-    // const [user, setUser] = useState(false)
 
     let postId
 
@@ -49,7 +47,6 @@ const Publications = () => {
 
 
 
-
     const sendLike = (likeValue) => {
         // console.log('likeValue : ' + likeValue);
         fetch('http://localhost:4200/api/publications/' + postId + '/like', {
@@ -68,6 +65,50 @@ const Publications = () => {
 
         // console.log(publications[1].username);
     }
+
+
+
+
+
+    // Commentaires
+    const today = new Date()
+
+
+    const getComment = (e) => {
+        e.preventDefault()
+
+        // const postId2 = currentPostId
+
+        const formData = new FormData(e.target);
+        // formData.append("commentId", postId2);
+        formData.append("commentAuthorId", currentUserInfos.userId);
+        formData.append("commentAuthorUserName", currentUserInfos.username);
+        formData.append("commentAuthorAvatarUrl", currentUserInfos.avatarUrl);
+        formData.append("commentAuthorCommentDate", today);
+        // formData.append("commentAuthorMessage", e.target.postCommentInput.value);
+
+        // sendComment()
+
+        console.log(formData);
+
+    }
+
+
+    const sendComment = () => {
+
+        fetch('http://localhost:4200//api/publications/' + postId + '/comments', {
+            method: 'POST',
+            // body: formData,
+
+        })
+        /* .then(res => res.json()
+            .then(json => setPublication(json)
+            )); */
+    }
+
+
+
+    //---------------
 
 
 
@@ -116,33 +157,36 @@ const Publications = () => {
                             {/* <div className="post-interactions-comments-number">{publication.postComments.length} commentaires</div> */}
                         </div>
                     </div>
-                    {/* <div className="post-comments box">
-                        {publication.postComments.map((myComments) => (
-                            <div className="post-comment">
-                                <div className="post-comment-bloc1">
-                                    <div className="post-comment-bloc1-a">
-                                        <div className="post-comment-avatar"><img src={myComments.commentAuthorAvatarUrl} alt="" /></div>
-                                    </div>
-                                    <div className="post-comment-bloc1-b">
-                                        <div className="post-comment-name">{myComments.commentAuthorUserName}</div>
-                                        <div className="post-comment-date"><span>&nbsp;</span>il y a {elapsedTime(new Date(myComments.commentAuthorDate))}</div>
-                                        <div className="post-comment-pictos">
-                                            <div className="post-comment-picto post-comment-picto-edit"><i className="fas fa-edit"></i></div>
-                                            <div className="post-comment-picto post-comment-picto-delete"><i className="far fa-trash-alt"></i></div>
-                                        </div>
+                    <div className="post-comments box">
+                        {/* {publication.postComments.map((comments) => ( */}
+                        <div className="post-comment">
+                            <div className="post-comment-bloc1">
+                                <div className="post-comment-bloc1-a">
+                                    {/* <div className="post-comment-avatar"><img src={comments.commentAuthorAvatarUrl} alt="" /></div> */}
+                                </div>
+                                <div className="post-comment-bloc1-b">
+                                    {/* <div className="post-comment-name">{comments.commentAuthorUserName}</div> */}
+                                    {/* <div className="post-comment-date"><span>&nbsp;</span>il y a {elapsedTime(new Date(comments.commentAuthorDate))}</div> */}
+                                    <div className="post-comment-pictos">
+                                        <div className="post-comment-picto post-comment-picto-edit"><i className="fas fa-edit"></i></div>
+                                        <div className="post-comment-picto post-comment-picto-delete"><i className="far fa-trash-alt"></i></div>
                                     </div>
                                 </div>
-                                <div className="post-comment-bloc2"> <div className="post-comment-message">{myComments.commentAuthorMessage}</div></div>
                             </div>
-                        ))}
-                    </div> */}
-                    <div className="post-new-comment box" >
-                        <div className="post-new-comment-avatar"><img src={avatarRalph} alt="" /></div>
-                        <input type="text" className="post-new-comment-message" placeholder="Ecrivez un commentaire" />
-                        <div className="post-new-comment-send">[Retour] pour envoyer</div>
+                        </div>
+                        {/* ))} */}
                     </div>
+                    {/* <form className="post-new-comment box"> */}
+                    <form className="post-new-comment box" onSubmit={getComment}>
+                        <div className="post-new-comment-avatar"><img src={avatarRalph} alt="" /></div>
+                        <input type="text" className="post-new-comment-message" name="postCommentInput" placeholder="Ecrivez un commentaire" />
+
+                        <div className="post-new-comment-send" onClick={(e) => sendComment(e, publication._id)}><i class="fas fa-arrow-circle-right"></i></div>
+                        {/* <div className="post-new-comment-send">[Retour] pour envoyer</div> */}
+                    </form>
                 </div >
-            ))}
+            ))
+            }
         </>
     );
 };

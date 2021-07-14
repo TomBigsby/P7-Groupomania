@@ -11,8 +11,10 @@ const publicationSchema = mongoose.Schema({
     dislikes: { type: Number },
     usersLiked: { type: Array },
     usersDisliked: { type: Array },
+    likeValue: { type: Number },
 
     postComments: { type: Array }
+    
 });
 
 module.exports = mongoose.model('Publication', publicationSchema);

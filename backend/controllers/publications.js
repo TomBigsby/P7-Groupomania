@@ -1,16 +1,15 @@
 const Publication = require('../models/Publication');
+const mongoose = require('mongoose');
 
 const fs = require('fs');
 
 
 // DEBUG 
-// exports.createPublication = (req, res, next) => {
-//   res.status(201).json({ message: req.file });
-// }
 
 exports.createPublication = (req, res, next) => {
 
   const publicationObject = req.body;
+
   // const publicationObject = JSON.parse(req.body.sauce);
 
   // NOTE: suppression de l'id généré automatiquement par MongoDB
@@ -24,7 +23,8 @@ exports.createPublication = (req, res, next) => {
     imageUrl: image,
     likes: 0,
     dislikes: 0,
-    username: req.body.username
+    username: req.body.username,
+    likeValue: 0
   });
   publication.save()
     .then(() => { res.status(201).json({ message: 'Publication ajoutée !' }); })
@@ -36,6 +36,26 @@ exports.getAllPublications = (req, res, next) => {
   Publication.find().sort({ postDate: -1 })
     .then((publications) => { res.status(200).json(publications); })
     .catch((error) => { res.status(400).json({ error: error }); });
+};
+
+
+
+
+exports.modifyPublication = (req, res, next) => {
+
+  /*   const publicationObject = req.file ?
+      {
+        ...JSON.parse(req.body.publication),
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      } : { ...req.body }; */
+
+
+
+
+
+  Publication.updateOne({ _id: req.params.id }, { ...publicationObject, _id: req.params.id })
+    .then(() => res.status(200).json({ message: 'Publication modifiée !' }))
+    .catch(error => res.status(400).json({ error }));
 };
 
 
@@ -92,7 +112,8 @@ exports.likePublication = (req, res, next) => {
       Publication.findOne({ _id: req.params.id })
         .then((publication) => {
           Publication.updateOne({ _id: req.params.id }, action1)
-            .then(() => res.status(200).json(message1))
+            // .then(() => res.status(200).json(message1))
+            .then(() => { res.status(200).json({ likes: publication.likes, dislikes: publication.dislikes, likeValue: publication.likeValue }) })
             .catch(error => res.status(400).json({ error }));
         })
         .catch((error) => { res.status(404).json({ error: error }); });
@@ -105,26 +126,28 @@ exports.likePublication = (req, res, next) => {
       Publication.findOne({ _id: req.params.id })
         .then((publication) => {
           if (publication.usersLiked.includes(req.body.userId)) {
-            Publication.updateOne({ _id: req.params.id }, { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } })
-              .then(() => res.status(200).json({ message: 'Annule le like !' }))
+            Publication.updateOne({ _id: req.params.id }, { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 }, $set: { likeValue: 0 } })
+              // Annule le like
+              .then(() => { res.status(200).json({ likes: publication.likes, dislikes: publication.dislikes, likeValue: publication.likeValue }) })
               .catch(error => res.status(400).json({ error }));
           }
           if (publication.usersDisliked.includes(req.body.userId)) {
-            Publication.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: req.body.userId }, $inc: { dislikes: -1 } })
-              .then(() => res.status(200).json({ message: 'Annule le dislike !' }))
+            Publication.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: req.body.userId }, $inc: { dislikes: -1 }, $set: { likeValue: 0 } })
+              // Annule le dislike
+              .then(() => { res.status(200).json({ likes: publication.likes, dislikes: publication.dislikes, likeValue: publication.likeValue }) })
               .catch(error => res.status(400).json({ error }));
           }
         })
-        .catch((error) => { res.status(404).json({ error: error }); });
+        .catch((error) => { res.status(404).json({ error: error }) });
     }
   }
 
 
   // Si je like, on ajoute l'userId dans l'array "usersLiked" et on incrémente le nombre total de likes
-  likeAction(req.body.like === 1, { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 } }, { message: 'Like ajouté !' });
+  likeAction(req.body.like === 1, { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 }, $set: { likeValue: 1 } }, { message: 'Like ajouté !' });
 
   // Si je dislike on ajoute l'userId dans l'array "usersDisliked" et on incrémente le nombre total de dislikes
-  likeAction(req.body.like === -1, { $push: { usersDisliked: req.body.userId }, $inc: { dislikes: +1 } }, { message: 'Dislike ajouté !' });
+  likeAction(req.body.like === -1, { $push: { usersDisliked: req.body.userId }, $inc: { dislikes: +1 }, $set: { likeValue: -1 } }, { message: 'Dislike ajouté !' });
 
   // Si j'annule le like ou dislike, on supprime l'userId de l'array "usersLiked" ou "usersDisLiked" et on décrémente le nombre total de likes/dislikes
   likeAction0(req.body.like === 0);
@@ -134,31 +157,87 @@ exports.likePublication = (req, res, next) => {
 
 
 
+exports.createComment = (req, res, next) => {
 
+  // génération d'un ID pour les commentaires
+  var commentId = new mongoose.mongo.ObjectId();
 
-exports.commentsPublication = (req, res, next) => {
   Publication.findOne({ _id: req.params.id })
     .then((publication) => {
       Publication.updateOne({ _id: req.params.id },
         {
           $push: {
             postComments: {
-              commentAuthorId: req.params.commentAuthorId,
-              commentAuthorUserName: req.params.commentAuthorUserName,
-              commentAuthorAvatarUrl: req.params.commentAuthorAvatarUrl,
-              commentAuthorCommentDate: req.params.commentAuthorCommentDate,
-              commentAuthorMessage: req.params.commentAuthorMessage
+              commentId: commentId,
+              commentAuthorId: req.body.commentAuthorId,
+              commentAuthorUserName: req.body.commentAuthorUserName,
+              commentAuthorAvatarUrl: req.body.commentAuthorAvatarUrl,
+              commentDate: req.body.commentDate,
+              commentAuthorMessage: req.body.commentAuthorMessage
             }
           }
         })
-        .then(() => res.status(200).json({ message: 'Commentaire ajouté' }))
+        .then(() => { res.status(200).json({ postComments: publication.postComments, commentId: publication.postComments.commentId }) })
         .catch(error => res.status(400).json({ error }));
     })
-    .catch((error) => {
-      res.status(404).json({ error: error });
-    });
+    .catch((error) => { res.status(404).json({ error: error }) });
 }
 
 
 
 
+
+exports.modifyComment = (req, res, next) => {
+  var currentCommentId = req.body.commentId
+
+
+
+  // Pistes : indexOfArray  OU filter
+
+  /*     Publication.aggregate(
+        [
+          {
+            "$project": {
+              "matchedIndex": {
+                "$indexOfArray": [
+                  "$postComments", { "$player.commentAuthorUserName": { $eq: "Cirilo Hedylstone" } }
+                ]
+              }
+            }
+          }
+        ]
+      )
+ 
+      console.log(matchedIndex); */
+
+
+  /* Publication.aggregate([
+    {
+      $project: {
+        postComments: {
+          $filter: {
+            input: "$postComments",
+            as: "item",
+            cond: { "$$item.commentId", currentCommentId }
+          }
+        }
+      }
+    }
+  ]) */
+
+
+  /*   Publication.findOne({ postComments: 17 })
+      .then((comment) => {
+        console.log(comment)
+      } */
+
+  // console.log("postComments[17] = " + publication.postComments[17].commentId);
+
+
+
+
+
+  // Publication.updateOne({ _id: req.params.id }, { ...commentObject, _id: req.params.id })
+  //   .then(() => res.status(200).json({ message: 'Commentaire modifié !' }))
+  //   .catch(error => res.status(400).json({ error }));
+};

@@ -25,11 +25,17 @@ const Profile = () => {
 
     let currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
 
-    let username = currentUserInfos.username
+    let username
+
+    if (currentUserInfos) {
+        username = currentUserInfos.username
+    } else {
+        username = "Name"
+    }
+
     let userService = "Service"
     let userJob = "Poste occupé"
 
-   
 
     const editMode = (blocEdit, blocDisplay) => {
         blocDisplay.current.classList.add("invisible");
@@ -61,8 +67,6 @@ const Profile = () => {
         sendProfileData()
     }
 
-
-    
 
 
     const sendProfileData = () => {
@@ -108,7 +112,7 @@ const Profile = () => {
         <div className="container">
             <div className="bt-close"><i className="fas fa-times"></i></div>
             <NavLink exact to="/publications" className="bt-close"><i className="fas fa-times"></i></NavLink>
-            <div className="avatar-profile"><img src={avatarRalph} alt="" /></div>
+            <div className="avatar-profile"><img src={currentUserInfos.avatarUrl} alt="" /></div>
 
 
             <div className="blocDisplay" ref={blocDisplay1}>

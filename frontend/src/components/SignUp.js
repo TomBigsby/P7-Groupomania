@@ -9,7 +9,7 @@ const SignUp = () => {
     const [image, setImage] = useState({ preview: "", imageUrl: "" })
     const [msgAlert, setMsgAlert] = useState({ email_error: "", password_error: "", username_error: "" });
 
-    
+
     const submit = e => {
         e.preventDefault()
 
@@ -17,7 +17,7 @@ const SignUp = () => {
         const formData = new FormData(e.target);
 
 
-        if (e.target.email.value !== "" && e.target.password.value !== "" && e.target.password.username !== "") {
+        if (e.target.email.value !== "" && e.target.password.value !== "" && e.target.username.value !== "") {
             setMsgAlert({ email_error: "", password_error: "", username_error: "" })
 
             fetch('http://localhost:4200/api/auth/signup', {
@@ -26,21 +26,22 @@ const SignUp = () => {
                 // headers: { 'Content-Type': 'multipart/form-data' }
             })
                 .then(res => res.json()
-                    .then(json => setUser(json)
+                    .then(json => {
+                        setUser(json);
+
+                        const currentUserInfos = {
+                            userId: json.userId,
+                            username: e.target.username.value,
+                            userService: e.target.userService.value,
+                            userJob: e.target.userService.value,
+                            avatarUrl: json.avatarUrl
+                        }
+                        console.log(json.avatarUrl);
+
+                        localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+
+                    }
                     ));
-
-            console.log(user._id);
-            // BUG : 'user' non reconnu (need userId + avatar)
-
-            const currentUserInfos = {
-                // userId: user.userId,
-                username: e.target.username.value,
-                userService: e.target.userService.value,
-                userJob: e.target.userService.value,
-                avatarUrl: e.target.image.value
-            }
-
-            localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
 
         } else {
             if (e.target.email.value === "") {
@@ -67,28 +68,9 @@ const SignUp = () => {
                 setMsgAlert({ email_error: "Email manquant", password_error: "Mot de passe manquant", username_error: "Nom d'utilisateur manquant" })
             }
         }
-
-
-        // Gestion des messages d'erreur individuelle
-        /* const getErrorMessage = (state_error) => {
-            var nouveauTableau = [msgAlert].map((alert) => {
-                var bob = alert
-
-                console.log(state_error);
-                if (bob.state_error === "") {
-                    console.log("ok google");
-                    setMsgAlert({ ...msgAlert, email_error: "Email manquant" })
-                } else {
-                    console.log("oh no");
-                }
-            })
-        }
-        getErrorMessage(alert.email_error) */
-
-
     }
 
-    
+
     const getImageUrl = (e) => {
         if (e.target.files.length) {
             setImage({
@@ -97,8 +79,6 @@ const SignUp = () => {
             });
         }
     }
-
-
 
     return (
         <div className="login-container">
@@ -142,7 +122,7 @@ const SignUp = () => {
                     <div className="error-msg"></div>
                 </div>
                 <input type="submit" name="Inscription" value="Inscription" className="bt-valid" />
-                {/* {user && <Redirect to="/publications" />} */}
+                {user && !user.error && !user.error_signup_email && !user.error_signup_password && <Redirect to="/publications" />}
                 <div className="required-field"><span className="red">* </span>Champs obligatoires</div>
             </form>
         </div >

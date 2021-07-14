@@ -14,6 +14,8 @@ let emailFilter = new RegExp(/^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]
 
 
 exports.signup = (req, res, next) => {
+
+
     let form_valid = true;
     // NOTE: Vérification du format de l'email et du mot de passe
     form_valid = form_valid && req.body && req.body.email;
@@ -46,7 +48,11 @@ exports.signup = (req, res, next) => {
                         avatarUrl: image,
                     });
                     user.save()
-                        .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+
+                        // .then(() => { json({ avatarUrl: image }) })
+                        .then(() => { next() })
+
+                        // .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
                         .catch(error => res.status(400).json({ error_signup_email: "Utilisateur déjà existant" }));
                 })
                 .catch(error => res.status(500).json({ error2 }));
@@ -58,10 +64,12 @@ exports.signup = (req, res, next) => {
     }
 }
 
+
+
+
 // NOTE: login > compare l'email saisi avec celui enregistré dans la BDD. Pareil pour le MdP
 exports.login = (req, res, next) => {
     var clean = sanitize(req.body.email);
-
     User.findOne({ email: CryptoJS.HmacSHA1(clean, process.env.CRYPT_EMAIL).toString() })
         .then(user => {
             if (!user) {
@@ -87,6 +95,18 @@ exports.login = (req, res, next) => {
         })
         .catch(error => res.status(500).json({ error }));
 };
+
+
+
+// récupération de l'url de l'avatar local
+exports.getAvatar = (req, res, next) => {
+
+    User.findOne({ _id: req.params.id })
+        .then((user) => { res.status(200).json(user)})
+        .catch((error) => { res.status(400).json({ error: error }); });
+};
+
+
 
 
 /* exports.modifyUser = (req, res, next) => {

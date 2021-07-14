@@ -95,3 +95,17 @@ a {
   font-weight: normal;
   align-self: flex-start;
 }
+
+.onFocus {
+  color: $color-1;
+  outline: 1px solid lighten($color-1, 50%);
+  border-radius: 5px;
+}
+
+.textareaAutosize{
+  width: calc(100% - 50px);
+  border: none;
+  background-color: $color-4;
+  font-family: $font-1;
+}
+

@@ -43,18 +43,15 @@
     cursor: pointer;
 }
 
-@mixin picto($font-size) {
-    color: $color-1;
-    opacity: 0.2;
+@mixin picto($font-size, $color, $opacity) {
+    color: $color;
+    opacity: $opacity;
     font-size: $font-size;
-    margin: 15px;
-    position: absolute;
-    left: 100%;
     transition: opacity 250ms;
 }
 
-@mixin picto-hover {
-    opacity: 0.7;
+@mixin picto-hover ($opacity){
+    opacity: $opacity;
     cursor: pointer;
 }
 

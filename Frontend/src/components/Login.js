@@ -24,15 +24,15 @@ const Login = () => {
                 headers: { 'Content-Type': 'application/json' },
             })
                 .then(res => res.json()
-                    .then(json => setUser(json)
+                    .then(json => {
+                        setUser(json);
+                        const currentUserInfos = {
+                            userId: json.userId,
+                        }
+                        localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+                    }
                     ));
 
-
-            const currentUserInfos = {
-                userId: user.userId,
-            }
-
-            localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
 
 
         } else {
@@ -67,8 +67,8 @@ const Login = () => {
                     <div className="error-msg">{msgAlert.password_error}{user.error_login_password && <p>{user.error_login_password}</p>}</div>
                 </div>
                 <input type="submit" name="Connexion" value="Connexion" className="bt-valid" />
-                {/* BUG la redirection se fait même si les infos sont erronées */}
-                {/* {user && <Redirect to="/publications" />} */}
+                {user && !user.error_login_user && !user.error_login_password && <Redirect to="/publications" />}
+
             </form>
             <div className="signup-link">Vous n'avez pas de compte ? <NavLink exact to="/inscription">inscrivez-vous</NavLink></div>
             <div className="required-field"><span className="red">* </span>Champs obligatoires</div>

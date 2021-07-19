@@ -6,6 +6,7 @@ const path = require('path');
 require('dotenv').config()
 
 const publicationsRoutes = require('./routes/publications');
+const commentsRoutes = require('./routes/comments');
 const userRoutes = require('./routes/user');
 
 
@@ -33,6 +34,7 @@ app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api', publicationsRoutes);
+app.use('/api', commentsRoutes);
 app.use('/api/auth', userRoutes);
 
 module.exports = app;

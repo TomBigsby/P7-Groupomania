@@ -188,18 +188,10 @@
 
         &-stay {
             background: $color-5;
-
-            &:hover {
-                @include button-hover($color-5)
-            }
         }
 
         &-quit {
             background: $color-2;
-
-            &:hover {
-                @include button-hover($color-2)
-            }
         }
     }
 }

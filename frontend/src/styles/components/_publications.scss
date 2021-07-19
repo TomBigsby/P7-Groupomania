@@ -93,16 +93,59 @@
     }
 }
 
+.post-cache {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+
+    &-background {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        opacity: 0.8;
+    }
+
+    &-deleteMsg {
+        max-width: 450px;
+        text-align: center;
+        z-index: 6;
+        margin: auto;
+        background-color: white;
+        opacity: 1;
+        padding: 25px;
+        border-radius: 15px;
+        font-weight: bold;
+
+        border: 3px solid $color-2;
+
+        & .buttons {
+            margin-top: 20px;
+
+            & .bt:focus {
+                border: none !important;
+            }
+        }
+    }
+}
 
 
 .post-publication {
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+
     &-title {
         font-size: 1.4em;
         line-height: auto;
         font-weight: bold;
-        margin-left: 70px;
-        padding: 15px 0;
+        margin: 15px 0 15px 70px;
         display: flex;
+        align-items: center;
+        justify-content: center;
 
         @include tablet-only {
             font-size: 1.2em;
@@ -128,7 +171,24 @@
             object-fit: contain;
         }
     }
+
+    .upload-button {
+        @include button(darken($color-3, 20%));
+        width: 50%;
+        outline: none;
+        margin: auto;
+        margin-bottom: 15px;
+
+        &:before {
+            font-family: serif;
+        }
+    }
+
+    .bt {
+        align-self: center;
+    }
 }
+
 
 
 .post-interactions {
@@ -145,14 +205,13 @@
         font-size: 1em;
         width: 40px;
 
-
         &-like,
-        &-dislike {
-            display: flex;
+        &-dislike,
+        &-like--checked,
+        &-dislike--checked {
             flex-direction: column;
             text-align: center;
         }
-
 
         &-like:hover {
             color: $color-5;
@@ -161,6 +220,7 @@
 
         &-like--checked {
             color: $color-5;
+            // border: 1px solid black;
 
             &:hover {
                 color: $color-5;
@@ -184,14 +244,12 @@
         }
 
 
-
-
         &-like-number,
         &-dislike-number {
             font-family: $font-1;
             font-size: 0.65em;
             font-weight: 500;
-            margin-top: 5px;
+            margin: 5px 2px 0 2px;
         }
 
     }
@@ -395,7 +453,7 @@
 
     @include tablet-only {
         // display: none;
-        // FIX: ajouter un MQ spécifique pour que texte reste dans le champs jusqu'a >461px puis >460px idem mobile-only
+        // FIXME: ajouter un MQ spécifique pour que texte reste dans le champs jusqu'a >461px puis >460px idem mobile-only
     }
 
     @include mobile-only {
@@ -409,6 +467,7 @@
     bottom: 20px;
     right: 20px;
     border-radius: 50%;
+    z-index: 11;
 
     @include mobile-only {
         bottom: 10px;

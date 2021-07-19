@@ -32,11 +32,10 @@
 
         &:before {
             font-family: serif;
-
         }
     }
 }
 
-.bt-valid:focus {
+.bt:focus {
     border: 2px solid $color-1;
 }

@@ -4,13 +4,10 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 
 
-// DEBUG 
-
 exports.createPublication = (req, res, next) => {
-
   const publicationObject = req.body;
 
-  // const publicationObject = JSON.parse(req.body.sauce);
+  console.log(req.file);
 
   // NOTE: suppression de l'id généré automatiquement par MongoDB
   delete publicationObject._id;
@@ -24,6 +21,7 @@ exports.createPublication = (req, res, next) => {
     likes: 0,
     dislikes: 0,
     username: req.body.username,
+    avatarUrl: req.body.avatarUrl,
     likeValue: 0
   });
   publication.save()
@@ -34,73 +32,40 @@ exports.createPublication = (req, res, next) => {
 
 exports.getAllPublications = (req, res, next) => {
   Publication.find().sort({ postDate: -1 })
-    .then((publications) => { res.status(200).json(publications); })
+    .then((publication) => { res.status(200).json(publication); })
     .catch((error) => { res.status(400).json({ error: error }); });
 };
-
-
 
 
 exports.modifyPublication = (req, res, next) => {
 
-  /*   const publicationObject = req.file ?
-      {
-        ...JSON.parse(req.body.publication),
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-      } : { ...req.body }; */
-
-
-
-
-
-  Publication.updateOne({ _id: req.params.id }, { ...publicationObject, _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Publication modifiée !' }))
-    .catch(error => res.status(400).json({ error }));
-};
-
-
-
-
-/*
-exports.getOneSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id })
-    .then((sauce) => { res.status(200).json(sauce); })
-    .catch((error) => { res.status(404).json({ error: error }); });
-};
-
-exports.modifySauce = (req, res, next) => {
-  // NOTE: Création d'un objet qui regarde si req.file existe ou non. S'il existe, on traite la nouvelle image ; s'il n'existe pas, on traite simplement l'objet entrant
-  // NOTE: L'opérateur spread ... est utilisé pour faire une copie de tous les éléments de req.body
-  const sauceObject = req.file ?
+  const publicationObject = req.file ?
     {
-      ...JSON.parse(req.body.sauce),
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      ...JSON.parse(req.body.publication),
+      image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
-  Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Sauce modifiée !' }))
+
+  Publication.updateOne({ _id: req.params.id }, { ...publicationObject, _id: req.params.id, imageUrl: image })
+    .then(() => { res.status(200).json({ message: 'Publication modifiée !' }); })
     .catch(error => res.status(400).json({ error }));
 };
 
-exports.deleteSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id })
-    .then(sauce => {
-      const filename = sauce.imageUrl.split('/images/')[1];
-        // NOTE: fs.unlink pour supprimer l'image de la sauce du serveur
+
+
+exports.deletePublication = (req, res, next) => {
+  Publication.findOne({ _id: req.params.id })
+    .then((publication) => {
+      const filename = publication.imageUrl.split('/images/')[1];
+      console.log(filename);
       fs.unlink(`images/${filename}`, () => {
-        Sauce.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Objet supprimé !' }))
+        Publication.deleteOne({ _id: req.params.id })
+          .then(() => res.status(200).json({ message: 'Publication supprimée !' }))
           .catch(error => res.status(400).json({ error }));
       });
     })
+    .then(() => { res.status(200).json({ message: 'Publication supprimée !' }); })
     .catch(error => res.status(500).json({ error }));
 };
-
-exports.getAllSauces = (req, res, next) => {
-  Sauce.find()
-    .then((sauces) => { res.status(200).json(sauces); })
-    .catch((error) => { res.status(400).json({ error: error }); });
-};
-*/
 
 
 // Actions du like
@@ -151,93 +116,6 @@ exports.likePublication = (req, res, next) => {
 
   // Si j'annule le like ou dislike, on supprime l'userId de l'array "usersLiked" ou "usersDisLiked" et on décrémente le nombre total de likes/dislikes
   likeAction0(req.body.like === 0);
-
 };
 
 
-
-
-exports.createComment = (req, res, next) => {
-
-  // génération d'un ID pour les commentaires
-  var commentId = new mongoose.mongo.ObjectId();
-
-  Publication.findOne({ _id: req.params.id })
-    .then((publication) => {
-      Publication.updateOne({ _id: req.params.id },
-        {
-          $push: {
-            postComments: {
-              commentId: commentId,
-              commentAuthorId: req.body.commentAuthorId,
-              commentAuthorUserName: req.body.commentAuthorUserName,
-              commentAuthorAvatarUrl: req.body.commentAuthorAvatarUrl,
-              commentDate: req.body.commentDate,
-              commentAuthorMessage: req.body.commentAuthorMessage
-            }
-          }
-        })
-        .then(() => { res.status(200).json({ postComments: publication.postComments, commentId: publication.postComments.commentId }) })
-        .catch(error => res.status(400).json({ error }));
-    })
-    .catch((error) => { res.status(404).json({ error: error }) });
-}
-
-
-
-
-
-exports.modifyComment = (req, res, next) => {
-  var currentCommentId = req.body.commentId
-
-
-
-  // Pistes : indexOfArray  OU filter
-
-  /*     Publication.aggregate(
-        [
-          {
-            "$project": {
-              "matchedIndex": {
-                "$indexOfArray": [
-                  "$postComments", { "$player.commentAuthorUserName": { $eq: "Cirilo Hedylstone" } }
-                ]
-              }
-            }
-          }
-        ]
-      )
- 
-      console.log(matchedIndex); */
-
-
-  /* Publication.aggregate([
-    {
-      $project: {
-        postComments: {
-          $filter: {
-            input: "$postComments",
-            as: "item",
-            cond: { "$$item.commentId", currentCommentId }
-          }
-        }
-      }
-    }
-  ]) */
-
-
-  /*   Publication.findOne({ postComments: 17 })
-      .then((comment) => {
-        console.log(comment)
-      } */
-
-  // console.log("postComments[17] = " + publication.postComments[17].commentId);
-
-
-
-
-
-  // Publication.updateOne({ _id: req.params.id }, { ...commentObject, _id: req.params.id })
-  //   .then(() => res.status(200).json({ message: 'Commentaire modifié !' }))
-  //   .catch(error => res.status(400).json({ error }));
-};

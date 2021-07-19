@@ -23,13 +23,20 @@
     font-weight: 400;
     border: none;
     outline: none;
-}
 
-@mixin button-hover($colour) {
-    background: darken($colour, 15%);
-    cursor: pointer;
-}
+    &:hover {
+        cursor: pointer;
+        background-color: darken($colour, 15%);
+    }
 
+    &:focus {
+        border: 1px solid white!important;
+    }
+
+    &:active {
+        background-color: darken($colour, 30%);
+    }
+}
 
 @mixin bt-icon($colour, $font-size) {
     padding: 10px 15px;
@@ -50,7 +57,7 @@
     transition: opacity 250ms;
 }
 
-@mixin picto-hover ($opacity){
+@mixin picto-hover ($opacity) {
     opacity: $opacity;
     cursor: pointer;
 }
@@ -78,7 +85,7 @@
     border-radius: 6px;
     hyphens: auto;
     font-family: $font-1 !important;
-    z-index: 5;
+    z-index: 7;
     box-shadow: 0 0 15px 0 #00000088;
     transform: translateX(140px) translateY(calc(-50% - 14px));
 }

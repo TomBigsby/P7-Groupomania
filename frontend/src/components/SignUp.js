@@ -1,6 +1,8 @@
 import avatar from '../assets/images/avatar.svg'
 import { useState } from 'react';
 import { Redirect } from 'react-router'
+import { NavLink } from "react-router-dom";
+
 
 
 const SignUp = () => {
@@ -98,6 +100,7 @@ const SignUp = () => {
                     <label htmlFor="email">Email <span className="red">* </span></label>
                     <input type="email" id="email" name="email" />
                     <div className="error-msg" >{msgAlert.email_error}{user.error_signup_email && <p>{user.error_signup_email}</p>}</div>
+                    {user.error_signup_email && <NavLink exact to="/" style={{ fontSize: "0.8em", color: "white", textDecoration: "underline" }}> <i class="fas fa-long-arrow-alt-right"></i> Page de connexion</NavLink>}
                 </div>
                 <div className="field-bloc">
                     <label htmlFor="password">mot de passe <span className="red">* </span> <i className="fas fa-info-circle"></i> <div className="infobulle">Doit contenir une majuscule, une minuscule, plus de 8 caractères et au moins 1 caractère spécial parmi : ! @ # $ % ^ & *</div></label>
@@ -121,7 +124,7 @@ const SignUp = () => {
                     <input type="text" id="job" name="userJob" />
                     <div className="error-msg"></div>
                 </div>
-                <input type="submit" name="Inscription" value="Inscription" className="bt-valid" />
+                <input type="submit" name="Inscription" value="Inscription" className="bt" />
                 {user && !user.error && !user.error_signup_email && !user.error_signup_password && <Redirect to="/publications" />}
                 <div className="required-field"><span className="red">* </span>Champs obligatoires</div>
             </form>

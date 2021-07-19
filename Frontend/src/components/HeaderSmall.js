@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
-import avatarRalph from '../assets/images/avatar-ralph.jpg'
 import { useEffect, useState, useRef } from 'react';
+
 
 
 const HeaderSmall = () => {

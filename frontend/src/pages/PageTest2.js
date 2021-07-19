@@ -36,7 +36,7 @@ const PageTest = () => {
                     <input type="text" id="titre" placeholder="Titre de la publication" onChange={onTitleChange} />
                     <input type="text" id="message" placeholder="Votre message" onChange={onMessageChange} />
                     {active ? (
-                        <input type="submit" name="envoyer-message" value="Envoyer la publication" className="bt-valid" />
+                        <input type="submit" name="envoyer-message" value="Envoyer la publication" className="bt" />
                     ) : (
                         <input disabled name="envoyer-message" value="Envoyer la publication" className="bt-inactive" />
                     )}

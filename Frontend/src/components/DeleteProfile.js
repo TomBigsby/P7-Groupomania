@@ -28,7 +28,7 @@ const DeleteProfile = () => {
                             <span>Cette action est irréversible.</span>
                         </div>
                         <div className="choices">
-                            <NavLink exact to="/profil"><button className="bt bt-stay">Non, je reste</button></NavLink>
+                            <NavLink exact to="/profil"><button className="bt-cancel">Non, je reste</button></NavLink>
                             <button className="bt bt-quit" onClick={quitMsg} >Oui, je supprime</button>
                         </div>
                     </div>

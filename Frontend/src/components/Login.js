@@ -66,7 +66,7 @@ const Login = () => {
                     <input type="password" id="password" ref={inputPassword} />
                     <div className="error-msg">{msgAlert.password_error}{user.error_login_password && <p>{user.error_login_password}</p>}</div>
                 </div>
-                <input type="submit" name="Connexion" value="Connexion" className="bt-valid" />
+                <input type="submit" name="Connexion" value="Connexion" className="bt" />
                 {user && !user.error_login_user && !user.error_login_password && <Redirect to="/publications" />}
 
             </form>

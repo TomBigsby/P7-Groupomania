@@ -8,6 +8,7 @@ const { zonedTimeToUtc } = require('date-fns-tz')
 
 const Comments = (props) => {
     const [fieldEnabled, setFieldEnabled] = useState(false);
+    const [comment, setComment] = useState(props.commentMessage.commentAuthorMessage);
 
     const inputMessage = useRef()
     const btEditMessage = useRef()
@@ -16,14 +17,15 @@ const Comments = (props) => {
 
     const formData = new FormData();
 
-    const sendCommentEdit = (commentId, messageValue) => {
+    const sendCommentEdit = (commentId, messageValue, postId) => {
 
-        console.log(commentId);
+        // console.log(commentId);
 
         formData.append("commentId", commentId);
         formData.append("commentMessage", messageValue);
+        formData.append("postId", postId);
 
-        fetch('http://localhost:4200/api/publications/' + props.postId,  {
+        fetch('http://localhost:4200/api/publications/comments/' + commentId, {
             method: 'PUT',
             body: formData
         })
@@ -39,25 +41,39 @@ const Comments = (props) => {
 
 
 
-    const editComment = (commentId) => {
+
+    const editComment = (commentId, postId) => {
         setFieldEnabled(!fieldEnabled)
 
+
         if (fieldEnabled === true) {
-            sendCommentEdit(commentId, inputMessage.current.value)
+            sendCommentEdit(commentId, inputMessage.current.value, postId)
             btEditMessage.current.classList.replace("isEditMode", "post-comment-picto");
 
-            // console.log(inputMessage.current.value);
+            const newComment = inputMessage.current.value
+            setComment(newComment)
 
         } else {
             inputMessage.current.disabled = false;
             inputMessage.current.focus()
             inputMessage.current.select()
 
-            console.log(btEditMessage.current);
             btEditMessage.current.classList.replace("post-comment-picto", "isEditMode");
 
         }
     }
+
+
+    const onKeyPressed = (e) => {
+        const key = e.key
+        if (key === "Enter") {
+            const newComment = inputMessage.current.value
+            setComment(newComment)
+            setFieldEnabled(false)
+        }
+    }
+
+
 
 
     const elapsedTime = (startDate) => {
@@ -75,7 +91,7 @@ const Comments = (props) => {
                         <div className="post-comment-name">{props.commentMessage.commentAuthorUserName}</div>
                         <div className="post-comment-date"><span>&nbsp;</span>il y a {elapsedTime(props.commentMessage.commentDate)}</div>
                         <div className="post-comment-pictos">
-                            <div className="post-comment-picto-edit" ref={btEditMessage} onClick={() => { editComment(props.commentMessage.commentId) }}>
+                            <div className="post-comment-picto-edit" ref={btEditMessage} onClick={() => { editComment(props.commentMessage.commentId, props.postId) }}>
                                 {fieldEnabled ? <i className="fas fa-check-square"></i> : <i className="fas fa-edit"></i>}
                             </div>
                             <div className="post-comment-picto-delete"><i className="far fa-trash-alt"></i></div>
@@ -84,9 +100,9 @@ const Comments = (props) => {
                 </div>
                 <div className="post-comment-bloc2">
                     {fieldEnabled ?
-                        <TextareaAutosize className="post-comment-message textareaAutosize" ref={inputMessage} defaultValue={props.commentMessage.commentAuthorMessage} />
+                        <TextareaAutosize className="post-comment-message textareaAutosize" onKeyDown={(e) => onKeyPressed(e)} ref={inputMessage} defaultValue={comment} />
                         :
-                        <TextareaAutosize className="post-comment-message textareaAutosize" disabled ref={inputMessage} value={props.commentMessage.commentAuthorMessage} />}
+                        <TextareaAutosize className="post-comment-message textareaAutosize" disabled ref={inputMessage} value={comment} />}
 
                 </div>
             </div>

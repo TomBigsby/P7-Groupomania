@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, } from 'react';
 
 const Votes = (props) => {
 
@@ -14,9 +14,6 @@ const Votes = (props) => {
 
 
     const getLikeValue = (likeValue, currentPostId) => {
-
-        console.log(likeValueState);
-
         if (likeValue === 1) {
             if (likeValueState === 0) {
                 setUsersLikeVotes({ usersLikes: usersLikeVotes.usersLikes += 1, usersDislikes: usersLikeVotes.usersDislikes })
@@ -60,46 +57,32 @@ const Votes = (props) => {
             }),
             headers: { 'Content-Type': 'application/json' }
         })
-
-            .then(res => res.json())
-            // BUG : à modifier
-            .then(json => {
-                // setUsersLikeVotes({ usersLikes: res.likes, usersDislikes: res.dislikes })
-                // console.log("likes = " + json.likes + " | dislikes = " + json.dislikes);
-
-            }
-            );
-        // usersLikeVotes ===  "" ?  Publication.like : usersLikeVotes
-
-        // console.log(usersLikeVotes);
-
-        // console.log(publications[1].username);
+            .catch((error) => console.error(error))
+            // .then(res => res.json())
     }
 
 
-    return (
-        <>
-            <div className="post-interactions-votes">
+return (
+    <>
+        <div className="post-interactions-votes">
 
-                <div>{likeValueState}</div>
+            <div onClick={(() => {
+                getLikeValue(likeValueState === 1 ? 0 : 1, props.publication._id, props.publication.userId);
+            })}
+                className={likeValueState === 1 ? 'post-interactions-votes-like--checked' : 'post-interactions-votes-like'} >
+                {likeValueState === 1 ? <i className="fas fa-thumbs-up"></i> : <i className="far fa-thumbs-up"></i>}
+                <span className="post-interactions-votes-like-number">{usersLikeVotes.usersLikes}</span>
+            </div>
 
-                <div onClick={(() => {
-                    getLikeValue(likeValueState === 1 ? 0 : 1, props.publication._id, props.publication.userId);
-                })}
-                    className={likeValueState === 1 ? 'post-interactions-votes-like--checked' : 'post-interactions-votes-like'} >
-                    {likeValueState === 1 ? <i className="fas fa-thumbs-up"></i> : <i className="far fa-thumbs-up"></i>}
-                    <span className="post-interactions-votes-like-number">{usersLikeVotes.usersLikes}</span>
-                </div>
-
-                <div onClick={(() => {
-                    getLikeValue(likeValueState === -1 ? 0 : -1, props.publication._id, props.publication.userId);
-                })}
-                    className={likeValueState === -1 ? 'post-interactions-votes-dislike--checked' : 'post-interactions-votes-dislike'} >
-                    {likeValueState === -1 ? <i className="fas fa-thumbs-down"></i> : <i className="far fa-thumbs-down"></i>}
-                    <span className="post-interactions-votes-dislike-number">{usersLikeVotes.usersDislikes}</span>
-                </div>
-            </div >
-        </>
-    );
+            <div onClick={(() => {
+                getLikeValue(likeValueState === -1 ? 0 : -1, props.publication._id, props.publication.userId);
+            })}
+                className={likeValueState === -1 ? 'post-interactions-votes-dislike--checked' : 'post-interactions-votes-dislike'} >
+                {likeValueState === -1 ? <i className="fas fa-thumbs-down"></i> : <i className="far fa-thumbs-down"></i>}
+                <span className="post-interactions-votes-dislike-number">{usersLikeVotes.usersDislikes}</span>
+            </div>
+        </div >
+    </>
+);
 }
 export default Votes;

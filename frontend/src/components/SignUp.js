@@ -1,5 +1,5 @@
 import avatar from '../assets/images/avatar.svg'
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Redirect } from 'react-router'
 import { NavLink } from "react-router-dom";
 
@@ -11,13 +11,16 @@ const SignUp = () => {
     const [image, setImage] = useState({ preview: "", imageUrl: "" })
     const [msgAlert, setMsgAlert] = useState({ email_error: "", password_error: "", username_error: "" });
 
+    const inputAdminPassword = useRef()
+    const checkbox = useRef()
+
 
     const submit = e => {
         e.preventDefault()
 
+        // Envoi des données du formulaire
 
         const formData = new FormData(e.target);
-
 
         if (e.target.email.value !== "" && e.target.password.value !== "" && e.target.username.value !== "") {
             setMsgAlert({ email_error: "", password_error: "", username_error: "" })
@@ -25,8 +28,9 @@ const SignUp = () => {
             fetch('http://localhost:4200/api/auth/signup', {
                 method: 'POST',
                 body: formData,
-                // headers: { 'Content-Type': 'multipart/form-data' }
             })
+
+            // récup la réponse pour obtenir le userId et le stocker dans un localStorage
                 .then(res => res.json()
                     .then(json => {
                         setUser(json);
@@ -41,7 +45,6 @@ const SignUp = () => {
                         console.log(json.avatarUrl);
 
                         localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
-
                     }
                     ));
 
@@ -71,6 +74,17 @@ const SignUp = () => {
             }
         }
     }
+
+
+    const adminInputDisplay = () => {
+        if (checkbox.current.checked === true) {
+            inputAdminPassword.current.classList.toggle("invisible")
+        }
+        else {
+            inputAdminPassword.current.classList.toggle("invisible")
+        }
+    }
+
 
 
     const getImageUrl = (e) => {
@@ -111,8 +125,6 @@ const SignUp = () => {
                     <label htmlFor="username">Nom d'utilisateur <span className="red">* </span></label>
                     <input type="text" id="username" name="username" />
                     <div className="error-msg"> {msgAlert.username_error}</div>
-
-
                 </div>
                 <div className="field-bloc">
                     <label htmlFor="service">Service</label>
@@ -124,6 +136,16 @@ const SignUp = () => {
                     <input type="text" id="job" name="userJob" />
                     <div className="error-msg"></div>
                 </div>
+
+
+                {/* Clic on change (checked) => afficher textfield avec code */}
+
+                <div className="adminConnexion">
+                    <input className="checkbox" type="checkbox" id="admin" ref={checkbox} onClick={adminInputDisplay} />
+                    <label htmlFor="admin">Compte administrateur</label>
+                    <input type="password" className="adminPassword invisible" name="adminPassword" placeholder="Code admin" ref={inputAdminPassword} />
+                </div>
+
                 <input type="submit" name="Inscription" value="Inscription" className="bt" />
                 {user && !user.error && !user.error_signup_email && !user.error_signup_password && <Redirect to="/publications" />}
                 <div className="required-field"><span className="red">* </span>Champs obligatoires</div>

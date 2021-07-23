@@ -1,16 +1,16 @@
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Publication from "./Publication";
 
 
 const Publications = () => {
 
     const [publications, setPublications] = useState([]);
-
-
     const [userData, setUserData] = useState("");
 
-    let postId
+    const [items, setItems] = useState([]);
+
+    // let postId
 
 
     // chargement des infos utilisateur (Localstorage) au chargement de la page
@@ -23,7 +23,6 @@ const Publications = () => {
             .then((res) => setPublications(res))
             .catch((error) => console.error(error));
 
-            
         const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
 
         // récupération des infos utilisateur (depuis login)
@@ -37,7 +36,8 @@ const Publications = () => {
                     userJob: res.userJob,
                     userService: res.userService,
                     username: res.username,
-                    userId: res._id
+                    userId: res._id,
+                    isAdmin: res.isAdmin
                 }
 
                 // BUG post ID = undefined parfois > voir d'où ça vient
@@ -51,15 +51,40 @@ const Publications = () => {
 
 
 
+    // Suppression de la publication
+    const deletePost = (postId) => {
 
+        fetch('http://localhost:4200/api/publications/' + postId, {
+            method: 'DELETE',
+        })
+            .catch((error) => console.error(error))
+
+            // suppression de la publication via son ID et MAJ du tableau
+            .then(() => {
+                setPublications(publications.filter(publication => publication._id !== postId))
+            })
+
+            deletePostComments(postId)
+    }
+
+
+    // Suppression des commentaires liés à la publication
+    const deletePostComments = (postId) => {
+
+        fetch('http://localhost:4200/api/publications/' + postId + "/comments", {
+            method: 'DELETE',
+        })
+        .catch((error) => console.error(error))
+
+
+    }
 
 
     return (
         <>
-            {publications.map((publication) => (
+            {publications && publications.map((publication) => (
                 <div className="post-container">
-                    <Publication key={publication._id} publication={publication} />
-
+                    <Publication key={publication._id} publication={publication} mysPost={publication} postToDelete={deletePost} />
                 </div >
             ))
             }

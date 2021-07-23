@@ -6,24 +6,27 @@ import Votes from './Votes';
 
 import { fr } from 'date-fns/locale';
 import { formatDistanceToNow } from 'date-fns';
+import ChildrenCount from './ChildrenCount';
+
 const { zonedTimeToUtc } = require('date-fns-tz')
 
 const Publication = (props) => {
-    const [comments, setComments] = useState({});
+    const [comments, setComments] = useState([]);
+    const [comments2, setComments2] = useState([]);
     const [displayComments, setDisplayComments] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
+    // const [deletePostState, setDeletePostState] = useState(false);
     const [title, setTitle] = useState(props.publication.postTitle);
     const [image, setImage] = useState({ preview: props.publication.imageUrl, imageUrl: "" })
-    const [newComment, setNewComment] = useState("");
+    // const [newComment, setNewComment] = useState("");
 
     const cardHeader = useRef()
     const inputTitle = useRef()
     const btEditPublication = useRef()
     const postCommentInput = useRef()
-    const deleteMsgWindow = useRef()
+    const warningDeleteMsg = useRef()
 
     const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
-
 
 
     //TODO: seulement si le focus est TRUE
@@ -37,8 +40,6 @@ const Publication = (props) => {
                 sendPostEdit(postId, newTitle)
             }
         } */
-
-
 
     // edition de la publication 
     const editPublication = () => {
@@ -58,15 +59,14 @@ const Publication = (props) => {
         }
     }
 
-
     const submit = (e, postId) => {
         e.preventDefault()
 
         editPublication()
 
-        
         const formData = new FormData(e.target);
         formData.append("postId", postId);
+
         setTitle(e.target.postTitle.value)
 
         fetch('http://localhost:4200/api/publications/' + postId, {
@@ -77,29 +77,34 @@ const Publication = (props) => {
             .catch((error) => console.error(error));
     }
 
-
     const getImageUrl = (e) => {
         if (e.target.files.length) {
             setImage({ preview: URL.createObjectURL(e.target.files[0]), imageUrl: e.target.files[0] });
         }
     }
 
-
-
-
-    ///// suppression de la publication 
-    const deletePost = (postId) => {
-
-        fetch('http://localhost:4200/api/publications/' + postId, {
-            method: 'DELETE',
-        })
-            // .then(res => res.json(props.style.visibility = "hidden"))
-            // .then(res => res.json(props.remove(1)))
+    // Récupération des commentaires
+    useEffect(() => {
+        fetch('http://localhost:4200/api/publications/' + props.publication._id + '/comments')
+            .then((res) => res.json())
+            .then((res) => setComments(res))
             .catch((error) => console.error(error));
-    }
+    }, []);
 
-    // Envoi d'un commentaire
-    const sendComment = (postId, commentId) => {
+
+    // Ajout d'un nouveau nouveau commentaire
+    const sendComment = (postId) => {
+
+        let newComment = [...comments]
+
+        newComment.push({
+            commentAuthorId: currentUserInfos.userId,
+            commentAuthorUserName: currentUserInfos.username,
+            commentAuthorAvatarUrl: currentUserInfos.avatarUrl,
+            commentDate: today,
+            commentAuthorMessage: postCommentInput.current.value
+        })
+
 
         const formData = new FormData();
         formData.append("commentAuthorId", currentUserInfos.userId);
@@ -108,20 +113,46 @@ const Publication = (props) => {
         formData.append("commentDate", today);
         formData.append("commentAuthorMessage", postCommentInput.current.value);
 
+        postCommentInput.current.value = ""
+
         fetch('http://localhost:4200/api/publications/' + postId + '/comments', {
             method: 'POST',
             body: formData
         })
-            .then(res => res.json()
-                .then(json => {
-                    setComments(json);
-                    if (res.error === undefined) {
-                        // window.location.reload();
-                    }
+            .then((res) => res.json())
+            .catch((error) => console.error(error))
+            .then(() => {
 
-                }
-                ))
-            .catch((error) => console.error(error));
+                console.log(newComment);
+
+                setComments(newComment)
+                setComments(comments)
+                // setComments2(!comments2)
+            }
+
+
+            )
+    }
+
+    // compteur de commentaires
+    let commentsCount = [];
+    for (let i = 0; i < comments.length; i++) {
+        if (comments[i].postId === props.publication._id) {
+            commentsCount.push(comments[i]);
+        }
+    }
+
+
+    // Suppression du commentaire
+    const deleteComment = (commentId) => {
+        fetch('http://localhost:4200/api/publications/comments/' + commentId, {
+            method: 'DELETE',
+        })
+            .catch((error) => console.error(error))
+            // MAJ des commentaires dans le DOM
+            .then(() => {
+                setComments(comments.filter(comment => comment._id !== commentId))
+            })
     }
 
 
@@ -133,54 +164,62 @@ const Publication = (props) => {
         return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
     }
 
-
     return (
         <>
-            <div className="post-cache invisible" ref={deleteMsgWindow} >
+            {/* panneau de suppression de publication */}
+            <div className="post-cache invisible" ref={warningDeleteMsg} >
                 <div className="post-cache-background"></div>
                 <div className="post-cache-deleteMsg">
                     <p>Confirmez-vous la suppression du message ainsi que tous ses commentaires ?</p>
                     <div className="buttons">
-                        <button className="bt-cancel" onClick={() => { deleteMsgWindow.current.classList.add("invisible") }}>Non</button>
-                        <button className="bt" onClick={() => { deleteMsgWindow.current.classList.add("invisible"); deletePost(props.publication._id) }}>Oui, je supprime</button>
+                        <button className="bt-cancel" onClick={() => { warningDeleteMsg.current.classList.add("invisible") }}>Non</button>
+                        <button className="bt" onClick={() => { warningDeleteMsg.current.classList.add("invisible"); props.postToDelete(props.publication._id) }}>Oui, je supprime</button>
                     </div>
                 </div>
             </div>
+
             <div className="post-author" ref={cardHeader}>
-                <div className="post-author-avatar"><img src={props.publication.avatarUrl} alt="" /></div>
+                <div className="post-author-avatar"><img src={props.publication.avatarUrl} alt="" onClick={() => { props.getThisPost(props.publication._id) }} /></div>
                 <div><span className="post-author-name">{props.publication.username} <span>&nbsp;</span><span className="post-author-date">il y a {elapsedTime(props.publication.postDate)}</span></span></div>
-                <div className="post-author-pictos">
+
+
+                <div> {props.publication._id} </div>
+
+
+                {/* Si la publication a été créée par l'utilisateur actuel ou si c'est un admin, les boutons de modif/suppr s'affichent  */}
+                {(currentUserInfos.isAdmin || currentUserInfos.userId === props.publication.userId) && <div className="post-author-pictos">
                     <div className="post-author-picto-edit" ref={btEditPublication} onClick={() => { editPublication() }}>{isEditMode ? <div><i className="fas fa-undo-alt"></i></div> : <div><i className="fas fa-edit"></i></div>}</div>
-                    <div className="post-author-picto-delete" onClick={() => { deleteMsgWindow.current.classList.remove("invisible"); setDisplayComments(false) }}><i className="fas fa-trash-alt"></i></div>
+                    <div className="post-author-picto-delete" onClick={() => { warningDeleteMsg.current.classList.remove("invisible"); setDisplayComments(false) }}><i className="fas fa-trash-alt"></i></div>
+                </div>}
 
-
-                </div>
             </div>
 
-            {isEditMode ?
-                <form className="post-publication box" onSubmit={(e) => submit(e, props.publication._id)}>
+            {
+                isEditMode ?
+                    <form className="post-publication box" onSubmit={(e) => submit(e, props.publication._id)}>
 
-                    <TextareaAutosize className="post-publication-title textareaAutosize" name="postTitle" id="titre" ref={inputTitle} defaultValue={title} />
+                        <TextareaAutosize className="post-publication-title textareaAutosize" name="postTitle" id="titre" ref={inputTitle} defaultValue={title} />
 
-                    <label htmlFor="upload-button">{
-                        <div>
-                            <div className="upload-button"><i className="fas fa-file-upload"></i> &nbsp;Charger une nouvelle image</div>
-                            <div className="post-publication-image">
-                                <img src={image.preview} alt="" />
+                        <label htmlFor="upload-button">{
+                            <div>
+                                <div className="upload-button"><i className="fas fa-file-upload"></i> &nbsp;Charger une nouvelle image</div>
+                                <div className="post-publication-image">
+                                    <img src={image.preview} alt="" />
+                                </div>
                             </div>
-                        </div>
-                    }</label>
-                    <input type="file" name="image" id="upload-button" accept=".png, .jpg, .jpeg" onChange={getImageUrl} style={{ display: "none" }} />
+                        }</label>
+                        <input type="file" name="image" id="upload-button" accept=".png, .jpg, .jpeg" onChange={getImageUrl} style={{ display: "none" }} />
 
-                    <input type="submit" name="envoyer-message" value="Envoyer la modification" className="bt" />
-                </form>
-                :
-                <div className="post-publication box">
-                    <TextareaAutosize className="post-publication-title textareaAutosize" disabled ref={inputTitle} value={title} />
-                    <div className="post-publication-image">
-                        <img src={image.preview} alt="" />
+                        <input type="submit" name="envoyer-message" value="Envoyer la modification" className="bt" />
+                    </form>
+                    :
+                    <div className="post-publication box">
+                        <TextareaAutosize className="post-publication-title textareaAutosize" disabled ref={inputTitle} value={title} />
+                        <div className="post-publication-image">
+                            <img src={image.preview} alt="" />
+                        </div>
                     </div>
-                </div>}
+            }
 
 
             <div className="post-interactions box">
@@ -190,29 +229,33 @@ const Publication = (props) => {
                 <div className="separatorV"></div>
                 <div className="post-interactions-comments">
                     <div className="post-interactions-comments-picto"><i className="far fa-comment "></i></div>
-
-                    <div className="post-interactions-comments-number">{props.publication.postComments.length} commentaires</div>
+                    <div className="post-interactions-comments-number">{commentsCount.length} commentaires</div>
 
                     {/* Si il y a au moins 1 commentaire le bouton s'affiche */}
-                    {props.publication.postComments.length > 0 && < div onClick={() => setDisplayComments(!displayComments)}>{displayComments ? <i className="fas fa-caret-square-up" title="Masquer les commentaires"></i> : <i className="fas fa-caret-square-down" title="Afficher les commentaires"></i>}</div>}
+                    {commentsCount.length > 0 && < div onClick={() => setDisplayComments(!displayComments)}>{displayComments ? <i className="fas fa-caret-square-up" title="Masquer les commentaires"></i> : <i className="fas fa-caret-square-down" title="Afficher les commentaires"></i>}</div>}
 
                 </div>
             </div>
 
-            {
-                displayComments &&
-                <div className="post-comments box">
-                    {props.publication.postComments.map((comments) => (
-                        <Comments /* key={comments.commentMessage.commentId} */ commentMessage={comments} postId={props.publication._id} />
-                    ))}
-                </div>
+
+            {displayComments && comments.map((comment) => (
+                <>
+                    {comment.postId === props.publication._id &&
+                        <div className="post-comments box" >
+                            < Comments key={comment._id} comment={comment} commentPostId={comment.postId} commentToDelete={deleteComment} /* addNewComment={ } */ />
+
+
+                        </div>
+                    }
+                </>
+            ))
             }
 
             <form form className="post-new-comment box" >
                 <div className="post-new-comment-avatar"><img src={currentUserInfos.avatarUrl} alt="" /></div>
                 <input type="text" className="post-new-comment-message" ref={postCommentInput} placeholder="Ecrire un commentaire" />
 
-                <div className="post-new-comment-send" onClick={(e) => sendComment(props.publication._id)}><i className="fas fa-arrow-circle-right"></i></div>
+                <div className="post-new-comment-send" onClick={() => sendComment(props.publication._id)}><i className="fas fa-arrow-circle-right"></i></div>
                 {/* <div className="post-new-comment-send">[Retour] pour envoyer</div> */}
             </form>
 

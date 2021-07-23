@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect } from 'react'
-import ToggleButton from '../components/ToggleButton'
+// import { useState, useRef, useEffect } from 'react'
+// import ToggleButton from '../components/ToggleButton'
 
 const PageTest = () => {
 
 
-    let state = false
-    const [isPressed, setIsPressed] = useState(state);
+    // let state = false
+    // const [isPressed, setIsPressed] = useState(state);
 
     /* const monsteraPrice = 8
     const [cart, updateCart] = useState(0)
@@ -28,13 +28,13 @@ const PageTest = () => {
     ) */
 
     // const [isEditMode, setIsEditMode] = useState(false)
-
+/* 
     const usernameInput = useRef();
     const usernameDiv = useRef();
     const blocDisplay = useRef();
     const blocEdit = useRef();
 
-    let username = "Edwardo"
+    let username = "Edwardo" */
 
 
     /*     useEffect(() => {
@@ -60,7 +60,7 @@ const PageTest = () => {
             // champModif.current.select();
         } */
 
-    const editMode = (e) => {
+ /*    const editMode = (e) => {
         blocDisplay.current.classList.add("invisible");
         blocEdit.current.classList.remove("invisible");
 
@@ -73,35 +73,22 @@ const PageTest = () => {
 
         username = usernameInput.current.value
         usernameDiv.current.textContent = username
-    }
+    } */
 
 
     // récup la valeur d'un input
-    const getInputValue = (e) => {
+/*     const getInputValue = (e) => {
         e.preventDefault()
         console.log(e.target['my_input'].value)
 
-        /*  <form form onSubmit = { handleSubmit } >
-                <input type='text' name='my_input' defaultValue='Tapez votre texte' />
-                <button type='submit'>Entrer</button>
-            </form > */
-    }
-    //  --------------------------------
-
-    
-    function toggle() {
-        // 2 façons différentes
-        // (1)
-        isPressed ? setIsPressed(false) : setIsPressed(true);
-        // isPressed ? console.log("on") : console.log("off");
-
-        // (2)
-        // setIsPressed(!isPressed)
-    }
+     
+    } */
 
 
 
-    return (
+
+
+ /*    return (
         <div className='container' style={{ width: "200px", height: "200px" }}>
 
             <div className="bloc-display" ref={blocDisplay}>
@@ -125,27 +112,8 @@ const PageTest = () => {
             </div>
 
 
-
-
-
-
-
-
-
-            {/* {isEditMode ? (
-                <>
-                    <button onClick={() => setIsEditMode(false)}><i className="fas fa-check-square" style={{ padding: "5px" }}></i></button>
-                    <input type="text" defaultValue={username} name="usernameEdit" className="edit-field" ref={champModif} />
-
-                </>
-            ) : (
-                <>
-                    <button onClick={modif}><i className="fas fa-edit" style={{ padding: "5px" }}></i></button>
-                    <div>Edward</div>
-                </>
-            )} */}
         </div >
-    );
+    ); */
 };
 
 export default PageTest;

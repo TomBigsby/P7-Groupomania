@@ -6,9 +6,6 @@ const fs = require('fs');
 
 exports.createPublication = (req, res, next) => {
   const publicationObject = req.body;
-
-  console.log(req.file);
-
   // NOTE: suppression de l'id généré automatiquement par MongoDB
   delete publicationObject._id;
 
@@ -18,10 +15,11 @@ exports.createPublication = (req, res, next) => {
   const publication = new Publication({
     ...publicationObject,
     imageUrl: image,
-    likes: 0,
-    dislikes: 0,
+    userId: req.body.userId,
     username: req.body.username,
     avatarUrl: req.body.avatarUrl,
+    likes: 0,
+    dislikes: 0,
     likeValue: 0
   });
   publication.save()
@@ -37,33 +35,31 @@ exports.getAllPublications = (req, res, next) => {
 };
 
 
+
 exports.modifyPublication = (req, res, next) => {
 
   const publicationObject = req.file ?
     {
-      ...JSON.parse(req.body.publication),
-      image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      ...req.body,
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
 
-  Publication.updateOne({ _id: req.params.id }, { ...publicationObject, _id: req.params.id, imageUrl: image })
+  Publication.updateOne({ _id: req.params.id }, { ...publicationObject, _id: req.params.id })
     .then(() => { res.status(200).json({ message: 'Publication modifiée !' }); })
     .catch(error => res.status(400).json({ error }));
 };
-
 
 
 exports.deletePublication = (req, res, next) => {
   Publication.findOne({ _id: req.params.id })
     .then((publication) => {
       const filename = publication.imageUrl.split('/images/')[1];
-      console.log(filename);
       fs.unlink(`images/${filename}`, () => {
         Publication.deleteOne({ _id: req.params.id })
           .then(() => res.status(200).json({ message: 'Publication supprimée !' }))
           .catch(error => res.status(400).json({ error }));
       });
     })
-    .then(() => { res.status(200).json({ message: 'Publication supprimée !' }); })
     .catch(error => res.status(500).json({ error }));
 };
 

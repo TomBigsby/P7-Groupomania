@@ -1,28 +1,24 @@
 import { NavLink } from "react-router-dom";
-import { useEffect, useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import avatarPlaceHolder from '../assets/images/avatar.svg'
+// import Avatar from "./Avatar";
+
 
 
 
 const HeaderSmall = () => {
 
-
-    // let [currentUserInfos, setCurrentUserInfos] = useState("");
-    let [pause, setPause] = useState({ username: "", avatarUrl: "" });
-
-    const avatar = useRef()
+    const [avatarDelay, setAvatarDelay] = useState(avatarPlaceHolder)
+    let currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
 
 
-    let currentUserInfos = ""
-
-    currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
-
-    useEffect(() => {
+    const bob = () => {
         const timer = setTimeout(() => {
-            avatar.current.classList.remove("invisible");
-            setPause({ username: currentUserInfos.username, avatarUrl: currentUserInfos.avatarUrl });
-        }, 500);
+            setAvatarDelay(currentUserInfos.avatarUrl);
+        }, 100);
         return () => clearTimeout(timer);
-    }, []);
+    }
+    bob()
 
 
     return (
@@ -30,8 +26,9 @@ const HeaderSmall = () => {
             <div className="header bg-small">
                 <NavLink className="logo logo-small" exact to="/"></NavLink>
 
-                {currentUserInfos && <div className="bg-username invisible" style={{ color: "black" }} >{pause.username}</div>}
-                {currentUserInfos && <NavLink className="bg-avatar invisible" ref={avatar} exact to="/profil"><img src={pause.avatarUrl} alt="" /></NavLink>}
+                <NavLink className="bg-avatar" exact to="/profil"><img src={avatarDelay ? avatarDelay : avatarPlaceHolder} alt="" /></NavLink>
+
+
             </div>
             <div className="main-position bg-small"></div>
         </>

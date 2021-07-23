@@ -1,0 +1,141 @@
+.post-comments {
+
+    & .post-comment {
+        padding-bottom: 15px;
+        position: relative;
+
+        &-bloc1 {
+            display: flex;
+            align-items: center;
+
+            & .post-comment-avatar {
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+            }
+
+            & .post-comment-name {
+                font-size: 1em;
+                font-weight: 600;
+                line-height: 1.5em;
+
+                @include mobile-only {
+                    font-size: 0.9em;
+                }
+            }
+
+            & .post-comment-date {
+                font-size: 0.75em;
+
+                @include mobile-only {
+                    font-size: 0.7em;
+                }
+            }
+
+            & .post-comment-pictos {
+                min-width: 40px;
+                display: flex;
+                justify-content: space-between;
+                margin: 0 15px;
+            }
+
+            & .post-comment-picto {
+
+                &-edit,
+                &-delete {
+                    @include picto(17px, $color-1, 0.2);
+
+                    &:hover {
+                        @include picto-hover(0.7);
+                    }
+                }
+
+            }
+
+            & .isEditMode {
+                color: $color-5;
+                font-size: 1.4em;
+                line-height: 0em;
+
+                &:hover {
+                    cursor: pointer;
+                    color: darken($color-5, 15%)
+                }
+            }
+
+            &-b {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: baseline;
+            }
+        }
+
+        &-bloc2 {
+            textarea.post-comment-message {
+                font-size: 16px;
+                margin-left: 50px;
+                font-weight: 400;
+                line-height: 1.4em;
+            }
+        }
+
+        &-publication {
+            margin-top: 15px;
+
+            @include mobile-only {
+                font-size: 0.9em;
+                ;
+            }
+        }
+    }
+
+    // séparateur
+    & .post-comment:before {
+        content: "";
+        width: calc(100% + 40px);
+        height: 1px;
+        margin-left: -20px;
+        background-color: lighten($color-3, 10%);
+        display: block;
+        margin-bottom: 10px;
+    }
+}
+
+.comment-cache {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+
+    &-background {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        opacity: 0.8;
+    }
+
+    &-deleteMsg {
+        text-align: center;
+        z-index: 6;
+        margin: auto;
+        background-color: white;
+        opacity: 1;
+        padding: 8px;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 0.8em;
+
+        border: 3px solid $color-2;
+
+        & .buttons {
+            transform: scale(0.9);
+
+            & .bt:focus {
+                border: none !important;
+            }
+        }
+    }
+}

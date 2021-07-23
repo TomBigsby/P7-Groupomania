@@ -36,6 +36,14 @@ exports.signup = (req, res, next) => {
             if (req.file !== undefined) {
                 var image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
             }
+
+
+            if (req.body.adminPassword !== "" && req.body.adminPassword === "admin") {
+                admin = true
+            } else {
+                admin = false
+            }
+
             var clean = sanitize(req.body.email);
             bcrypt.hash(req.body.password, 10)
                 .then(hash => {
@@ -46,6 +54,7 @@ exports.signup = (req, res, next) => {
                         userService: req.body.userService,
                         userJob: req.body.userJob,
                         avatarUrl: image,
+                        isAdmin: admin
                     });
                     user.save()
 
@@ -102,15 +111,6 @@ exports.login = (req, res, next) => {
 exports.getAvatar = (req, res, next) => {
 
     User.findOne({ _id: req.params.id })
-        .then((user) => { res.status(200).json(user)})
+        .then((user) => { res.status(200).json(user) })
         .catch((error) => { res.status(400).json({ error: error }); });
 };
-
-
-
-
-/* exports.modifyUser = (req, res, next) => {
-    User.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
-        .then(() => res.status(200).json({ message: 'Sauce modifiée !' }))
-        .catch(error => res.status(400).json({ error }));
-}; */

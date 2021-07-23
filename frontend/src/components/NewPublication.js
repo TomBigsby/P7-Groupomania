@@ -10,10 +10,10 @@ const NewPublication = () => {
     const [msgAlert, setMsgAlert] = useState({ title_error: "", image__error: "" });
 
 
-
+    
     // chargement des infos utilisateur (Localstorage) au chargement de la page
     const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
-
+    
     // action  à la validation du formulaire
     const submit = e => {
         e.preventDefault()
@@ -26,7 +26,7 @@ const NewPublication = () => {
         formData.append("postDate", today);
         formData.append("username", currentUserInfos.username);
         formData.append("avatarUrl", currentUserInfos.avatarUrl);
-
+        formData.append("userId", currentUserInfos.userId);
 
         if ((e.target.postTitle.value !== "") && (e.target.image.files[0] !== undefined)) {
 

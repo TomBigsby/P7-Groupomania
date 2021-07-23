@@ -1,10 +1,12 @@
 import { NavLink } from "react-router-dom";
 import HeaderSmall from "../components/HeaderSmall";
 import Publications from "../components/Publications";
+import UserInfos from "../components/UserInfos";
 
 const PagePublications = () => {
     return (
         <>
+            {/* <UserInfos /> */}
             <HeaderSmall />
             <div className="main">
                 <div className="intro">Les dernières publications</div>

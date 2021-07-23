@@ -9,6 +9,7 @@ const Login = () => {
     const inputEmail = useRef()
     const inputPassword = useRef()
 
+    
     const submit = e => {
         e.preventDefault()
 
@@ -28,11 +29,11 @@ const Login = () => {
                         setUser(json);
                         const currentUserInfos = {
                             userId: json.userId,
+                            token: json.token
                         }
                         localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
                     }
                     ));
-
 
 
         } else {
@@ -65,13 +66,14 @@ const Login = () => {
                     <label htmlFor="password">mot de passe <span className="red">* </span></label>
                     <input type="password" id="password" ref={inputPassword} />
                     <div className="error-msg">{msgAlert.password_error}{user.error_login_password && <p>{user.error_login_password}</p>}</div>
+
                 </div>
                 <input type="submit" name="Connexion" value="Connexion" className="bt" />
                 {user && !user.error_login_user && !user.error_login_password && <Redirect to="/publications" />}
 
+                <div className="signup-link">Vous n'avez pas de compte ? <NavLink exact to="/inscription">inscrivez-vous</NavLink></div>
+                <div className="required-field"><span className="red">* </span>Champs obligatoires</div>
             </form>
-            <div className="signup-link">Vous n'avez pas de compte ? <NavLink exact to="/inscription">inscrivez-vous</NavLink></div>
-            <div className="required-field"><span className="red">* </span>Champs obligatoires</div>
         </div>
     );
 };

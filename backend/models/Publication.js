@@ -15,8 +15,6 @@ const publicationSchema = mongoose.Schema({
     
     username: { type: String },
     avatarUrl: { type: String },
-
-    postComments: { type: Array }
     
 });
 

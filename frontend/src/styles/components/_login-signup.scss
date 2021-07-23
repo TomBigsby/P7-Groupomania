@@ -55,7 +55,6 @@
     }
 
     & .required-field {
-        text-align: center;
         font-size: 0.7em;
     }
 
@@ -145,5 +144,34 @@
 
     & input[type="file"] {
         display: none;
+    }
+}
+
+.adminConnexion {
+    width: 100%;
+    display: flex;
+    margin-bottom: 15px;
+
+    & label {
+        font-size: 0.8em;
+    }
+
+    & .checkbox {
+        width: min-content !important;
+        align-self: center;
+        margin-right: 10px;
+    }
+
+    & .adminPassword {
+        border: 1px solid red;
+        height: 25px;
+        max-width: 100px;
+        margin-left: 20px;
+        font-size: 14px !important;
+
+        &::placeholder {
+            color: rgb(151, 151, 151) !important;
+        }
+
     }
 }

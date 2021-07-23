@@ -5,10 +5,12 @@ const userSchema = mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
 
+    userId: { type: String },
     username: { type: String },
     avatarUrl: { type: String },
     userService: { type: String },
-    userJob: { type: String }
+    userJob: { type: String },
+    isAdmin: { type: Boolean }
 });
 
 userSchema.plugin(uniqueValidator);

@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 
 const commentSchema = mongoose.Schema({
-
-    postComments: { type: Array },
-
+    postId: { type: String },
     commentAuthorId: { type: String },
     commentAuthorUserName: { type: String },
     commentAuthorAvatarUrl: { type: String },

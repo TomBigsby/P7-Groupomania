@@ -6,49 +6,27 @@ import Publication from "./Publication";
 const Publications = () => {
 
     const [publications, setPublications] = useState([]);
-    const [userData, setUserData] = useState("");
 
-    const [items, setItems] = useState([]);
+    // const [userData, setUserData] = useState("");
+    // const [items, setItems] = useState([]);
 
-    // let postId
-
+    // const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
+    const token = JSON.parse(localStorage.getItem("token"));
 
     // chargement des infos utilisateur (Localstorage) au chargement de la page
     // const savedUser = JSON.parse(localStorage.getItem('currentUserInfos'))
 
     // Récupération des publications
     useEffect(() => {
-        fetch('http://localhost:4200/api/publications')
+        fetch('http://localhost:4200/api/publications', {
+            method: 'GET',
+            // headers: { 'Content-Type': 'multipart/form-data' },
+            headers: { "authorization": "Bearer " + token }
+        })
             .then((res) => res.json())
             .then((res) => setPublications(res))
             .catch((error) => console.error(error));
-
-        const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
-
-        // récupération des infos utilisateur (depuis login)
-        fetch('http://localhost:4200/api/auth/login/' + currentUserInfos.userId)
-            .then((res) => res.json())
-            .then((res) => {
-                setUserData(res);
-
-                const userDatas = {
-                    avatarUrl: res.avatarUrl,
-                    userJob: res.userJob,
-                    userService: res.userService,
-                    username: res.username,
-                    userId: res._id,
-                    isAdmin: res.isAdmin
-                }
-
-                // BUG post ID = undefined parfois > voir d'où ça vient
-                if (!res.error) {
-                    localStorage.setItem("currentUserInfos", JSON.stringify(userDatas));
-
-                }
-            })
-            .catch((error) => console.error(error));
     }, []);
-
 
 
     // Suppression de la publication
@@ -56,6 +34,7 @@ const Publications = () => {
 
         fetch('http://localhost:4200/api/publications/' + postId, {
             method: 'DELETE',
+            headers: { "authorization": "Bearer " + token }
         })
             .catch((error) => console.error(error))
 
@@ -63,8 +42,7 @@ const Publications = () => {
             .then(() => {
                 setPublications(publications.filter(publication => publication._id !== postId))
             })
-
-            deletePostComments(postId)
+        deletePostComments(postId)
     }
 
 
@@ -73,10 +51,9 @@ const Publications = () => {
 
         fetch('http://localhost:4200/api/publications/' + postId + "/comments", {
             method: 'DELETE',
+            headers: { "authorization": "Bearer " + token }
         })
-        .catch((error) => console.error(error))
-
-
+            .catch((error) => console.error(error))
     }
 
 

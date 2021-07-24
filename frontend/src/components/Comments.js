@@ -1,11 +1,12 @@
 import { useState, useRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize';
-import React, { Children } from "react";
 
 
 import { fr } from 'date-fns/locale';
 import { formatDistanceToNow } from 'date-fns';
 const { zonedTimeToUtc } = require('date-fns-tz')
+
+const token = JSON.parse(localStorage.getItem("token"));
 
 
 const Comments = (props) => {
@@ -16,18 +17,19 @@ const Comments = (props) => {
     const btEditMessage = useRef()
     const warningDeleteComment = useRef()
 
+    const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
 
-    const formData = new FormData();
 
-    const sendCommentEdit = (commentId, messageValue, postId) => {
-
+    // Modification d'un commentaire
+    const sendCommentEdit = (commentId, messageValue) => {
+        const formData = new FormData();
         formData.append("commentId", commentId);
         formData.append("commentAuthorMessage", messageValue);
-        // formData.append("postId", postId);
 
         fetch('http://localhost:4200/api/publications/comments/' + commentId, {
             method: 'PUT',
-            body: formData
+            body: formData,
+            headers: { "authorization": "Bearer " + token }
         })
             .then(res => res.json()
                 .then(json => {
@@ -37,6 +39,8 @@ const Comments = (props) => {
             .catch((error) => console.error(error));
     }
 
+
+    // Edition des commentaires
     const editComment = (commentId) => {
         setFieldEnabled(!fieldEnabled)
 
@@ -58,22 +62,29 @@ const Comments = (props) => {
         }
     }
 
-    const onKeyPressed = (e) => {
+    const onKeyPressed = (e, commentId) => {
         const key = e.key
         if (key === "Enter") {
-            const newComment = inputMessage.current.value
-            setComment(newComment)
-            setFieldEnabled(false)
+            validEdition(commentId)
         }
     }
+
+    const onClickValid = (commentId) => {
+        validEdition(commentId)
+    }
+
+    const validEdition = (commentId) => {
+        const newComment = inputMessage.current.value
+        setComment(newComment)
+        setFieldEnabled(false)
+        editComment(commentId)
+    }
+
 
 
     const elapsedTime = (startDate) => {
         return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
     }
-
-
-
 
     return (
         <>
@@ -98,13 +109,15 @@ const Comments = (props) => {
                     <div className="post-comment-bloc1-b">
                         <div className="post-comment-name">{props.comment.commentAuthorUserName}</div>
                         <div className="post-comment-date"><span>&nbsp;</span>il y a {elapsedTime(props.comment.commentDate)}</div>
-                        <div className="post-comment-pictos">
 
-                            <div className="post-comment-picto-edit" ref={btEditMessage} onClick={() => { editComment(props.comment._id) }}>
-                                {fieldEnabled ? <div><i className="fas fa-undo-alt"></i></div> : <div><i className="fas fa-edit"></i></div>}</div>
 
-                            <div className="post-comment-picto-delete" onClick={() => { warningDeleteComment.current.classList.remove("invisible"); }}><i className="far fa-trash-alt"></i></div>
-                        </div>
+
+                        {(currentUserInfos.isAdmin || currentUserInfos.userId === props.comment.commentAuthorId) &&
+                            <div className="post-comment-pictos">
+                                <div className="post-comment-picto-edit" ref={btEditMessage} onClick={() => { editComment(props.comment._id) }}>
+                                    {fieldEnabled ? <div><i className="fas fa-undo-alt"></i></div> : <div><i className="fas fa-edit"></i></div>}</div>
+                                <div className="post-comment-picto-delete" onClick={() => { warningDeleteComment.current.classList.remove("invisible"); }}><i className="far fa-trash-alt"></i></div>
+                            </div>}
 
 
 
@@ -113,7 +126,11 @@ const Comments = (props) => {
                 </div>
                 <div className="post-comment-bloc2">
                     {fieldEnabled ?
-                        <TextareaAutosize className="post-comment-message textareaAutosize" onKeyDown={(e) => onKeyPressed(e)} ref={inputMessage} defaultValue={comment} />
+                        <div className="group">
+                            <TextareaAutosize className="post-comment-message textareaAutosize highlight" onKeyDown={(e) => { onKeyPressed(e, props.comment._id) }} ref={inputMessage} defaultValue={comment} />
+                            <div className="bt-valid-comment" onClick={onClickValid}><i className="fas fa-check-square"></i></div>
+                        </div>
+
                         :
                         <TextareaAutosize className="post-comment-message textareaAutosize" disabled ref={inputMessage} value={comment} />}
 

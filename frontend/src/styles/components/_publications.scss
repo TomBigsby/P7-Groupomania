@@ -293,9 +293,12 @@
     }
 }
 
+// pour le champ d'ajout de commentaire
+.warning-field {
+    border: 3px solid $color-2!important;
+}
 
 .post-comments {
-
     & .post-comment {
         padding-bottom: 15px;
 

@@ -23,6 +23,7 @@ const Profile = () => {
 
 
     let currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
+    const token = JSON.parse(localStorage.getItem("token"));
 
     let username
 
@@ -63,9 +64,9 @@ const Profile = () => {
 
         localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
 
+
         sendProfileData()
     }
-
 
 
     const sendProfileData = () => {
@@ -77,35 +78,9 @@ const Profile = () => {
                 userService: currentUserInfos.userService,
                 userJob: currentUserInfos.userJob
             }),
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', "authorization": "Bearer " + token }
         })
-
-
     }
-
-
-    // ---------   code pour valider les modif avec la touche ENTER  --------
-    /* const pressEnter = useKeyPress("Enter");
-
-    function useKeyPress(targetKey) {
-        const [keyPressed, setKeyPressed] = useState < boolean > (false);
-        function downHandler({ key }) {
-            if (key === targetKey) {
-                setKeyPressed(true);
-            }
-        }
-        // Add event listeners
-        useEffect(() => {
-            window.addEventListener("keydown", downHandler);
-            // window.addEventListener("keyup", upHandler);
-            return () => {
-                window.removeEventListener("keydown", downHandler);
-                // window.removeEventListener("keyup", upHandler);
-            };
-        }, []);
-        return keyPressed;
-    } */
-    // ----------------------------------
 
     return (
         <div className="container">
@@ -157,9 +132,10 @@ const Profile = () => {
 
             <div className="separatorH"></div>
             <div className="signout-delete-account">
-                <NavLink exact to="/" className="bt-signout-account"><i className="fas fa-sign-out-alt"></i></NavLink>
-                <NavLink exact to="/supression-profil" className="bt-delete-account"><i className="far fa-trash-alt"></i></NavLink>
-            </div>
+                {/*  en cliquant sur le bouton on supprime le token du localStorage et on redirection page login */}
+                <NavLink exact to="/" className="bt-signout-account"><i className="fas fa-sign-out-alt" onClick={() => localStorage.removeItem('token')}></i></NavLink>
+            <NavLink exact to="/supression-profil" className="bt-delete-account"><i className="far fa-trash-alt"></i></NavLink>
+        </div>
         </div >
     );
 };

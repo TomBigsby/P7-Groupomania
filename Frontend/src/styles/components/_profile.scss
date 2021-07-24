@@ -10,21 +10,23 @@
     flex-direction: column;
     align-items: center;
     position: relative;
-}
 
-// ----  profile card only  ----
-.bt-close {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    @include bt-icon($color-1, 1.2em);
+    // ----  profile card only  ----
+    .bt-close {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        @include bt-icon($color-1, 1.2em);
 
-    padding: 5px 10px;
+        padding: 5px 10px;
 
-    &:hover {
-        @include bt-icon-hover;
+        &:hover {
+            @include bt-icon-hover;
+        }
     }
 }
+
+
 
 .avatar-profile {
     width: 100px;
@@ -93,8 +95,6 @@
         @include picto-hoverSurrounded;
     }
 }
-
-
 
 
 .separatorH {

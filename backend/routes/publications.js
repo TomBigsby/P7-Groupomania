@@ -6,18 +6,11 @@ const multer = require('../middleware/multer-config');
 
 const publicationsCtrl = require('../controllers/publications');
 
-// router.get('/', auth, publicationsCtrl.getAllPublications);
-router.get('/publications', publicationsCtrl.getAllPublications);
-router.post('/publications', multer, publicationsCtrl.createPublication);
-// router.get('/:id', auth, publicationsCtrl.getOnePublication);
-router.put('/publications/:id', multer, publicationsCtrl.modifyPublication);
-// router.delete('/:id', auth, publicationsCtrl.deletePublication);
-router.delete('/publications/:id', publicationsCtrl.deletePublication);
+router.get('/publications', auth, publicationsCtrl.getAllPublications);
+router.post('/publications', auth, multer, publicationsCtrl.createPublication);
+router.put('/publications/:id', auth, multer, publicationsCtrl.modifyPublication);
+router.delete('/publications/:id', auth, publicationsCtrl.deletePublication);
 
-router.post('/publications/:id/like', publicationsCtrl.likePublication);
-
-// router.post('/publications/:id/comments', multer, publicationsCtrl.createComment);
-// router.put('/publications/:id', multer, publicationsCtrl.modifyComment);
-
+router.post('/publications/:id/like', auth, publicationsCtrl.likePublication);
 
 module.exports = router;

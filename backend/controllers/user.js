@@ -9,20 +9,13 @@ const User = require('../models/User');
 // Le mot de passe nécessite une majuscule, une minuscule, minimum 8 caractères et au moins un caractère spécial suivants : ! @ # $ % ^ & *
 
 let regexpPassword = new RegExp(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/);
-let emailFilter = new RegExp(/^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/);
-// let emailFilter = new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/);
-
+let emailFilter = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
 
 exports.signup = (req, res, next) => {
-
-
     let form_valid = true;
-    // NOTE: Vérification du format de l'email et du mot de passe
+    // Vérification de la présence de présence du body, de l'email et du mot de passe
     form_valid = form_valid && req.body && req.body.email;
     form_valid = form_valid && req.body && req.body.password;
-
-    // console.log("current password is : " + form_valid);
-    // console.log("current mail is : ", req.body.email);
 
     if (form_valid) {
         form_valid = form_valid && (req.body.email.length > 0);
@@ -62,7 +55,7 @@ exports.signup = (req, res, next) => {
                         .then(() => { next() })
 
                         // .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-                        .catch(error => res.status(400).json({ error_signup_email: "Utilisateur déjà existant" }));
+                        .catch(error => res.status(400).json({ error_signup_email_exist: "Utilisateur déjà existant" }));
                 })
                 .catch(error => res.status(500).json({ error2 }));
         } else {
@@ -109,8 +102,15 @@ exports.login = (req, res, next) => {
 
 // récupération de l'url de l'avatar local
 exports.getAvatar = (req, res, next) => {
-
     User.findOne({ _id: req.params.id })
         .then((user) => { res.status(200).json(user) })
         .catch((error) => { res.status(400).json({ error: error }); });
+};
+
+
+// suppression de l'utilisateur
+exports.deleteUser = (req, res, next) => {
+    User.deleteOne({ _id: req.params.id })
+        .then(message => res.status(200).json({ message: 'Utilisateur supprimé !' }))
+        .catch(error => res.status(400).json({ error }));
 };

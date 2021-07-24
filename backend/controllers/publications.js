@@ -35,9 +35,7 @@ exports.getAllPublications = (req, res, next) => {
 };
 
 
-
 exports.modifyPublication = (req, res, next) => {
-
   const publicationObject = req.file ?
     {
       ...req.body,

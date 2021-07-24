@@ -1,5 +1,14 @@
 .new-post-container {
     max-width: 600px !important;
+
+    & .bt-close {
+        @include bt-icon($color-4, 1.2em);
+        padding: 0 5px;
+
+        &:hover {
+            color: darken($color-2, 20%);
+        }
+    }
 }
 
 .post-new-publication {

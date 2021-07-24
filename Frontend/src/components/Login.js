@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Redirect } from 'react-router'
 
 const Login = () => {
@@ -9,7 +9,7 @@ const Login = () => {
     const inputEmail = useRef()
     const inputPassword = useRef()
 
-    
+
     const submit = e => {
         e.preventDefault()
 
@@ -27,14 +27,16 @@ const Login = () => {
                 .then(res => res.json()
                     .then(json => {
                         setUser(json);
+
                         const currentUserInfos = {
                             userId: json.userId,
-                            token: json.token
                         }
                         localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+
+                        localStorage.setItem("token", JSON.stringify(json.token));
+
                     }
                     ));
-
 
         } else {
             if (e.target.email.value === "") {

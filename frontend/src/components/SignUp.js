@@ -3,8 +3,6 @@ import { useState, useRef } from 'react';
 import { Redirect } from 'react-router'
 import { NavLink } from "react-router-dom";
 
-
-
 const SignUp = () => {
 
     const [user, setUser] = useState(false);
@@ -30,21 +28,22 @@ const SignUp = () => {
                 body: formData,
             })
 
-            // récup la réponse pour obtenir le userId et le stocker dans un localStorage
+                // récup la réponse pour obtenir le userId et le stocker dans un localStorage
                 .then(res => res.json()
                     .then(json => {
                         setUser(json);
-
                         const currentUserInfos = {
                             userId: json.userId,
+                            // token: json.token,
                             username: e.target.username.value,
                             userService: e.target.userService.value,
                             userJob: e.target.userService.value,
                             avatarUrl: json.avatarUrl
                         }
-                        console.log(json.avatarUrl);
-
                         localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+
+                        localStorage.setItem("token", JSON.stringify(json.token));
+
                     }
                     ));
 
@@ -85,8 +84,6 @@ const SignUp = () => {
         }
     }
 
-
-
     const getImageUrl = (e) => {
         if (e.target.files.length) {
             setImage({
@@ -113,8 +110,8 @@ const SignUp = () => {
                 <div className="field-bloc">
                     <label htmlFor="email">Email <span className="red">* </span></label>
                     <input type="email" id="email" name="email" />
-                    <div className="error-msg" >{msgAlert.email_error}{user.error_signup_email && <p>{user.error_signup_email}</p>}</div>
-                    {user.error_signup_email && <NavLink exact to="/" style={{ fontSize: "0.8em", color: "white", textDecoration: "underline" }}> <i class="fas fa-long-arrow-alt-right"></i> Page de connexion</NavLink>}
+                    <div className="error-msg" >{msgAlert.email_error}{(user.error_signup_email && <p>{user.error_signup_email}</p>) || (user.error_signup_email_exist && <p>{user.error_signup_email_exist}</p>)}</div>
+                    {user.error_signup_email_exist && <NavLink exact to="/" style={{ fontSize: "0.8em", color: "white", textDecoration: "underline" }}> <i class="fas fa-long-arrow-alt-right"></i> Page de connexion</NavLink>}
                 </div>
                 <div className="field-bloc">
                     <label htmlFor="password">mot de passe <span className="red">* </span> <i className="fas fa-info-circle"></i> <div className="infobulle">Doit contenir une majuscule, une minuscule, plus de 8 caractères et au moins 1 caractère spécial parmi : ! @ # $ % ^ & *</div></label>
@@ -147,7 +144,7 @@ const SignUp = () => {
                 </div>
 
                 <input type="submit" name="Inscription" value="Inscription" className="bt" />
-                {user && !user.error && !user.error_signup_email && !user.error_signup_password && <Redirect to="/publications" />}
+                {user && !user.error && !user.error_signup_email && !user.error_signup_email_exist && !user.error_signup_password && <Redirect to="/publications" />}
                 <div className="required-field"><span className="red">* </span>Champs obligatoires</div>
             </form>
         </div >

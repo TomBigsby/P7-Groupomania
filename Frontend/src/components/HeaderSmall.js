@@ -12,13 +12,13 @@ const HeaderSmall = () => {
     let currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
 
 
-    const bob = () => {
+    const delay = () => {
         const timer = setTimeout(() => {
             setAvatarDelay(currentUserInfos.avatarUrl);
         }, 100);
         return () => clearTimeout(timer);
     }
-    bob()
+    delay()
 
 
     return (

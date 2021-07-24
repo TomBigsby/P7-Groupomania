@@ -7,32 +7,35 @@ const UserInfos = () => {
     // récupération des infos utilisateur (depuis login)
     useEffect(() => {
         const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
+        const token = JSON.parse(localStorage.getItem("token"));
 
-        fetch('http://localhost:4200/api/auth/login/' + currentUserInfos.userId)
+
+        fetch('http://localhost:4200/api/auth/login/' + currentUserInfos.userId, {
+            method: 'GET',
+            headers: { "authorization": "Bearer " + token }
+        })
             .then((res) => res.json())
             .then((res) => {
                 setUserData(res);
 
-                const userDatas = {
+                const userInfos = {
                     avatarUrl: res.avatarUrl,
                     userJob: res.userJob,
                     userService: res.userService,
                     username: res.username,
                     userId: res._id,
-                    token: currentUserInfos.token
+                    isAdmin: res.isAdmin,
                 }
 
-                // BUG post ID = undefined parfois > voir d'où ça vient
                 if (!res.error) {
-                    localStorage.setItem("currentUserInfos", JSON.stringify(userDatas));
+                    localStorage.setItem("currentUserInfos", JSON.stringify(userInfos));
 
+                    // Si le localStorage est bien chargé, il envoi la confirmation au composant parent pour afficher les publications
+                    // props.dataLoaded(true)
                 }
             })
             .catch((error) => console.error(error));
     }, []);
-
-
-
 
     return null
 };

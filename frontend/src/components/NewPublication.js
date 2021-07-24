@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Redirect } from 'react-router'
-
+import { NavLink } from 'react-router-dom';
 
 const NewPublication = () => {
 
@@ -10,16 +10,16 @@ const NewPublication = () => {
     const [msgAlert, setMsgAlert] = useState({ title_error: "", image__error: "" });
 
 
-    
+
     // chargement des infos utilisateur (Localstorage) au chargement de la page
     const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
-    
+    const token = JSON.parse(localStorage.getItem("token"));
+
     // action  à la validation du formulaire
     const submit = e => {
         e.preventDefault()
 
         const today = new Date()
-
 
         // FormData prends en paramètre l'élément html du formulaire et vas chercher les "name" donc nous donne un objet ayant les mêmes noms que ceux précisés dans le html
         const formData = new FormData(e.target);
@@ -34,9 +34,10 @@ const NewPublication = () => {
                 method: 'POST',
                 body: formData,
                 // headers: { 'Content-Type': 'multipart/form-data' },
+                headers: { "authorization": "Bearer " + token }
             })
                 .then(res => res.json()
-                    .then(json => setPublication(json)
+                    .then(json => { setPublication(json) }
                     ));
 
         } else {
@@ -52,9 +53,6 @@ const NewPublication = () => {
         }
     }
 
-
-
-
     // Création de l'url de l'image et sa preview
     const getImageUrl = (e) => {
         if (e.target.files.length) {
@@ -62,13 +60,13 @@ const NewPublication = () => {
         }
     }
 
-
     return (
         <>
             <div className="post-container new-post-container">
                 <div className="post-author">
                     <div className="post-author-avatar"><img src={currentUserInfos.avatarUrl} alt="" /></div>
                     <div><span className="post-author-name">{currentUserInfos.username}</span></div>
+                    <NavLink exact to="/publications" className="bt-close"><i className="fas fa-times"></i></NavLink>
                 </div>
                 <form className="post-new-publication" onSubmit={submit}>
                     <input type="text" name="postTitle" id="titre" placeholder="Titre de la publication" />
@@ -85,7 +83,7 @@ const NewPublication = () => {
                     {/* <div className="error-msg"> {user.error && <p>{user.error}</p>}</div> */}
 
                     <input type="submit" name="envoyer-message" value="Envoyer la publication" className="bt" />
-                    {publication && <Redirect to="/publications" />}
+                    {publication.message !== undefined && <Redirect to="/publications" />}
                 </form>
             </div>
         </>

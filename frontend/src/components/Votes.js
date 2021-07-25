@@ -18,7 +18,6 @@ const Votes = (props) => {
     }
 
 
-    // const [likeValueState, setLikeValueState] = useState((foundLikes || foundDislikes) ? props.publication.likeValue : 0);
     const [likeValueState, setLikeValueState] = useState((foundLikes !== undefined || foundDislikes !== undefined) ? likeValue : 0);
     const [usersLikeVotes, setUsersLikeVotes] = useState({ usersLikes: props.publication.usersLiked.length, usersDislikes: props.publication.usersDisliked.length });
 

@@ -9,11 +9,21 @@ const Votes = (props) => {
     const foundLikes = props.publication.usersLiked.find(element => element === currentUserInfos.userId);
     const foundDislikes = props.publication.usersDisliked.find(element => element === currentUserInfos.userId);
 
-    const [likeValueState, setLikeValue] = useState((foundLikes || foundDislikes) ? props.publication.likeValue : 0);
+
+     let likeValue
+    if (foundLikes !== undefined) {
+        likeValue = 1
+    } else if (foundDislikes !== undefined) {
+        likeValue = -1
+    }
+
+
+    // const [likeValueState, setLikeValueState] = useState((foundLikes || foundDislikes) ? props.publication.likeValue : 0);
+    const [likeValueState, setLikeValueState] = useState((foundLikes !== undefined || foundDislikes !== undefined) ? likeValue : 0);
     const [usersLikeVotes, setUsersLikeVotes] = useState({ usersLikes: props.publication.usersLiked.length, usersDislikes: props.publication.usersDisliked.length });
 
 
-
+    // Modification du nombre de likes / dislikes suite au clic
     const getLikeValue = (likeValue, currentPostId) => {
         if (likeValue === 1) {
             if (likeValueState === 0) {
@@ -39,10 +49,10 @@ const Votes = (props) => {
                 setUsersLikeVotes({ usersLikes: usersLikeVotes.usersLikes, usersDislikes: usersLikeVotes.usersDislikes += 1 })
             }
         }
+        // Modification de la valeur du likeValue (0, 1 ou - 1)
+        setLikeValueState(likeValue)
 
-
-        setLikeValue(likeValue)
-
+        // Envoie des infos au backend
         sendLike(likeValue, currentPostId)
     }
 

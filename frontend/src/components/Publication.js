@@ -10,14 +10,14 @@ import { formatDistanceToNow } from 'date-fns';
 const { zonedTimeToUtc } = require('date-fns-tz')
 
 const Publication = (props) => {
+
+    
     const [comments, setComments] = useState([]);
     // const [comments2, setComments2] = useState([]);
     const [displayComments, setDisplayComments] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-    // const [deletePostState, setDeletePostState] = useState(false);
     const [title, setTitle] = useState(props.publication.postTitle);
     const [image, setImage] = useState({ preview: props.publication.imageUrl, imageUrl: "" })
-    // const [newComment, setNewComment] = useState("");
 
     const cardHeader = useRef()
     const inputTitle = useRef()
@@ -134,8 +134,10 @@ const Publication = (props) => {
         })
             .then((res) => res.json())
             .catch((error) => console.error(error))
-            .then(() => {
+            .then((res) => {
 
+
+                setComments(comments)  
 
                 //DEBUG
                 // console.log(newComment);
@@ -259,7 +261,7 @@ const Publication = (props) => {
                 <>
                     {comment.postId === props.publication._id &&
                         <div className="post-comments box" >
-                            < Comments key={comment._id} comment={comment} commentPostId={comment.postId} commentToDelete={deleteComment} /* addNewComment={ } */ />
+                            < Comments key={comment._id} comment={comment} commentPostId={comment.postId} commentToDelete={deleteComment} />
                         </div>
                     }
                 </>

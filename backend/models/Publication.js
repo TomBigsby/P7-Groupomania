@@ -11,7 +11,6 @@ const publicationSchema = mongoose.Schema({
     dislikes: { type: Number },
     usersLiked: { type: Array },
     usersDisliked: { type: Array },
-    likeValue: { type: Number },
     
     username: { type: String },
     avatarUrl: { type: String },

@@ -12,14 +12,9 @@ const PagePublications = () => {
 
 
 
-
-
-
     return (
         <>
             <UserInfos />
-
-            {/* <TokenCheck /> */}
 
             <HeaderSmall />
             <div className="main">
@@ -31,5 +26,6 @@ const PagePublications = () => {
         </>
     );
 };
+
 
 export default PagePublications;

@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState, useRef, useEffect } from 'react';
 import { Redirect } from 'react-router'
+import { useHistory } from "react-router-dom";
 
 const Login = () => {
     const [user, setUser] = useState(false)
@@ -51,33 +52,34 @@ const Login = () => {
         }
     }
 
-    return (
-        <div className="login-container">
 
-            <div className="welcome">Bienvenue</div>
-            <div className="filet"></div>
-            <div className="connect">Connectez-vous</div>
+        return (
+            <div className="login-container">
 
-            <form className="login-form" onSubmit={submit}>
-                <div className="field-bloc">
-                    <label htmlFor="email">email <span className="red">* </span></label>
-                    <input type="email" id="email" name="email" ref={inputEmail} />
-                    <div className="error-msg">{msgAlert.email_error}{user.error_login_user && <p>{user.error_login_user}</p>}</div>
-                </div>
-                <div className="field-bloc">
-                    <label htmlFor="password">mot de passe <span className="red">* </span></label>
-                    <input type="password" id="password" ref={inputPassword} />
-                    <div className="error-msg">{msgAlert.password_error}{user.error_login_password && <p>{user.error_login_password}</p>}</div>
+                <div className="welcome">Bienvenue</div>
+                <div className="filet"></div>
+                <div className="connect">Connectez-vous</div>
 
-                </div>
-                <input type="submit" name="Connexion" value="Connexion" className="bt" />
-                {user && !user.error_login_user && !user.error_login_password && <Redirect to="/publications" />}
+                <form className="login-form" onSubmit={submit}>
+                    <div className="field-bloc">
+                        <label htmlFor="email">email <span className="red">* </span></label>
+                        <input type="email" id="email" name="email" ref={inputEmail} />
+                        <div className="error-msg">{msgAlert.email_error}{user.error_login_user && <p>{user.error_login_user}</p>}</div>
+                    </div>
+                    <div className="field-bloc">
+                        <label htmlFor="password">mot de passe <span className="red">* </span></label>
+                        <input type="password" id="password" ref={inputPassword} />
+                        <div className="error-msg">{msgAlert.password_error}{user.error_login_password && <p>{user.error_login_password}</p>}</div>
 
-                <div className="signup-link">Vous n'avez pas de compte ? <NavLink exact to="/inscription">inscrivez-vous</NavLink></div>
-                <div className="required-field"><span className="red">* </span>Champs obligatoires</div>
-            </form>
-        </div>
-    );
-};
+                    </div>
+                    <input type="submit" name="Connexion" value="Connexion" className="bt" />
+                    {user && !user.error_login_user && !user.error_login_password && <Redirect to="/publications" />}
 
-export default Login;
+                    <div className="signup-link">Vous n'avez pas de compte ? <NavLink exact to="/inscription">inscrivez-vous</NavLink></div>
+                    <div className="required-field"><span className="red">* </span>Champs obligatoires</div>
+                </form>
+            </div>
+        );
+    };
+
+    export default Login;

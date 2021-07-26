@@ -21,6 +21,8 @@ const HeaderSmall = () => {
     delay()
 
 
+    console.log("headerSmall");
+
     return (
         <>
             <div className="header bg-small">

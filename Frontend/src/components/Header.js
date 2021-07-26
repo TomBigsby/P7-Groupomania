@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 const Header = () => {
 
 
+    console.log("header");
     return (
         <>
             <div className="header bg-big">

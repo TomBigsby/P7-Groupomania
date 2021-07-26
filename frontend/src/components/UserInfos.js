@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const UserInfos = () => {
 
-    const [userData, setUserData] = useState("");
+    // const [userData, setUserData] = useState("");
 
     // récupération des infos utilisateur (depuis login)
     useEffect(() => {
         const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
-        const token = JSON.parse(localStorage.getItem("token"));
+        // const token = JSON.parse(localStorage.getItem("token"));
 
 
         fetch('http://localhost:4200/api/auth/login/' + currentUserInfos.userId, {
             method: 'GET',
-            headers: { "authorization": "Bearer " + token }
+            // headers: { "authorization": "Bearer " + token }
         })
             .then((res) => res.json())
             .then((res) => {
-                setUserData(res);
+                // setUserData(res);
 
                 const userInfos = {
                     avatarUrl: res.avatarUrl,
@@ -27,11 +27,14 @@ const UserInfos = () => {
                     isAdmin: res.isAdmin,
                 }
 
+                
                 if (!res.error) {
                     localStorage.setItem("currentUserInfos", JSON.stringify(userInfos));
 
                     // Si le localStorage est bien chargé, il envoi la confirmation au composant parent pour afficher les publications
                     // props.dataLoaded(true)
+
+                    
                 }
             })
             .catch((error) => console.error(error));
@@ -41,3 +44,6 @@ const UserInfos = () => {
 };
 
 export default UserInfos;
+
+
+

@@ -7,14 +7,10 @@ import PageDeleteProfile from "./pages/PageDeleteProfile";
 import PagePublications from "./pages/PagePublications";
 import PageNewPublication from "./pages/PageNewPublication";
 import Page404 from "./pages/Page404";
-import UserInfos from "./components/UserInfos";
-
-import { useEffect, useState } from 'react';
-import { Redirect } from 'react-router'
 
 // DEBUG
-import PageTest1 from "./pages/PageTest1";
-import PageTest2 from "./pages/PageTest2";
+// import PageTest1 from "./pages/PageTest1";
+// import PageTest2 from "./pages/PageTest2";
 
 
 
@@ -40,7 +36,6 @@ function App() {
   return (
     <div className="App">
 
-      <UserInfos />
       <BrowserRouter>
         <Switch>
 
@@ -51,7 +46,7 @@ function App() {
           <Route path="/" exact component={PageLogin} />
 
 
-          {/*    {localStorage.getItem("token") === null ?
+          {/*    {localStorage.getItem("token") ?
             <Redirect to="/page404" />
             :
             <>
@@ -64,7 +59,6 @@ function App() {
           <Route path="/publications" exact component={PagePublications} />
           <Route path="/nouvelle-publication" exact component={PageNewPublication} />
           <Route component={Page404} />
-
 
 
 

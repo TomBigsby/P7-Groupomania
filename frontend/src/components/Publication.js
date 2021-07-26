@@ -11,7 +11,7 @@ const { zonedTimeToUtc } = require('date-fns-tz')
 
 const Publication = (props) => {
 
-    
+
     const [comments, setComments] = useState([]);
     // const [comments2, setComments2] = useState([]);
     const [displayComments, setDisplayComments] = useState(false);
@@ -87,14 +87,14 @@ const Publication = (props) => {
 
     // Récupération des commentaires
     useEffect(() => {
-        fetch('http://localhost:4200/api/publications/' + props.publication._id + '/comments', {
+        fetch('http://localhost:4200/api/publications/' + props.publication.postId + '/comments', {
             method: 'GET',
             headers: { "authorization": "Bearer " + token }
         })
             .then((res) => res.json())
             .then((res) => setComments(res))
             .catch((error) => console.error(error));
-    }, []);
+    }, [props.publication.postId, token]);
 
 
     // Ajout d'un nouveau commentaire
@@ -137,7 +137,7 @@ const Publication = (props) => {
             .then((res) => {
 
 
-                setComments(comments)  
+                setComments(comments)
 
                 //DEBUG
                 // console.log(newComment);
@@ -159,7 +159,7 @@ const Publication = (props) => {
     // compteur de commentaires
     let commentsCount = [];
     for (let i = 0; i < comments.length; i++) {
-        if (comments[i].postId === props.publication._id) {
+        if (comments[i].postId === props.publication.postId) {
             commentsCount.push(comments[i]);
         }
     }
@@ -197,14 +197,18 @@ const Publication = (props) => {
                     <p>Confirmez-vous la suppression du message ainsi que tous ses commentaires ?</p>
                     <div className="buttons">
                         <button className="bt-cancel" onClick={() => { warningDeleteMsg.current.classList.add("invisible") }}>Non</button>
-                        <button className="bt" onClick={() => { warningDeleteMsg.current.classList.add("invisible"); props.postToDelete(props.publication._id) }}>Oui, je supprime</button>
+                        <button className="bt" onClick={() => { warningDeleteMsg.current.classList.add("invisible"); props.postToDelete(props.publication.postId) }}>Oui, je supprime</button>
                     </div>
                 </div>
             </div>
 
             <div className="post-author" ref={cardHeader}>
-                <div className="post-author-avatar"><img src={props.publication.avatarUrl} alt="" onClick={() => { props.getThisPost(props.publication._id) }} /></div>
-                <div><span className="post-author-name">{props.publication.username} <span>&nbsp;</span><span className="post-author-date">il y a {elapsedTime(props.publication.postDate)}</span></span></div>
+                <div className="post-author-avatar"><img src={props.publication.avatarUrl} alt="" onClick={() => { props.getThisPost(props.publication.postId) }} /></div>
+                <div>
+                    <span className="post-author-name">{props.publication.username} <span>&nbsp;</span>
+                        {/* <span className="post-author-date">il y a {elapsedTime(props.publication.postDate)}</span> */}
+                    </span>
+                </div>
 
                 {/* Si la publication a été créée par l'utilisateur actuel ou si c'est un admin, les boutons de modif/suppr s'affichent  */}
                 {(currentUserInfos.isAdmin || currentUserInfos.userId === props.publication.userId) && <div className="post-author-pictos">
@@ -216,7 +220,7 @@ const Publication = (props) => {
 
             {
                 isEditMode ?
-                    <form className="post-publication box" onSubmit={(e) => submit(e, props.publication._id)}>
+                    <form className="post-publication box" onSubmit={(e) => submit(e, props.publication.postId)}>
 
                         <TextareaAutosize className="post-publication-title textareaAutosize highlight" name="postTitle" id="titre" ref={inputTitle} defaultValue={title} />
 
@@ -244,7 +248,7 @@ const Publication = (props) => {
 
             <div className="post-interactions box">
 
-                <Votes publication={props.publication} />
+                {/* <Votes publication={props.publication} /> */}
 
                 <div className="separatorV"></div>
                 <div className="post-interactions-comments">
@@ -259,7 +263,7 @@ const Publication = (props) => {
             {/* Masquage des commentaires par défaut - clic fleche pour les afficher */}
             {displayComments && comments.map((comment) => (
                 <>
-                    {comment.postId === props.publication._id &&
+                    {comment.postId === props.publication.postId &&
                         <div className="post-comments box" >
                             < Comments key={comment._id} comment={comment} commentPostId={comment.postId} commentToDelete={deleteComment} />
                         </div>
@@ -271,7 +275,7 @@ const Publication = (props) => {
                 <div className="post-new-comment-avatar"><img src={currentUserInfos.avatarUrl} alt="" /></div>
                 <input type="text" className="post-new-comment-message" ref={postCommentInput} placeholder="Ecrire un commentaire" onChange={(e) => typingField(e)} />
 
-                <div className="post-new-comment-send" onClick={() => sendComment(props.publication._id)}><i className="fas fa-arrow-circle-right"></i></div>
+                <div className="post-new-comment-send" onClick={() => sendComment(props.publication.postId)}><i className="fas fa-arrow-circle-right"></i></div>
                 {/* <div className="post-new-comment-send">[Retour] pour envoyer</div> */}
             </form>
 

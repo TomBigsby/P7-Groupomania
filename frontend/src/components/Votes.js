@@ -76,7 +76,7 @@ const Votes = (props) => {
             <div className="post-interactions-votes">
 
                 <div onClick={(() => {
-                    getLikeValue(likeValueState === 1 ? 0 : 1, props.publication._id, props.publication.userId);
+                    getLikeValue(likeValueState === 1 ? 0 : 1, props.publication.postId, props.publication.userId);
                 })}
                     className={likeValueState === 1 ? 'post-interactions-votes-like--checked' : 'post-interactions-votes-like'} >
                     {likeValueState === 1 ? <i className="fas fa-thumbs-up"></i> : <i className="far fa-thumbs-up"></i>}
@@ -84,7 +84,7 @@ const Votes = (props) => {
                 </div>
 
                 <div onClick={(() => {
-                    getLikeValue(likeValueState === -1 ? 0 : -1, props.publication._id, props.publication.userId);
+                    getLikeValue(likeValueState === -1 ? 0 : -1, props.publication.postId, props.publication.userId);
                 })}
                     className={likeValueState === -1 ? 'post-interactions-votes-dislike--checked' : 'post-interactions-votes-dislike'} >
                     {likeValueState === -1 ? <i className="fas fa-thumbs-down"></i> : <i className="far fa-thumbs-down"></i>}

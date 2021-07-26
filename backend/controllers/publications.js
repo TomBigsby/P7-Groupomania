@@ -1,13 +1,121 @@
 const Publication = require('../models/Publication');
 const mongoose = require('mongoose');
 
+const mysql = require('mysql');
+
 const fs = require('fs');
 
 
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "root",
+  database: 'p7_groupomania',
+  socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+});
+
+
+
+
+/* db.connect(function (err) {
+  if (err) throw err;
+  // console.log("Connecté à la base de données MySQL!");
+ db.query("SELECT userId FROM `Publications`", function (err, result) {
+      if (err) throw err;
+      console.log(result);
+    });
+  db.end((err) => {
+    if (err) throw err;
+    console.log("BDD MySQL déconnectée");
+  });
+}); */
+
+/* exports.getAllPublications = (req, res, next) => {
+
+  try {
+    db.connect()
+    // console.log("Connecté à la base de données MySQL!");
+    try {
+      const result = db.query("SELECT postId, userId, username, avatarUrl, postDate, postTitle, imageUrl, likes, dislikes FROM `Publications`")
+      res.status(200).json(result.rows)
+
+      console.log(result.rows);
+
+    } finally {
+      db.end()
+    }
+  } catch (error) {
+    console.error(error.message)
+    res.status(500).json(error.message)
+  };
+
+} */
+
+
+exports.getAllPublications = (req, res, next) => {
+
+
+
+
+  db.query("SELECT postId, userId, username, avatarUrl, postTitle, imageUrl, likes, dislikes FROM `Publications`", function (err, result) {
+    if (err) throw err;
+
+    // console.log(result);
+    res.status(200).json(result)
+  })
+
+}
+
+
+
+
+
+
+
 exports.createPublication = (req, res, next) => {
+
+  const publicationObject = req.body;
+
+
+
+
+  if (req.file !== undefined) {
+    var image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  }
+
+  console.log(image);
+
+
+  /*   db.query("INSERT INTO Publications(userId, username, avatarUrl, postTitle, imageUrl, likes, dislikes) VALUES ('publicationObject.userId','','','','','','','','')", function (err, result) {
+      if (err) throw err;
+  
+      // console.log(result);
+      res.status(200).json(result)
+    }) */
+
+
+
+
+  /*   const publication = new Publication({
+      ...publicationObject,
+      imageUrl: image,
+      userId: req.body.userId,
+      username: req.body.username,
+      avatarUrl: req.body.avatarUrl,
+      likes: 0,
+      dislikes: 0
+    }); */
+
+
+
+};
+
+
+/* exports.createPublication = (req, res, next) => {
   const publicationObject = req.body;
   // NOTE: suppression de l'id généré automatiquement par MongoDB
   delete publicationObject._id;
+
 
   if (req.file !== undefined) {
     var image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -24,15 +132,16 @@ exports.createPublication = (req, res, next) => {
   publication.save()
     .then(() => { res.status(201).json({ message: 'Publication ajoutée !' }); })
     .catch((error) => { res.status(400).json({ error: error }); });
-};
+}; */
 
 
-exports.getAllPublications = (req, res, next) => {
+
+/* exports.getAllPublications = (req, res, next) => {
   Publication.find().sort({ postDate: -1 })
     .then((publication) => { res.status(200).json(publication); })
     .catch((error) => { res.status(400).json({ error: error }); });
 };
-
+ */
 
 exports.modifyPublication = (req, res, next) => {
   const publicationObject = req.file ?

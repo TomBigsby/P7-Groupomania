@@ -34,7 +34,7 @@ const NewPublication = () => {
                 method: 'POST',
                 body: formData,
                 // headers: { 'Content-Type': 'multipart/form-data' },
-                headers: { "authorization": "Bearer " + token }
+                // headers: { "authorization": "Bearer " + token }
             })
                 .then(res => res.json()
                     .then(json => { setPublication(json) }
@@ -83,7 +83,7 @@ const NewPublication = () => {
                     {/* <div className="error-msg"> {user.error && <p>{user.error}</p>}</div> */}
 
                     <input type="submit" name="envoyer-message" value="Envoyer la publication" className="bt" />
-                    {publication.message !== undefined && <Redirect to="/publications" />}
+                    {/* {publication.message !== undefined && <Redirect to="/publications" />} */}
                 </form>
             </div>
         </>

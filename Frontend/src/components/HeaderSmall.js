@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import avatarPlaceHolder from '../assets/images/avatar.svg'
-// import Avatar from "./Avatar";
 
 
 

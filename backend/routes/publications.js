@@ -6,8 +6,10 @@ const multer = require('../middleware/multer-config');
 
 const publicationsCtrl = require('../controllers/publications');
 
-router.get('/publications', auth, publicationsCtrl.getAllPublications);
-router.post('/publications', auth, multer, publicationsCtrl.createPublication);
+// router.get('/publications', auth, publicationsCtrl.getAllPublications);
+router.get('/publications', publicationsCtrl.getAllPublications);
+// router.post('/publications', auth, multer, publicationsCtrl.createPublication);
+router.post('/publications', multer, publicationsCtrl.createPublication);
 router.put('/publications/:id', auth, multer, publicationsCtrl.modifyPublication);
 router.delete('/publications/:id', auth, publicationsCtrl.deletePublication);
 

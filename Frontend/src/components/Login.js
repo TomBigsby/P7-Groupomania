@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Redirect } from 'react-router'
 
 const Login = () => {
@@ -50,6 +50,20 @@ const Login = () => {
             }
         }
     }
+
+
+
+
+    const userInfos = {
+        avatarUrl: "http://localhost:4200/images/MinnnieAulton.jpg1627127686544.jpg",
+        userJob: "Ingénieur en structure",
+        userService: "Ventes",
+        username: "Susette Dawidowsky",
+        userId: 3,
+        isAdmin: 0
+    }
+
+    console.log(userInfos);
 
     return (
         <div className="login-container">

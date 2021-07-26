@@ -5,6 +5,21 @@ const sanitize = require('mongo-sanitize')
 
 const User = require('../models/User');
 
+const mysql = require('mysql');
+
+
+
+const db = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database: 'p7_groupomania',
+    socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+});
+
+
+
+
 // NOTE: Création des regex pour la Vérification du format de l'email et du mot de passe
 // Le mot de passe nécessite une majuscule, une minuscule, minimum 8 caractères et au moins un caractère spécial suivants : ! @ # $ % ^ & *
 
@@ -69,17 +84,58 @@ exports.signup = (req, res, next) => {
 
 
 
-// NOTE: login > compare l'email saisi avec celui enregistré dans la BDD. Pareil pour le MdP
+
+
 exports.login = (req, res, next) => {
+
+
+    var clean = sanitize(req.body.email);
+
+    cryptEmail = CryptoJS.HmacSHA1(clean, process.env.CRYPT_EMAIL).toString()
+
+    // console.log(cryptEmail);
+    // User.findOne({ email: CryptoJS.HmacSHA1(clean, process.env.CRYPT_EMAIL).toString() })
+
+
+    db.query("SELECT email FROM Users WHERE email = '" + cryptEmail + "'", function (err, result) {
+        if (err) throw err;
+        // var string = JSON.stringify(result);
+        // var json =  JSON.parse(string);
+
+
+        if (!result) {
+            return res.status(401).json({ error_login_user: 'Utilisateur non trouvé !' });
+        }
+
+        if (cryptEmail === result[0].email) {
+            console.log(true);
+        }
+
+        bcrypt.compare(req.body.password, result[0].password)
+            .then(valid => {
+                if (!valid) {
+                    return res.status(401).json({ error_login_password: 'Mot de passe incorrect !' });
+                }
+
+
+            })
+    })
+}
+
+
+
+
+// NOTE: login > compare l'email saisi avec celui enregistré dans la BDD. Pareil pour le MdP
+/* exports.login = (req, res, next) => {
     var clean = sanitize(req.body.email);
     User.findOne({ email: CryptoJS.HmacSHA1(clean, process.env.CRYPT_EMAIL).toString() })
         .then(user => {
             if (!user) {
                 return res.status(401).json({ error_login_user: 'Utilisateur non trouvé !' });
             }
-
+ 
             bcrypt.compare(req.body.password, user.password)
-
+ 
                 .then(valid => {
                     if (!valid) {
                         return res.status(401).json({ error_login_password: 'Mot de passe incorrect !' });
@@ -96,7 +152,7 @@ exports.login = (req, res, next) => {
                 .catch(error => res.status(500).json({ error }));
         })
         .catch(error => res.status(500).json({ error }));
-};
+}; */
 
 
 

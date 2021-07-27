@@ -11,6 +11,6 @@ router.post('/login', userCtrl.login);
 
 router.delete('/delete/:id',  userCtrl.deleteUser);
 
-router.get('/login/:id', userCtrl.getAvatar);
+// router.get('/login/:id', userCtrl.getAvatar);
 
 module.exports = router;

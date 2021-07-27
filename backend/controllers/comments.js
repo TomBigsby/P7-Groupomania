@@ -23,7 +23,6 @@ exports.createComment = (req, res, next) => {
 };
 
 
-
 exports.getAllComments = (req, res, next) => {
   Comment.find().sort({ postDate: -1 })
     .then((comment) => { res.status(200).json(comment); })

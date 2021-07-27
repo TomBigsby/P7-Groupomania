@@ -28,8 +28,16 @@ const Login = () => {
                     .then(json => {
                         setUser(json);
 
+                        console.log("retour login:", json);
+
                         const currentUserInfos = {
                             userId: json.userId,
+                            username: json.username,
+                            avatarUrl: json.avatarUrl,
+                            userJob: json.userJob,
+                            userService: json.userService,
+                            isAdmin: json.isAdmin,
+
                         }
                         localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
 
@@ -50,20 +58,6 @@ const Login = () => {
             }
         }
     }
-
-
-
-
-    const userInfos = {
-        avatarUrl: "http://localhost:4200/images/MinnnieAulton.jpg1627127686544.jpg",
-        userJob: "Ingénieur en structure",
-        userService: "Ventes",
-        username: "Susette Dawidowsky",
-        userId: 3,
-        isAdmin: 0
-    }
-
-    console.log(userInfos);
 
     return (
         <div className="login-container">

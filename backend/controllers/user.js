@@ -1,12 +1,11 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const CryptoJS = require("crypto-js");
-const sanitize = require('mongo-sanitize')
+
 
 const User = require('../models/User');
 
 const mysql = require('mysql');
-
 
 
 const db = mysql.createConnection({
@@ -18,11 +17,8 @@ const db = mysql.createConnection({
 });
 
 
-
-
 // NOTE: Création des regex pour la Vérification du format de l'email et du mot de passe
 // Le mot de passe nécessite une majuscule, une minuscule, minimum 8 caractères et au moins un caractère spécial suivants : ! @ # $ % ^ & *
-
 let regexpPassword = new RegExp(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/);
 let emailFilter = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
 
@@ -45,34 +41,39 @@ exports.signup = (req, res, next) => {
                 var image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
             }
 
-
+            let admin
             if (req.body.adminPassword !== "" && req.body.adminPassword === "admin") {
                 admin = true
             } else {
                 admin = false
             }
 
-            var clean = sanitize(req.body.email);
+            cryptEmail = CryptoJS.HmacSHA1(req.body.email, process.env.CRYPT_EMAIL).toString()
+
             bcrypt.hash(req.body.password, 10)
                 .then(hash => {
-                    const user = new User({
-                        email: CryptoJS.HmacSHA1(clean, process.env.CRYPT_EMAIL).toString(),
-                        password: hash,
-                        username: req.body.username,
-                        userService: req.body.userService,
-                        userJob: req.body.userJob,
-                        avatarUrl: image,
-                        isAdmin: admin
-                    });
-                    user.save()
+                    //Recherche dans la BDD si l'email existe
+                    db.query("SELECT email FROM Users WHERE email = '" + cryptEmail + "'", function (err, exist) {
+                        if (err) throw err;
 
-                        // .then(() => { json({ avatarUrl: image }) })
-                        .then(() => { next() })
+                        // Si il n'existe pas > on le créé
+                        if (exist.length === 0) {
+                            db.query("INSERT INTO Users( email, password, username, userService, userJob, avatarUrl, isAdmin) VALUES ('" + cryptEmail + "','" + hash + "','" + req.body.username + "','" + req.body.userService + "','" + req.body.userJob + "','" + image + "'," + admin + ")", function (err, result) {
+                                if (err) throw err;
 
-                        // .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-                        .catch(error => res.status(400).json({ error_signup_email_exist: "Utilisateur déjà existant" }));
+                                if (!result) {
+                                    console.log("Erreur d'enregistrement");
+                                } else {
+                                    next()
+                                }
+                            })
+                            // Si il existe > message d'erreur
+                        } else {
+                            console.log("Utilisateur déjà existant");
+                        }
+                    })
                 })
-                .catch(error => res.status(500).json({ error2 }));
+                .catch(error => res.status(500).json({ error2 }))
         } else {
             res.status(400).json({ error_signup_email: "L'email ou le mot de passe ne sont pas valides" });
         }
@@ -81,88 +82,38 @@ exports.signup = (req, res, next) => {
     }
 }
 
-
-
-
-
-
 exports.login = (req, res, next) => {
+    cryptEmail = CryptoJS.HmacSHA1(req.body.email, process.env.CRYPT_EMAIL).toString()
 
-
-    var clean = sanitize(req.body.email);
-
-    cryptEmail = CryptoJS.HmacSHA1(clean, process.env.CRYPT_EMAIL).toString()
-
-    // console.log(cryptEmail);
-    // User.findOne({ email: CryptoJS.HmacSHA1(clean, process.env.CRYPT_EMAIL).toString() })
-
-
-    db.query("SELECT email FROM Users WHERE email = '" + cryptEmail + "'", function (err, result) {
+    db.query("SELECT * FROM Users WHERE email = '" + cryptEmail + "'", function (err, result) {
         if (err) throw err;
-        // var string = JSON.stringify(result);
-        // var json =  JSON.parse(string);
-
 
         if (!result) {
             return res.status(401).json({ error_login_user: 'Utilisateur non trouvé !' });
         }
-
-        if (cryptEmail === result[0].email) {
-            console.log(true);
-        }
-
         bcrypt.compare(req.body.password, result[0].password)
             .then(valid => {
                 if (!valid) {
                     return res.status(401).json({ error_login_password: 'Mot de passe incorrect !' });
                 }
+                res.status(200).json({
+                    userId: result[0].userId,
+                    username: result[0].username,
+                    avatarUrl: result[0].avatarUrl,
+                    userJob: result[0].userJob,
+                    userService: result[0].userService,
+                    isAdmin: result[0].isAdmin,
+                    token: jwt.sign(
+                        { userId: result[0].userId },
+                        process.env.TOKEN_PASS,
+                        { expiresIn: '24h' }
+                    )
 
-
+                });
             })
+            .catch(error => res.status(500).json({ error: "pas bon" }));
     })
 }
-
-
-
-
-// NOTE: login > compare l'email saisi avec celui enregistré dans la BDD. Pareil pour le MdP
-/* exports.login = (req, res, next) => {
-    var clean = sanitize(req.body.email);
-    User.findOne({ email: CryptoJS.HmacSHA1(clean, process.env.CRYPT_EMAIL).toString() })
-        .then(user => {
-            if (!user) {
-                return res.status(401).json({ error_login_user: 'Utilisateur non trouvé !' });
-            }
- 
-            bcrypt.compare(req.body.password, user.password)
- 
-                .then(valid => {
-                    if (!valid) {
-                        return res.status(401).json({ error_login_password: 'Mot de passe incorrect !' });
-                    }
-                    res.status(200).json({
-                        userId: user._id,
-                        token: jwt.sign(
-                            { userId: user._id },
-                            process.env.TOKEN_PASS,
-                            { expiresIn: '24h' }
-                        )
-                    });
-                })
-                .catch(error => res.status(500).json({ error }));
-        })
-        .catch(error => res.status(500).json({ error }));
-}; */
-
-
-
-// récupération de l'url de l'avatar local
-exports.getAvatar = (req, res, next) => {
-    User.findOne({ _id: req.params.id })
-        .then((user) => { res.status(200).json(user) })
-        .catch((error) => { res.status(400).json({ error: error }); });
-};
-
 
 // suppression de l'utilisateur
 exports.deleteUser = (req, res, next) => {

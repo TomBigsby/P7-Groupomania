@@ -15,26 +15,29 @@ const UserInfos = () => {
             // headers: { "authorization": "Bearer " + token }
         })
             .then((res) => res.json())
-            .then((res) => {
-                // setUserData(res);
+            .then((json) => {
+                // setUserData(json);
+
+                console.log("<UserInfos>");
+                console.log("json", json);
 
                 const userInfos = {
-                    avatarUrl: res.avatarUrl,
-                    userJob: res.userJob,
-                    userService: res.userService,
-                    username: res.username,
-                    userId: res._id,
-                    isAdmin: res.isAdmin,
+                    avatarUrl: json.avatarUrl,
+                    userJob: json.userJob,
+                    userService: json.userService,
+                    username: json.username,
+                    userId: json._id,
+                    isAdmin: json.isAdmin,
                 }
 
-                
-                if (!res.error) {
+
+                if (!json.error) {
                     localStorage.setItem("currentUserInfos", JSON.stringify(userInfos));
 
                     // Si le localStorage est bien chargé, il envoi la confirmation au composant parent pour afficher les publications
                     // props.dataLoaded(true)
 
-                    
+
                 }
             })
             .catch((error) => console.error(error));

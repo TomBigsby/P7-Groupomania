@@ -8,7 +8,6 @@ const { zonedTimeToUtc } = require('date-fns-tz')
 
 const token = JSON.parse(localStorage.getItem("token"));
 
-
 const Comments = (props) => {
     const [fieldEnabled, setFieldEnabled] = useState(false);
     const [comment, setComment] = useState(props.comment.commentAuthorMessage);
@@ -39,7 +38,6 @@ const Comments = (props) => {
                 ))
             .catch((error) => console.error(error));
     }
-
 
     // Edition des commentaires
     const editComment = (commentId) => {

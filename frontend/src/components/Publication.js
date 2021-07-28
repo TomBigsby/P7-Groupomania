@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import Comments from "./Comments";
-import Votes from './Votes';
 
 import { fr } from 'date-fns/locale';
 import { formatDistanceToNow } from 'date-fns';
@@ -161,8 +160,6 @@ const Publication = (props) => {
     const typingField = (e) => {
         e.target.classList.remove("warning-field")
     }
-    // FIXME
-    // onBlur{e.target.classList.remove("warning-field")}
 
 
 
@@ -173,7 +170,6 @@ const Publication = (props) => {
             commentsCount.push(comments[i]);
         }
     }
-
 
     // Suppression du commentaire
     const deleteComment = (commentId) => {
@@ -262,7 +258,6 @@ const Publication = (props) => {
 
             <div className="post-interactions box">
 
-                <Votes publication={props.publication} />
 
                 <div className="separatorV"></div>
                 <div className="post-interactions-comments">

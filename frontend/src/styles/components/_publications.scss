@@ -190,7 +190,6 @@
 }
 
 
-
 .post-interactions {
     border-top: 1px solid (lighten($color-3, 10%));
     display: flex;
@@ -199,67 +198,6 @@
 
     align-items: center;
 
-    &-votes {
-        display: flex;
-        justify-content: space-between;
-        font-size: 1em;
-        width: 40px;
-
-        &-like,
-        &-dislike,
-        &-like--checked,
-        &-dislike--checked {
-            flex-direction: column;
-            text-align: center;
-        }
-
-        &-like:hover {
-            color: $color-5;
-            cursor: pointer;
-        }
-
-        &-like--checked {
-            color: $color-5;
-            // border: 1px solid black;
-
-            &:hover {
-                color: $color-5;
-                cursor: pointer;
-            }
-        }
-
-
-        &-dislike:hover {
-            color: $color-2;
-            cursor: pointer;
-        }
-
-        &-dislike--checked {
-            color: $color-2;
-
-            &:hover {
-                color: $color-2;
-                cursor: pointer;
-            }
-        }
-
-
-        &-like-number,
-        &-dislike-number {
-            font-family: $font-1;
-            font-size: 0.65em;
-            font-weight: 500;
-            margin: 5px 2px 0 2px;
-        }
-
-    }
-
-    & .separatorV {
-        width: 1px;
-        height: 35px;
-        margin: 0 20px;
-        background-color: lighten($color-3, 10%);
-    }
 
     &-comments {
         display: flex;

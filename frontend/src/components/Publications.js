@@ -59,8 +59,6 @@ const Publications = () => {
                         key={publication.postId}
                         publication={publication}
                         postToDelete={deletePost} />
-
-                    {/* <div>{publication.username}</div> */}
                 </div >
             ))
             }

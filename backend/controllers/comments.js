@@ -1,53 +1,95 @@
 const Comment = require('../models/Comment');
 const mongoose = require('mongoose');
+const mysql = require('mysql');
+
+
+// Connexion à la BDD
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "root",
+  database: 'p7_groupomania',
+  socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
+});
+
+// function permettant d'échapper certains caractères pour SQL
+let addslashes = (str) => {
+  str = str.replace(/\n/g, '\\\n')
+  str = str.replace(/\n/g, '\\\n')
+  str = str.replace(/\t/g, '\\\t')
+  str = str.replace(/\f/g, '\\\f')
+  str = str.replace(/\r/g, '\\\r')
+  str = str.replace(/'/g, '\\\'')
+  str = str.replace(/"/g, '\\\"')
+  return str
+}
 
 
 exports.createComment = (req, res, next) => {
-  const commentObject = req.body;
+  // Vérififcation dela présence d'unn fichier image
 
-  var commentId = new mongoose.mongo.ObjectId();
+  const value1 = req.body.commentAuthorId
+  const value2 = req.body.commentAuthorUserName
+  const value3 = req.body.commentAuthorAvatarUrl
+  const value4 = req.body.commentDate
+  const value5 = addslashes(req.body.commentAuthorMessage)
+  const value6 = req.params.id
 
-  const comment = new Comment({
-    ...commentObject,
-    postId: req.params.id,
-    commentAuthorId: req.body.commentAuthorId,
-    commentAuthorUserName: req.body.commentAuthorUserName,
-    commentAuthorAvatarUrl: req.body.commentAuthorAvatarUrl,
-    commentDate: req.body.commentDate,
-    commentAuthorMessage: req.body.commentAuthorMessage
+  db.query("INSERT INTO Comments( commentAuthorId, commentAuthorUserName, commentAuthorAvatarUrl, commentAuthorCommentDate, commentAuthorMessage, postId) VALUES ('" + value1 + "','" + value2 + "','" + value3 + "','" + value4 + "','" + value5 + "', '" + value6 + "')", function (err, result) {
+    if (err) throw err;
+
+    if (!result) {
+      console.log("Erreur d'enregistrement");
+      res.status(400).json({ error: error });
+    } else {
+      console.log("Commentaire ajouté");
+      res.status(200).json(result)
+    }
   });
-  comment.save()
-    .then(() => { res.status(201).json({ message: 'Commentaire ajoutée !' }); })
-    // .then((comment) => { res.status(200).json(comment) })
-    .catch((error) => { res.status(400).json({ error: error }); });
-};
+}
 
 
 exports.getAllComments = (req, res, next) => {
-  Comment.find().sort({ postDate: -1 })
-    .then((comment) => { res.status(200).json(comment); })
-    .catch((error) => { res.status(400).json({ error: error }); });
+  db.query("SELECT * FROM Comments INNER JOIN Publications ON Comments.postId = Publications.postId", function (err, result) {
+    if (err) throw err;
+
+    res.status(200).json(result)
+  })
 };
 
 
-exports.modifyComment = (req, res, next) => {
-  const commentObject = { ...req.body };
 
-  Comment.updateOne({ _id: req.params.id }, { ...commentObject, _id: req.params.id })
-    .then(() => { res.status(200).json({ message: 'Commentaire modifié !' }); })
-    .catch(error => res.status(400).json({ error }));
+
+exports.modifyComment = (req, res, next) => {
+
+  console.log("req.params.id=", req.params.id);
+
+  db.query("UPDATE Comments SET commentAuthorMessage = '" + addslashes(req.body.commentAuthorMessage) + "' WHERE commentId = '" + req.params.id + "'", function (err, result) {
+    if (err) throw err;
+
+    console.log(result);
+
+    if (!result) {
+      console.log("Erreur d'enregistrement");
+      error => res.status(400).json({ error })
+    } else {
+      console.log("Commentaire modifié")
+      res.status(200).json(result)
+    }
+  });
+
 };
 
 
 exports.deleteComment = (req, res, next) => {
-  Comment.deleteOne({ _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Commentaire supprimée !' }))
-    .catch(error => res.status(400).json({ error }));
-};
+  db.query("DELETE FROM `Comments` WHERE commentId = '" + req.params.id + "'", function (err, result) {
+    if (err) throw err;
 
-
-exports.deleteCommentsFromPublication = (req, res, next) => {
-  Comment.deleteMany({ "postId": req.params.id })
-    .then(() => res.status(200).json({ message: 'Commentaires de publication supprimés !' }))
-    .catch(error => res.status(400).json({ error }));
+    if (!result) {
+      console.log("Erreur dlors de la suppression");
+      error => res.status(400).json({ error })
+    } else {
+      console.log("Commentaire supprimé");
+    }
+  })
 }

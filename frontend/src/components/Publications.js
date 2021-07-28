@@ -27,49 +27,38 @@ const Publications = () => {
             .then((res) => setPublications(res))
             .catch((error) => console.error(error));
 
-            // console.log(publications[0])
+        // console.log(publications[0])
 
     }, []);
 
 
     // Suppression de la publication
-        const deletePost = (postId) => {
-    
-            fetch('http://localhost:4200/api/publications/' + postId, {
-                method: 'DELETE',
-                // headers: { "authorization": "Bearer " + token }
-            })
-                .catch((error) => console.error(error))
-    
-                // suppression de la publication via son ID et MAJ du tableau
-                .then(() => {
-                    setPublications(publications.filter(publication => publication._id !== postId))
-                })
-            deletePostComments(postId)
-        }
+    const deletePost = (postId) => {
 
+        fetch('http://localhost:4200/api/publications/' + postId, {
+            method: 'DELETE',
+            // headers: { "authorization": "Bearer " + token }
+        })
+            .catch((error) => console.error(error))
 
-    // Suppression des commentaires liés à la publication
-        const deletePostComments = (postId) => {
-    
-            fetch('http://localhost:4200/api/publications/' + postId + "/comments", {
-                method: 'DELETE',
-                // headers: { "authorization": "Bearer " + token }
+            // DEBUG
+            .then((res) => { console.log("bob:", res) })
+
+            // suppression de la publication via son ID et MAJ du tableau
+            .then(() => {
+                setPublications(publications.filter(publication => publication.postId !== postId))
             })
-                .catch((error) => console.error(error))
-        }
+    }
 
 
     return (
-
-
         <>
             {publications && publications.map((publication) => (
                 <div className="post-container">
-                       <Publication
-                    key={publication.postId}
-                    publication={publication}
-                    postToDelete={deletePost} />
+                    <Publication
+                        key={publication.postId}
+                        publication={publication}
+                        postToDelete={deletePost} />
 
                     {/* <div>{publication.username}</div> */}
                 </div >

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Redirect } from 'react-router'
 import { NavLink } from 'react-router-dom';
 
+import { format } from 'date-fns'
+
 const NewPublication = () => {
 
     const [image, setImage] = useState({ preview: "", imageUrl: "" })
@@ -19,7 +21,8 @@ const NewPublication = () => {
     const submit = e => {
         e.preventDefault()
 
-        const today = new Date()
+        const today = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss")
+
 
         // FormData prends en paramètre l'élément html du formulaire et vas chercher les "name" donc nous donne un objet ayant les mêmes noms que ceux précisés dans le html
         const formData = new FormData(e.target);
@@ -38,7 +41,9 @@ const NewPublication = () => {
             })
                 .then(res => res.json()
                     .then(json => { setPublication(json) }
+
                     ));
+
 
         } else {
             if (e.target.postTitle.value === "") {
@@ -83,7 +88,7 @@ const NewPublication = () => {
                     {/* <div className="error-msg"> {user.error && <p>{user.error}</p>}</div> */}
 
                     <input type="submit" name="envoyer-message" value="Envoyer la publication" className="bt" />
-                    {/* {publication.message !== undefined && <Redirect to="/publications" />} */}
+                    {publication.message !== undefined && <Redirect to="/publications" />}
                 </form>
             </div>
         </>

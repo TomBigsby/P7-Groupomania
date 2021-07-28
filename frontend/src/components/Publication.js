@@ -6,8 +6,11 @@ import Votes from './Votes';
 
 import { fr } from 'date-fns/locale';
 import { formatDistanceToNow } from 'date-fns';
+import { format } from 'date-fns'
 
 const { zonedTimeToUtc } = require('date-fns-tz')
+
+
 
 const Publication = (props) => {
 
@@ -60,6 +63,8 @@ const Publication = (props) => {
         }
     }
     const submit = (e, postId) => {
+
+
         e.preventDefault()
 
         editPublication()
@@ -112,9 +117,8 @@ const Publication = (props) => {
             }) */
         // --------------
 
-        if (postCommentInput.current.value !== "") {
-
-        } else {
+        // Avertisseur visuel si le champ est vide à la validation
+        if (postCommentInput.current.value === "") {
             postCommentInput.current.classList.add("warning-field")
         }
 
@@ -140,7 +144,7 @@ const Publication = (props) => {
                 setComments(comments)
 
                 //DEBUG
-                // console.log(newComment);
+                // console.(newComment);
 
                 /*      setComments(newComment)
                      setComments(comments) */
@@ -167,6 +171,9 @@ const Publication = (props) => {
 
     // Suppression du commentaire
     const deleteComment = (commentId) => {
+
+console.log(commentId);
+
         fetch('http://localhost:4200/api/publications/comments/' + commentId, {
             method: 'DELETE',
         })
@@ -174,7 +181,7 @@ const Publication = (props) => {
             // MAJ des commentaires dans le DOM
             .then((res) => {
                 if (!res.error) {
-                    setComments(comments.filter(comment => comment._id !== commentId))
+                    setComments(comments.filter(comment => comment.commentId !== commentId))
                 }
             })
     }
@@ -182,11 +189,12 @@ const Publication = (props) => {
 
     // gestion de la date affiché au temps passé
     // Attention : conversion au fomat UTC nécessaire (install package date-fns-tz)
-    const today = new Date().toISOString()
+    const today = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss")
 
     const elapsedTime = (startDate) => {
         return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
     }
+
 
     return (
         <>
@@ -206,7 +214,7 @@ const Publication = (props) => {
                 <div className="post-author-avatar"><img src={props.publication.avatarUrl} alt="" onClick={() => { props.getThisPost(props.publication.postId) }} /></div>
                 <div>
                     <span className="post-author-name">{props.publication.username} <span>&nbsp;</span>
-                        {/* <span className="post-author-date">il y a {elapsedTime(props.publication.postDate)}</span> */}
+                        <span className="post-author-date">il y a {elapsedTime(props.publication.postDate)}</span>
                     </span>
                 </div>
 
@@ -265,7 +273,7 @@ const Publication = (props) => {
                 <>
                     {comment.postId === props.publication.postId &&
                         <div className="post-comments box" >
-                            < Comments key={comment._id} comment={comment} commentPostId={comment.postId} commentToDelete={deleteComment} />
+                            < Comments key={comment.commentId} comment={comment} commentPostId={comment.postId} commentToDelete={deleteComment} />
                         </div>
                     }
                 </>

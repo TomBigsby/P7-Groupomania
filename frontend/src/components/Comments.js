@@ -22,6 +22,7 @@ const Comments = (props) => {
 
     // Modification d'un commentaire
     const sendCommentEdit = (commentId, messageValue) => {
+
         const formData = new FormData();
         formData.append("commentId", commentId);
         formData.append("commentAuthorMessage", messageValue);
@@ -81,10 +82,11 @@ const Comments = (props) => {
     }
 
 
-
+    // Heure (dateTime) convertie en teps écoulé
     const elapsedTime = (startDate) => {
         return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
     }
+
 
     return (
         <>
@@ -96,7 +98,7 @@ const Comments = (props) => {
                         <p>Confirmez-vous la suppression de ce commentaire ?</p>
                         <div className="buttons">
                             <button className="bt-cancel" onClick={() => { warningDeleteComment.current.classList.add("invisible") }}>Non</button>
-                            <button className="bt" onClick={() => { warningDeleteComment.current.classList.add("invisible"); props.commentToDelete(props.comment._id) }}>Oui, je supprime</button>
+                            <button className="bt" onClick={() => { warningDeleteComment.current.classList.add("invisible"); props.commentToDelete(props.comment.commentId) }}>Oui, je supprime</button>
                         </div>
                     </div>
                 </div>
@@ -108,17 +110,16 @@ const Comments = (props) => {
                     </div>
                     <div className="post-comment-bloc1-b">
                         <div className="post-comment-name">{props.comment.commentAuthorUserName}</div>
-                        <div className="post-comment-date"><span>&nbsp;</span>il y a {elapsedTime(props.comment.commentDate)}</div>
-
+                        {/* <div className="post-comment-date"><span>&nbsp;</span>il y a {elapsedTime(props.comment.commentDate)}</div> */}
+                        <div className="post-comment-date"><span>&nbsp;</span>il y a {props.comment.commentDate}</div>
 
 
                         {(currentUserInfos.isAdmin || currentUserInfos.userId === props.comment.commentAuthorId) &&
                             <div className="post-comment-pictos">
-                                <div className="post-comment-picto-edit" ref={btEditMessage} onClick={() => { editComment(props.comment._id) }}>
+                                <div className="post-comment-picto-edit" ref={btEditMessage} onClick={() => { editComment(props.comment.commentId) }}>
                                     {fieldEnabled ? <div><i className="fas fa-undo-alt"></i></div> : <div><i className="fas fa-edit"></i></div>}</div>
                                 <div className="post-comment-picto-delete" onClick={() => { warningDeleteComment.current.classList.remove("invisible"); }}><i className="far fa-trash-alt"></i></div>
                             </div>}
-
 
 
 
@@ -127,8 +128,8 @@ const Comments = (props) => {
                 <div className="post-comment-bloc2">
                     {fieldEnabled ?
                         <div className="group">
-                            <TextareaAutosize className="post-comment-message textareaAutosize highlight" onKeyDown={(e) => { onKeyPressed(e, props.comment._id) }} ref={inputMessage} defaultValue={comment} />
-                            <div className="bt-valid-comment" onClick={onClickValid}><i className="fas fa-check-square"></i></div>
+                            <TextareaAutosize className="post-comment-message textareaAutosize highlight" onKeyDown={(e) => { onKeyPressed(e, props.comment.commentId) }} ref={inputMessage} defaultValue={comment} />
+                            <div className="bt-valid-comment" onClick={() => { onClickValid(props.comment.commentId) }}><i className="fas fa-check-square"></i></div>
                         </div>
 
                         :

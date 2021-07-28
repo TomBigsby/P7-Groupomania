@@ -1,16 +1,22 @@
-import { useState, } from 'react';
+import { useState, useEffect } from 'react';
 
 const Votes = (props) => {
 
     const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
     const token = JSON.parse(localStorage.getItem("token"));
 
+    const [likes, setLikes] = useState(false);
+
+
     // vérifie si l'userId est bien présent dans les usersLike/usersDislike pour afficher les likes de l'ulitisateur actuel
     const foundLikes = props.publication.usersLiked.find(element => element === currentUserInfos.userId);
     const foundDislikes = props.publication.usersDisliked.find(element => element === currentUserInfos.userId);
 
 
-     let likeValue
+
+
+
+    let likeValue
     if (foundLikes !== undefined) {
         likeValue = 1
     } else if (foundDislikes !== undefined) {

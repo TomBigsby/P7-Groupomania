@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const CryptoJS = require("crypto-js");
 
 
-const User = require('../models/User');
 
 const mysql = require('mysql');
 

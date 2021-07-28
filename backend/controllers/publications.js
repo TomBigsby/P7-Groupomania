@@ -1,6 +1,3 @@
-const Publication = require('../models/Publication');
-const mongoose = require('mongoose');
-
 const mysql = require('mysql');
 
 const fs = require('fs');
@@ -34,7 +31,6 @@ exports.getAllPublications = (req, res, next) => {
 
     res.status(200).json(result)
   })
-
 }
 
 
@@ -56,6 +52,7 @@ exports.createPublication = (req, res, next) => {
 
   db.query("INSERT INTO Publications( userId, username, avatarUrl,  postTitle, imageUrl, postDate, likes, dislikes) VALUES ('" + value1 + "','" + value2 + "','" + value3 + "','" + value4 + "','" + value5 + "', '" + value6 + "', '" + value7 + "', '" + value8 + "')", function (err, result) {
     if (err) throw err;
+
 
     if (!result) {
       console.log("Erreur d'enregistrement");
@@ -139,25 +136,52 @@ exports.deletePublication = (req, res, next) => {
 }; */
 
 
+
 // Actions du like
 exports.likePublication = (req, res, next) => {
 
   // Action du like si 1 ou -1
   const likeAction = (likeValue, action1, message1) => {
     if (likeValue) {
-      Publication.findOne({ _id: req.params.id })
-        .then((publication) => {
-          Publication.updateOne({ _id: req.params.id }, action1)
-            // .then(() => res.status(200).json(message1))
-            .then(() => { res.status(200).json({ likes: publication.likes, dislikes: publication.dislikes }) })
-            .catch(error => res.status(400).json({ error }));
-        })
-        .catch((error) => { res.status(404).json({ error: error }); });
+
+      const postId = req.params.id
+      // const userId = req.body.userId
+
+      // si 1 > on cherche le post par postId (SELECT)
+      //   on MAJ le nombre  like dans Publications.likes > UPDATE (result.like)
+      // on ajoute une nouvelle entrée à usersLike (INSERT)
+
+
+      db.query("SELECT postId, likes, dislikes FROM Publications WHERE postId = '" + postId + "'", function (err, result) {
+        if (err) throw err;
+
+        console.log(result);
+
+        res.status(200).json(result)
+      })
+
+
+
+
+
+      /*       db.query("INSERT INTO UsersDislikes( postId, userId) VALUES ('" + value1 + "','" + value2 + "')", function (err, result) {
+              if (err) throw err;
+      
+      
+              if (!result) {
+                console.log("Erreur d'enregistrement");
+                res.status(400).json({ error: error });
+              } else {
+                console.log("Publication ajoutée");
+                res.status(200).json(result)
+              }
+            }); */
+
     }
   }
 
   // Action du like si 0
-  const likeAction0 = (likeValue) => {
+  /* const likeAction0 = (likeValue) => {
     if (likeValue) {
       Publication.findOne({ _id: req.params.id })
         .then((publication) => {
@@ -176,17 +200,64 @@ exports.likePublication = (req, res, next) => {
         })
         .catch((error) => { res.status(404).json({ error: error }) });
     }
-  }
+  } */
 
 
-  // Si je like, on ajoute l'userId dans l'array "usersLiked" et on incrémente le nombre total de likes
-  likeAction(req.body.like === 1, { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 } }, { message: 'Like ajouté !' });
-
-  // Si je dislike on ajoute l'userId dans l'array "usersDisliked" et on incrémente le nombre total de dislikes
-  likeAction(req.body.like === -1, { $push: { usersDisliked: req.body.userId }, $inc: { dislikes: +1 } }, { message: 'Dislike ajouté !' });
-
-  // Si j'annule le like ou dislike, on supprime l'userId de l'array "usersLiked" ou "usersDisLiked" et on décrémente le nombre total de likes/dislikes
-  likeAction0(req.body.like === 0);
-};
 
 
+
+
+
+
+
+  // Actions du like
+  /* exports.likePublication = (req, res, next) => {
+  
+  
+    // Action du like si 1 ou -1
+    const likeAction = (likeValue, action1, message1) => {
+      if (likeValue) {
+        Publication.findOne({ _id: req.params.id })
+          .then((publication) => {
+            Publication.updateOne({ _id: req.params.id }, action1)
+              // .then(() => res.status(200).json(message1))
+              .then(() => { res.status(200).json({ likes: publication.likes, dislikes: publication.dislikes }) })
+              .catch(error => res.status(400).json({ error }));
+          })
+          .catch((error) => { res.status(404).json({ error: error }); });
+      }
+    }
+  
+    // Action du like si 0
+    const likeAction0 = (likeValue) => {
+      if (likeValue) {
+        Publication.findOne({ _id: req.params.id })
+          .then((publication) => {
+            if (publication.usersLiked.includes(req.body.userId)) {
+              Publication.updateOne({ _id: req.params.id }, { $pull: { usersLiked: req.body.userId }, $inc: { likes: -1 } })
+                // Annule le like
+                .then(() => { res.status(200).json({ likes: publication.likes, dislikes: publication.dislikes }) })
+                .catch(error => res.status(400).json({ error }));
+            }
+            if (publication.usersDisliked.includes(req.body.userId)) {
+              Publication.updateOne({ _id: req.params.id }, { $pull: { usersDisliked: req.body.userId }, $inc: { dislikes: -1 } })
+                // Annule le dislike
+                .then(() => { res.status(200).json({ likes: publication.likes, dislikes: publication.dislikes }) })
+                .catch(error => res.status(400).json({ error }));
+            }
+          })
+          .catch((error) => { res.status(404).json({ error: error }) });
+      }
+    }
+  
+  
+    // Si je like, on ajoute l'userId dans l'array "usersLiked" et on incrémente le nombre total de likes
+    likeAction(req.body.like === 1, { $push: { usersLiked: req.body.userId }, $inc: { likes: +1 } }, { message: 'Like ajouté !' });
+  
+    // Si je dislike on ajoute l'userId dans l'array "usersDisliked" et on incrémente le nombre total de dislikes
+    likeAction(req.body.like === -1, { $push: { usersDisliked: req.body.userId }, $inc: { dislikes: +1 } }, { message: 'Dislike ajouté !' });
+  
+    // Si j'annule le like ou dislike, on supprime l'userId de l'array "usersLiked" ou "usersDisLiked" et on décrémente le nombre total de likes/dislikes
+    likeAction0(req.body.like === 0);
+  };*/
+}

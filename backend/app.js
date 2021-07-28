@@ -1,11 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-// const mongoose = require('mongoose');
 const path = require('path');
 require('dotenv').config()
-
-
-// const mysql = require('mysql');
 
 
 
@@ -13,19 +9,11 @@ require('dotenv').config()
 
 const publicationsRoutes = require('./routes/publications');
 const commentsRoutes = require('./routes/comments');
+const votesRoutes = require('./routes/votes');
 const userRoutes = require('./routes/user');
 
 
 const app = express();
-
-//--------------
-/* mongoose.connect(process.env.DB_ID_PASS, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-    .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch(() => console.log('Connexion à MongoDB échouée !')); */
-//--------------
 
 
 app.use((req, res, next) => {
@@ -41,6 +29,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api', publicationsRoutes);
 app.use('/api', commentsRoutes);
+app.use('/api', votesRoutes);
 app.use('/api/auth', userRoutes);
 
 module.exports = app;

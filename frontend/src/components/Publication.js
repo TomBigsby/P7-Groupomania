@@ -21,6 +21,8 @@ const Publication = (props) => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [title, setTitle] = useState(props.publication.postTitle);
     const [image, setImage] = useState({ preview: props.publication.imageUrl, imageUrl: "" })
+    
+
 
     const cardHeader = useRef()
     const inputTitle = useRef()
@@ -99,6 +101,10 @@ const Publication = (props) => {
             .then((res) => res.json())
             .then((res) => setComments(res))
             .catch((error) => console.error(error));
+
+
+
+
     }, [props.publication.postId, token]);
 
 
@@ -172,7 +178,7 @@ const Publication = (props) => {
     // Suppression du commentaire
     const deleteComment = (commentId) => {
 
-console.log(commentId);
+        console.log(commentId);
 
         fetch('http://localhost:4200/api/publications/comments/' + commentId, {
             method: 'DELETE',
@@ -256,7 +262,7 @@ console.log(commentId);
 
             <div className="post-interactions box">
 
-                {/* <Votes publication={props.publication} /> */}
+                <Votes publication={props.publication} />
 
                 <div className="separatorV"></div>
                 <div className="post-interactions-comments">

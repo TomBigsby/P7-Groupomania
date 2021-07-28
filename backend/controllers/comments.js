@@ -1,5 +1,3 @@
-const Comment = require('../models/Comment');
-const mongoose = require('mongoose');
 const mysql = require('mysql');
 
 

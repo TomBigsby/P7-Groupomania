@@ -1,5 +1,4 @@
 frontend/node_modules
 backend/node_modules
 backend/.env
-frontend/pages/PageTest1
-frontend/pages/PageTest2
+.DS_Store

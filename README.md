@@ -1,8 +1,7 @@
 <h1>Openclassrooms - Projet 7 - Groupomania</h1>
 
 
-
-<h1>Installation</h1>
+<h2>-- Installation --</h2>
 
 
 <br/>
@@ -42,10 +41,7 @@ nodemon server
 <h2>Installation de la base de donnéee SQL</h2>
 
 2 solutions : <br/>
-- importer le fichier SQL qui se trouve à la racine du projet dans un programe de gestion de BDD (mySQL par exemple)
-```
-SQL/p7_groupomania.sql
-```
+- importer le fichier SQL qui se trouve à la racine du projet dans le répertoire BDD SQL, dans un programe de gestion de BDD (mySQL par exemple)
 - Ou récupérer dans ce même fichier le code pour créer les 3 TABLES du projet avec les requêtes SQL
 exemple : 
 ```

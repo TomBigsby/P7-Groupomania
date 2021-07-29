@@ -20,12 +20,6 @@ function App() {
           <Route path="/" exact component={PageLogin} />
 
 
-          {/*    {localStorage.getItem("token") ?
-            <Redirect to="/page404" />
-            :
-            <>
-            </>
-          } */}
 
           <Route path="/inscription" exact component={PageSignUp} />
           <Route path="/profil" exact component={PageProfile} />

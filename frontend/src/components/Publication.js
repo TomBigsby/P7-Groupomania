@@ -95,7 +95,7 @@ const Publication = (props) => {
 
 
     // Ajout d'un nouveau commentaire
-    const sendComment = (postId, userId, username) => {
+    const sendComment = (postId) => {
 
         // Avertisseur visuel si le champ est vide à la validation
         if (postCommentInput.current.value !== "") {
@@ -116,6 +116,10 @@ const Publication = (props) => {
                 .then((res) => res.json())
                 .catch((error) => console.error(error))
                 .then((res) => {
+
+                    let newComments = [{postId},...comments]
+                    setComments(newComments)
+                    console.log(newComments);
                 })
         } else {
             postCommentInput.current.classList.add("warning-field")

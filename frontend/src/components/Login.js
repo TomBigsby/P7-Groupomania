@@ -10,7 +10,6 @@ const Login = () => {
     const inputEmail = useRef()
     const inputPassword = useRef()
 
-
     const submit = e => {
         e.preventDefault()
 

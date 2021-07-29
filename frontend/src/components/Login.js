@@ -5,6 +5,7 @@ import { Redirect } from 'react-router'
 const Login = () => {
     const [user, setUser] = useState(false)
     const [msgAlert, setMsgAlert] = useState({ email_error: "", password_error: "" });
+    const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
 
     const inputEmail = useRef()
     const inputPassword = useRef()
@@ -36,13 +37,11 @@ const Login = () => {
                             avatarUrl: json.avatarUrl,
                             userJob: json.userJob,
                             userService: json.userService,
-                            isAdmin: json.isAdmin,
-
+                            isAdmin: json.isAdmin
                         }
-                        localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
-
                         localStorage.setItem("token", JSON.stringify(json.token));
-
+                        localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+                        setLocalStorageLoaded(true)
                     }
                     ));
 
@@ -79,7 +78,7 @@ const Login = () => {
 
                 </div>
                 <input type="submit" name="Connexion" value="Connexion" className="bt" />
-                {user && !user.error_login_user && !user.error_login_password && <Redirect to="/publications" />}
+                {localStorageLoaded && user && !user.error_login_user && !user.error_login_password && <Redirect to="/publications" />}
 
                 <div className="signup-link">Vous n'avez pas de compte ? <NavLink exact to="/inscription">inscrivez-vous</NavLink></div>
                 <div className="required-field"><span className="red">* </span>Champs obligatoires</div>

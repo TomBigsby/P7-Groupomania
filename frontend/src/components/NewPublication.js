@@ -37,7 +37,7 @@ const NewPublication = () => {
                 method: 'POST',
                 body: formData,
                 // headers: { 'Content-Type': 'multipart/form-data' },
-                // headers: { "authorization": "Bearer " + token }
+                headers: { "authorization": "Bearer " + token }
             })
                 .then(res => res.json()
                     .then(json => { setPublication(json) }

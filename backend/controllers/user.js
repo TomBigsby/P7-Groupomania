@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const CryptoJS = require("crypto-js");
-
+const sanitizeHtml = require('sanitize-html');
 
 
 const mysql = require('mysql');
@@ -14,6 +14,18 @@ const db = mysql.createConnection({
     database: 'p7_groupomania',
     socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
+
+// function permettant d'échapper certains caractères pour SQL
+let addslashes = (str) => {
+    str = str.replace(/\n/g, '\\\n')
+    str = str.replace(/\n/g, '\\\n')
+    str = str.replace(/\t/g, '\\\t')
+    str = str.replace(/\f/g, '\\\f')
+    str = str.replace(/\r/g, '\\\r')
+    str = str.replace(/'/g, '\\\'')
+    str = str.replace(/"/g, '\\\"')
+    return str
+}
 
 
 // NOTE: Création des regex pour la Vérification du format de l'email et du mot de passe
@@ -41,38 +53,60 @@ exports.signup = (req, res, next) => {
             }
 
             let admin
-            if (req.body.adminPassword !== "" && req.body.adminPassword === "admin") {
-                admin = true
+
+            if (req.body.adminChecked === "true") {
+                if (sanitizeHtml(req.body.adminPassword) !== "" && sanitizeHtml(req.body.adminPassword) === "admin") {
+                    admin = true
+                } else {
+                    admin = false
+                    res.status(400).json({ error_psw_admin: "Mot de passe admin incorrect" });
+                }
             } else {
                 admin = false
             }
 
-            cryptEmail = CryptoJS.HmacSHA1(req.body.email, process.env.CRYPT_EMAIL).toString()
 
-            bcrypt.hash(req.body.password, 10)
-                .then(hash => {
-                    //Recherche dans la BDD si l'email existe
-                    db.query("SELECT email FROM Users WHERE email = '" + cryptEmail + "'", function (err, exist) {
-                        if (err) throw err;
+            // (Si la case Admin est cochée et que le mot de passe admin est correct) OU la case Admin n'est pas cochée = on continue
+            if ((req.body.adminChecked === "true" && admin) || req.body.adminChecked === "false") {
+                const cryptEmail = CryptoJS.HmacSHA1(sanitizeHtml(req.body.email), process.env.CRYPT_EMAIL).toString()
 
-                        // Si il n'existe pas > on le créé
-                        if (exist.length === 0) {
-                            db.query("INSERT INTO Users( email, password, username, userService, userJob, avatarUrl, isAdmin) VALUES ('" + cryptEmail + "','" + hash + "','" + req.body.username + "','" + req.body.userService + "','" + req.body.userJob + "','" + image + "'," + admin + ")", function (err, result) {
-                                if (err) throw err;
+                console.log("admin OU no-ckeck OK");
 
-                                if (!result) {
-                                    console.log("Erreur d'enregistrement");
-                                } else {
-                                    next()
-                                }
-                            })
-                            // Si il existe > message d'erreur
-                        } else {
-                            console.log("Utilisateur déjà existant");
-                        }
+                bcrypt.hash(sanitizeHtml(req.body.password), 10)
+                    .then(hash => {
+                        //Recherche dans la BDD si l'email existe
+                        db.query("SELECT email FROM Users WHERE email = '" + cryptEmail + "'", function (err, exist) {
+                            if (err) throw err;
+
+                            console.log("exist:", exist.length === 0);
+
+                            const username = sanitizeHtml(req.body.username)
+                            const userService = sanitizeHtml(req.body.userService)
+                            const userJob = sanitizeHtml(req.body.userJob)
+
+                            // Si il n'existe pas > on le créé
+                            if (exist.length === 0) {
+                                db.query("INSERT INTO Users( email, password, username, userService, userJob, avatarUrl, isAdmin) VALUES ('" + cryptEmail + "','" + hash + "','" + addslashes(username) + "','" + addslashes(userService) + "','" + addslashes(userJob) + "','" + image + "'," + admin + ")", function (err, result) {
+                                    if (err) throw err;
+
+                                    console.log("result:", result);
+
+                                    if (!result) {
+                                        res.status(401).json({ error: "Erreur d'enregistrement" });
+                                    } else {
+                                        next()
+                                    }
+                                })
+                                // Si il existe > message d'erreur
+                            } else {
+                                res.status(400).json({ error_signup_email_exist: 'Utilisateur déjà existant !' });
+                            }
+                        })
                     })
-                })
-                .catch(error => res.status(500).json({ error2 }))
+                    .catch(error => res.status(500).json({ error2 }))
+            }
+
+
         } else {
             res.status(400).json({ error_signup_email: "L'email ou le mot de passe ne sont pas valides" });
         }
@@ -82,14 +116,21 @@ exports.signup = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-    cryptEmail = CryptoJS.HmacSHA1(req.body.email, process.env.CRYPT_EMAIL).toString()
+
+    console.log("login");
+
+    const cryptEmail = CryptoJS.HmacSHA1(req.body.email, process.env.CRYPT_EMAIL).toString()
 
     db.query("SELECT * FROM Users WHERE email = '" + cryptEmail + "'", function (err, result) {
         if (err) throw err;
 
-        if (!result) {
+        console.log("email existant", result.length === 0);
+
+        if (result.length === 0) {
+            console.log('Utilisateur non trouvé');
             return res.status(401).json({ error_login_user: 'Utilisateur non trouvé !' });
         }
+
         bcrypt.compare(req.body.password, result[0].password)
             .then(valid => {
                 if (!valid) {
@@ -110,13 +151,22 @@ exports.login = (req, res, next) => {
 
                 });
             })
-            .catch(error => res.status(500).json({ error: "pas bon" }));
+            .catch(error => res.status(500).json({ error: "erreur" }));
     })
 }
 
 // suppression de l'utilisateur
 exports.deleteUser = (req, res, next) => {
-    User.deleteOne({ _id: req.params.id })
-        .then(message => res.status(200).json({ message: 'Utilisateur supprimé !' }))
-        .catch(error => res.status(400).json({ error }));
+    db.query("DELETE FROM Users WHERE userId = '" + req.params.id + "'", function (err, result) {
+        if (err) throw err;
+
+        if (!result) {
+            console.log("Erreur lors de la suppression");
+            error => res.status(400).json({ error })
+        } else {
+            console.log("Utilisateur supprimé");
+            res.status(200).json(result)
+        }
+    })
 };
+

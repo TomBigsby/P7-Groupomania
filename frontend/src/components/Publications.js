@@ -11,7 +11,7 @@ const Publications = () => {
     // const [items, setItems] = useState([]);
 
     // const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
-    // const token = JSON.parse(localStorage.getItem("token"));
+    const token = JSON.parse(localStorage.getItem("token"));
 
     // chargement des infos utilisateur (Localstorage) au chargement de la page
     // const savedUser = JSON.parse(localStorage.getItem('currentUserInfos'))
@@ -21,7 +21,7 @@ const Publications = () => {
         fetch('http://localhost:4200/api/publications', {
             method: 'GET',
             // headers: { 'Content-Type': 'multipart/form-data' },
-            // headers: { "authorization": "Bearer " + token }
+            headers: { "authorization": "Bearer " + token }
         })
             .then((res) => res.json())
             .then((res) => setPublications(res))
@@ -37,15 +37,14 @@ const Publications = () => {
 
         fetch('http://localhost:4200/api/publications/' + postId, {
             method: 'DELETE',
-            // headers: { "authorization": "Bearer " + token }
+            headers: { "authorization": "Bearer " + token }
         })
             .catch((error) => console.error(error))
 
-            // DEBUG
-            .then((res) => { console.log("bob:", res) })
 
             // suppression de la publication via son ID et MAJ du tableau
             .then(() => {
+                console.log(setPublications(publications.filter(publication => publication.postId !== postId)));
                 setPublications(publications.filter(publication => publication.postId !== postId))
             })
     }

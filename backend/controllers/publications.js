@@ -68,7 +68,7 @@ exports.modifyPublication = (req, res, next) => {
   if (req.file !== undefined) {
     var imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
 
-    db.query("UPDATE Publications SET postTitle = '" + req.body.postTitle + "' , imageUrl = '" + imageUrl + "' WHERE postId = '" + req.params.id + "'", function (err, result) {
+    db.query("UPDATE Publications SET postTitle = '" + addslashes(req.body.postTitle) + "' , imageUrl = '" + imageUrl + "' WHERE postId = '" + req.params.id + "'", function (err, result) {
       if (err) throw err;
 
       if (!result) {
@@ -80,7 +80,7 @@ exports.modifyPublication = (req, res, next) => {
       }
     });
   } else {
-    db.query("UPDATE Publications SET postTitle = '" + req.body.postTitle + "' WHERE postId = '" + req.params.id + "'", function (err, result) {
+    db.query("UPDATE Publications SET postTitle = '" + addslashes(req.body.postTitle) + "' WHERE postId = '" + req.params.id + "'", function (err, result) {
       if (err) throw err;
 
       if (!result) {
@@ -95,29 +95,51 @@ exports.modifyPublication = (req, res, next) => {
 };
 
 
-
 exports.deletePublication = (req, res, next) => {
-
+  // Sélection et suppression de l'image
   db.query("SELECT imageUrl FROM Publications WHERE postId = '" + req.params.id + "'", function (err, result) {
     if (err) throw err;
-
-
     const filename = result[0].imageUrl.split('/images/')[1];
     fs.unlink(`images/${filename}`, () => {
 
-      db.query("DELETE Publications, Comments FROM Publications INNER JOIN Comments ON Comments.postId = Publications.postId WHERE Publications.postId = '" + req.params.id + "'", function (err, result) {
-        if (err) throw err;
+      // Si la publication possède des commentaires...
+      db.query("SELECT * FROM Publications INNER JOIN Comments ON Comments.postId = Publications.postId WHERE Publications.postId = '" + req.params.id + "'", function (err, result) {
+        if (result) {
+          db.query("DELETE Publications, Comments FROM Publications INNER JOIN Comments ON Comments.postId = Publications.postId WHERE Publications.postId = '" + req.params.id + "'", function (err, result) {
 
-        if (!result) {
-          console.log("Erreur dlors de la suppression");
-          error => res.status(400).json({ error })
-        } else {
-          console.log("Publication supprimée");
+          })
+        }
+      })
+      // Si la publication ne possède pas des commentaires...
+      db.query("SELECT * FROM Publications WHERE postId = '" + req.params.id + "'", function (err, result) {
+        if (result) {
+          db.query(" DELETE  FROM Publications WHERE postId = '" + req.params.id + "'", function (err, result) {
+
+          })
         }
       })
     })
+    if (!result) {
+      console.log("Erreur dlors de la suppression");
+      error => res.status(400).json({ error })
+
+    } else {
+      console.log("Publication supprimée");
+      res.status(200).json(result)
+    }
   })
+
+
+
+
+
 }
+
+
+
+
+
+
 
 
 /* exports.deletePublication = (req, res, next) => {

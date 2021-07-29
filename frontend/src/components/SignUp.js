@@ -8,6 +8,7 @@ const SignUp = () => {
     const [user, setUser] = useState(false);
     const [image, setImage] = useState({ preview: "", imageUrl: "" })
     const [msgAlert, setMsgAlert] = useState({ email_error: "", password_error: "", username_error: "" });
+    const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
 
     const inputAdminPassword = useRef()
     const checkbox = useRef()
@@ -16,9 +17,10 @@ const SignUp = () => {
     const submit = e => {
         e.preventDefault()
 
-        // Envoi des données du formulaire
 
+        // Envoi des données du formulaire
         const formData = new FormData(e.target);
+        formData.append("adminChecked", checkbox.current.checked);
 
         if (e.target.email.value !== "" && e.target.password.value !== "" && e.target.username.value !== "") {
             setMsgAlert({ email_error: "", password_error: "", username_error: "" })
@@ -32,17 +34,31 @@ const SignUp = () => {
                 .then(res => res.json()
                     .then(json => {
                         setUser(json);
-                        const currentUserInfos = {
-                            userId: json.userId,
-                            // token: json.token,
-                            username: e.target.username.value,
-                            userService: e.target.userService.value,
-                            userJob: e.target.userService.value,
-                            avatarUrl: json.avatarUrl
-                        }
-                        localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
 
-                        localStorage.setItem("token", JSON.stringify(json.token));
+                        console.log("--user--", user)
+                        console.log("user.error", user.error)
+                        console.log("user.error_signup_email", user.error_signup_email)
+                        console.log("user.error_signup_email_exist", user.error_signup_email_exist)
+                        console.log("user.error_psw_admin", user.error_psw_admin)
+                        console.log("error_login_user", user.error_login_user)
+
+
+                        if (user.error === "" && user.error_signup_email === "" && user.error_signup_email_exist === "" && user.error_psw_admin === "") {
+
+                            const currentUserInfos = {
+                                userId: json.userId,
+                                token: json.token,
+                                username: e.target.username.value,
+                                userService: e.target.userService.value,
+                                userJob: e.target.userService.value,
+                                avatarUrl: json.avatarUrl,
+                                isAdmin: json.isAdmin
+                            }
+
+                            localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+                            localStorage.setItem("token", JSON.stringify(json.token));
+                            setLocalStorageLoaded(true)
+                        }
 
                     }
                     ));
@@ -111,7 +127,7 @@ const SignUp = () => {
                     <label htmlFor="email">Email <span className="red">* </span></label>
                     <input type="email" id="email" name="email" />
                     <div className="error-msg" >{msgAlert.email_error}{(user.error_signup_email && <p>{user.error_signup_email}</p>) || (user.error_signup_email_exist && <p>{user.error_signup_email_exist}</p>)}</div>
-                    {user.error_signup_email_exist && <NavLink exact to="/" style={{ fontSize: "0.8em", color: "white", textDecoration: "underline" }}> <i class="fas fa-long-arrow-alt-right"></i> Page de connexion</NavLink>}
+                    {user.error_signup_email_exist && <NavLink exact to="/" style={{ fontSize: "0.8em", color: "white", textDecoration: "underline" }}> <i className="fas fa-long-arrow-alt-right"></i> Page de connexion</NavLink>}
                 </div>
                 <div className="field-bloc">
                     <label htmlFor="password">mot de passe <span className="red">* </span> <i className="fas fa-info-circle"></i> <div className="infobulle">Doit contenir une majuscule, une minuscule, plus de 8 caractères et au moins 1 caractère spécial parmi : ! @ # $ % ^ & *</div></label>
@@ -134,17 +150,15 @@ const SignUp = () => {
                     <div className="error-msg"></div>
                 </div>
 
-
-                {/* Clic on change (checked) => afficher textfield avec code */}
-
                 <div className="adminConnexion">
                     <input className="checkbox" type="checkbox" id="admin" ref={checkbox} onClick={adminInputDisplay} />
                     <label htmlFor="admin">Compte administrateur</label>
                     <input type="password" className="adminPassword invisible" name="adminPassword" placeholder="Code admin" ref={inputAdminPassword} />
+                    <div className="error-msg"> {user.error_psw_admin && <p>{user.error_psw_admin}</p>}</div>
                 </div>
 
                 <input type="submit" name="Inscription" value="Inscription" className="bt" />
-                {user && !user.error && !user.error_signup_email && !user.error_signup_email_exist && !user.error_signup_password && <Redirect to="/publications" />}
+                {/* {localStorageLoaded && user && !user.error && !user.error_signup_email && !user.error_signup_email_exist && !user.error_signup_password && !user.error_psw_admin && <Redirect to="/publications" />} */}
                 <div className="required-field"><span className="red">* </span>Champs obligatoires</div>
             </form>
         </div >

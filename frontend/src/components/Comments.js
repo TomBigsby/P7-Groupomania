@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize';
+import avatarPlaceHolder from '../assets/images/avatar.svg'
 
 
 import { fr } from 'date-fns/locale';
@@ -103,7 +104,7 @@ const Comments = (props) => {
 
                 <div className="post-comment-bloc1">
                     <div className="post-comment-bloc1-a">
-                        <div className="post-comment-avatar"><img src={props.comment.commentAuthorAvatarUrl} alt="" /></div>
+                        <div className="post-comment-avatar"><img src={props.comment.commentAuthorAvatarUrl === undefined ? avatarPlaceHolder : props.comment.commentAuthorAvatarUrl} alt="" /></div>
                     </div>
                     <div className="post-comment-bloc1-b">
                         <div className="post-comment-name">{props.comment.commentAuthorUserName}</div>

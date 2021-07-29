@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-
 import Comments from "./Comments";
+import avatarPlaceHolder from '../assets/images/avatar.svg'
 
 import { fr } from 'date-fns/locale';
 import { formatDistanceToNow } from 'date-fns';
@@ -117,9 +117,9 @@ const Publication = (props) => {
                 .catch((error) => console.error(error))
                 .then((res) => {
 
-                    let newComments = [{postId},...comments]
+                    let newComments = [{ postId }, ...comments]
                     setComments(newComments)
-                    console.log(newComments);
+                    // console.log(newComments);
                 })
         } else {
             postCommentInput.current.classList.add("warning-field")
@@ -178,8 +178,9 @@ const Publication = (props) => {
                 </div>
             </div>
 
+
             <div className="post-author" ref={cardHeader}>
-                <div className="post-author-avatar"><img src={props.publication.avatarUrl} alt="" onClick={() => { props.getThisPost(props.publication.postId) }} /></div>
+                <div className="post-author-avatar"><img src={props.publication.avatarUrl === "undefined" ? avatarPlaceHolder : props.publication.avatarUrl} alt="" onClick={() => { props.getThisPost(props.publication.postId) }} /></div>
                 <div>
                     <span className="post-author-name">{props.publication.username} <span>&nbsp;</span>
                         <span className="post-author-date">il y a {elapsedTime(props.publication.postDate)}</span>
@@ -247,7 +248,7 @@ const Publication = (props) => {
             ))
             }
             <form form className="post-new-comment box" >
-                <div className="post-new-comment-avatar"><img src={currentUserInfos.avatarUrl} alt="" /></div>
+                <div className="post-new-comment-avatar"><img src={currentUserInfos.avatarUrl === "undefined" ? avatarPlaceHolder : currentUserInfos.avatarUrl} alt="" /></div>
                 <input type="text" className="post-new-comment-message" ref={postCommentInput} placeholder="Ecrire un commentaire" onChange={(e) => typingField(e)} />
 
                 <div className="post-new-comment-send" onClick={() => sendComment(props.publication.postId, props.publication.userId, currentUserInfos.username)}><i className="fas fa-arrow-circle-right"></i></div>

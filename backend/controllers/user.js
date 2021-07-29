@@ -113,11 +113,8 @@ exports.login = (req, res, next) => {
     db.query("SELECT * FROM Users WHERE email = '" + cryptEmail + "'", function (err, result) {
         if (err) throw err;
 
-        console.log("email existant", result.length === 0);
-
         if (result.length === 0) {
-            console.log('Utilisateur non trouvé');
-            return res.status(401).json({ error_login_u: 'Utilisateur non trouvé !' });
+            return res.status(401).json({ error_login_user: 'Utilisateur non trouvé !' });
         }
 
         bcrypt.compare(req.body.password, result[0].password)
@@ -135,7 +132,6 @@ exports.login = (req, res, next) => {
                         process.env.TOKEN_PASS,
                         { expiresIn: '24h' }
                     )
-
                 });
             })
             .catch(error => res.status(500).json({ error: "erreur" }));

@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useRef } from 'react'
+import avatarPlaceHolder from '../assets/images/avatar.svg'
 
 const Profile = () => {
 
@@ -9,8 +10,7 @@ const Profile = () => {
     const blocDisplay1 = useRef();
     const blocEdit1 = useRef();
 
-
-
+    
     let currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
 
     let username = currentUserInfos.username
@@ -20,7 +20,7 @@ const Profile = () => {
         <div className="container">
             <div className="bt-close"><i className="fas fa-times"></i></div>
             <NavLink exact to="/publications" className="bt-close"><i className="fas fa-times"></i></NavLink>
-            <div className="avatar-profile"><img src={currentUserInfos.avatarUrl} alt="" /></div>
+            <div className="avatar-profile"><img src={currentUserInfos.avatarUrl === "undefined" ? avatarPlaceHolder : currentUserInfos.avatarUrl} alt="" /></div>
 
 
             <div className="blocDisplay" ref={blocDisplay1}>

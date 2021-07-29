@@ -6,12 +6,16 @@ const Login = () => {
     const [user, setUser] = useState(false)
     const [msgAlert, setMsgAlert] = useState({ email_error: "", password_error: "" });
     const [localStorageLoaded, setLocalStorageLoaded] = useState(false);
+    const [accessGranted, setAccessGranted] = useState(false);
+
 
     const inputEmail = useRef()
     const inputPassword = useRef()
 
+
     const submit = e => {
         e.preventDefault()
+
 
         if (e.target.email.value !== "" && e.target.password.value !== "") {
             setMsgAlert({ email_error: "", password_error: "" })
@@ -28,15 +32,21 @@ const Login = () => {
                     .then(json => {
                         setUser(json);
 
-                        const currentUserInfos = {
-                            userId: json.userId,
-                            username: json.username,
-                            avatarUrl: json.avatarUrl,
-                            isAdmin: json.isAdmin
+
+                        if (Number.isInteger(json.userId)) {
+
+                            setAccessGranted(true)
+
+                            const currentUserInfos = {
+                                userId: json.userId,
+                                username: json.username,
+                                avatarUrl: json.avatarUrl,
+                                isAdmin: json.isAdmin
+                            }
+                            localStorage.setItem("token", JSON.stringify(json.token));
+                            localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+                            setLocalStorageLoaded(true)
                         }
-                        localStorage.setItem("token", JSON.stringify(json.token));
-                        localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
-                        setLocalStorageLoaded(true)
                     }
                     ));
 
@@ -73,7 +83,7 @@ const Login = () => {
 
                 </div>
                 <input type="submit" name="Connexion" value="Connexion" className="bt" />
-                {localStorageLoaded && user && !user.error_login_user && !user.error_login_password && <Redirect to="/publications" />}
+                {accessGranted && localStorageLoaded && user && !user.error_login_user && !user.error_login_password && <Redirect to="/publications" />}
 
                 <div className="signup-link">Vous n'avez pas de compte ? <NavLink exact to="/inscription">inscrivez-vous</NavLink></div>
                 <div className="required-field"><span className="red">* </span>Champs obligatoires</div>

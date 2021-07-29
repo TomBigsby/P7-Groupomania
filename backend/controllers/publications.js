@@ -6,8 +6,8 @@ const fs = require('fs');
 // Connexion à la BDD
 const db = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "root",
+  user: process.env.ID_BDD_SQL,
+  password: process.env.PW_BDD_SQL,
   database: 'p7_groupomania',
   socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });

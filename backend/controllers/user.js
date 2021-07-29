@@ -6,11 +6,10 @@ const sanitizeHtml = require('sanitize-html');
 
 const mysql = require('mysql');
 
-
 const db = mysql.createConnection({
     host: "localhost",
-    user: "root",
-    password: "root",
+    user: process.env.ID_BDD_SQL,
+    password: process.env.PW_BDD_SQL,
     database: 'p7_groupomania',
     socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
@@ -70,26 +69,18 @@ exports.signup = (req, res, next) => {
             if ((req.body.adminChecked === "true" && admin) || req.body.adminChecked === "false") {
                 const cryptEmail = CryptoJS.HmacSHA1(sanitizeHtml(req.body.email), process.env.CRYPT_EMAIL).toString()
 
-                console.log("admin OU no-ckeck OK");
-
                 bcrypt.hash(sanitizeHtml(req.body.password), 10)
                     .then(hash => {
                         //Recherche dans la BDD si l'email existe
                         db.query("SELECT email FROM Users WHERE email = '" + cryptEmail + "'", function (err, exist) {
                             if (err) throw err;
 
-                            console.log("exist:", exist.length === 0);
-
                             const username = sanitizeHtml(req.body.username)
-                            const userService = sanitizeHtml(req.body.userService)
-                            const userJob = sanitizeHtml(req.body.userJob)
 
                             // Si il n'existe pas > on le créé
                             if (exist.length === 0) {
-                                db.query("INSERT INTO Users( email, password, username, userService, userJob, avatarUrl, isAdmin) VALUES ('" + cryptEmail + "','" + hash + "','" + addslashes(username) + "','" + addslashes(userService) + "','" + addslashes(userJob) + "','" + image + "'," + admin + ")", function (err, result) {
+                                db.query("INSERT INTO Users( email, password, username, avatarUrl, isAdmin) VALUES ('" + cryptEmail + "','" + hash + "','" + addslashes(username) + "','" + image + "'," + admin + ")", function (err, result) {
                                     if (err) throw err;
-
-                                    console.log("result:", result);
 
                                     if (!result) {
                                         res.status(401).json({ error: "Erreur d'enregistrement" });
@@ -117,8 +108,6 @@ exports.signup = (req, res, next) => {
 
 exports.login = (req, res, next) => {
 
-    console.log("login");
-
     const cryptEmail = CryptoJS.HmacSHA1(req.body.email, process.env.CRYPT_EMAIL).toString()
 
     db.query("SELECT * FROM Users WHERE email = '" + cryptEmail + "'", function (err, result) {
@@ -128,7 +117,7 @@ exports.login = (req, res, next) => {
 
         if (result.length === 0) {
             console.log('Utilisateur non trouvé');
-            return res.status(401).json({ error_login_user: 'Utilisateur non trouvé !' });
+            return res.status(401).json({ error_login_u: 'Utilisateur non trouvé !' });
         }
 
         bcrypt.compare(req.body.password, result[0].password)
@@ -140,8 +129,6 @@ exports.login = (req, res, next) => {
                     userId: result[0].userId,
                     username: result[0].username,
                     avatarUrl: result[0].avatarUrl,
-                    userJob: result[0].userJob,
-                    userService: result[0].userService,
                     isAdmin: result[0].isAdmin,
                     token: jwt.sign(
                         { userId: result[0].userId },

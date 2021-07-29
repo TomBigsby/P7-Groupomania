@@ -4,7 +4,6 @@ import avatarPlaceHolder from '../assets/images/avatar.svg'
 
 
 
-
 const HeaderSmall = () => {
 
     const [avatarDelay, setAvatarDelay] = useState(avatarPlaceHolder)

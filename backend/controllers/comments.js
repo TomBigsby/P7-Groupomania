@@ -4,8 +4,8 @@ const mysql = require('mysql');
 // Connexion à la BDD
 const db = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "root",
+  user: process.env.ID_BDD_SQL,
+  password: process.env.PW_BDD_SQL,
   database: 'p7_groupomania',
   socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
@@ -59,12 +59,9 @@ exports.getAllComments = (req, res, next) => {
 
 exports.modifyComment = (req, res, next) => {
 
-  console.log("req.params.id=", req.params.id);
 
   db.query("UPDATE Comments SET commentAuthorMessage = '" + addslashes(req.body.commentAuthorMessage) + "' WHERE commentId = '" + req.params.id + "'", function (err, result) {
     if (err) throw err;
-
-    console.log(result);
 
     if (!result) {
       console.log("Erreur d'enregistrement");

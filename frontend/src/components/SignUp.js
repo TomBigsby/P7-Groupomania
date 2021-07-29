@@ -35,31 +35,19 @@ const SignUp = () => {
                     .then(json => {
                         setUser(json);
 
-                        console.log("--user--", user)
-                        console.log("user.error", user.error)
-                        console.log("user.error_signup_email", user.error_signup_email)
-                        console.log("user.error_signup_email_exist", user.error_signup_email_exist)
-                        console.log("user.error_psw_admin", user.error_psw_admin)
-                        console.log("error_login_user", user.error_login_user)
+                        const currentUserInfos = {
+                            userId: json.userId,
+                            token: json.token,
+                            username: e.target.username.value,
 
 
-                        if (user.error === "" && user.error_signup_email === "" && user.error_signup_email_exist === "" && user.error_psw_admin === "") {
-
-                            const currentUserInfos = {
-                                userId: json.userId,
-                                token: json.token,
-                                username: e.target.username.value,
-                                userService: e.target.userService.value,
-                                userJob: e.target.userService.value,
-                                avatarUrl: json.avatarUrl,
-                                isAdmin: json.isAdmin
-                            }
-
-                            localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
-                            localStorage.setItem("token", JSON.stringify(json.token));
-                            setLocalStorageLoaded(true)
+                            avatarUrl: json.avatarUrl,
+                            isAdmin: json.isAdmin
                         }
 
+                        localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
+                        localStorage.setItem("token", JSON.stringify(json.token));
+                        setLocalStorageLoaded(true)
                     }
                     ));
 
@@ -139,17 +127,7 @@ const SignUp = () => {
                     <input type="text" id="username" name="username" />
                     <div className="error-msg"> {msgAlert.username_error}</div>
                 </div>
-                <div className="field-bloc">
-                    <label htmlFor="service">Service</label>
-                    <input type="text" id="service" name="userService" />
-                    <div className="error-msg"></div>
-                </div>
-                <div className="field-bloc">
-                    <label htmlFor="job">Poste occupé</label>
-                    <input type="text" id="job" name="userJob" />
-                    <div className="error-msg"></div>
-                </div>
-
+              
                 <div className="adminConnexion">
                     <input className="checkbox" type="checkbox" id="admin" ref={checkbox} onClick={adminInputDisplay} />
                     <label htmlFor="admin">Compte administrateur</label>
@@ -158,7 +136,7 @@ const SignUp = () => {
                 </div>
 
                 <input type="submit" name="Inscription" value="Inscription" className="bt" />
-                {/* {localStorageLoaded && user && !user.error && !user.error_signup_email && !user.error_signup_email_exist && !user.error_signup_password && !user.error_psw_admin && <Redirect to="/publications" />} */}
+                {localStorageLoaded && user && !user.error && !user.error_signup_email && !user.error_signup_email_exist && !user.error_signup_password && !user.error_psw_admin && <Redirect to="/publications" />}
                 <div className="required-field"><span className="red">* </span>Champs obligatoires</div>
             </form>
         </div >

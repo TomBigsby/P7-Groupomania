@@ -6,15 +6,8 @@ import Publication from "./Publication";
 const Publications = () => {
 
     const [publications, setPublications] = useState([]);
-
-    // const [userData, setUserData] = useState("");
-    // const [items, setItems] = useState([]);
-
-    // const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
     const token = JSON.parse(localStorage.getItem("token"));
 
-    // chargement des infos utilisateur (Localstorage) au chargement de la page
-    // const savedUser = JSON.parse(localStorage.getItem('currentUserInfos'))
 
     // Récupération des publications
     useEffect(() => {
@@ -26,8 +19,6 @@ const Publications = () => {
             .then((res) => res.json())
             .then((res) => setPublications(res))
             .catch((error) => console.error(error));
-
-        // console.log(publications[0])
 
     }, []);
 
@@ -44,7 +35,6 @@ const Publications = () => {
 
             // suppression de la publication via son ID et MAJ du tableau
             .then(() => {
-                console.log(setPublications(publications.filter(publication => publication.postId !== postId)));
                 setPublications(publications.filter(publication => publication.postId !== postId))
             })
     }

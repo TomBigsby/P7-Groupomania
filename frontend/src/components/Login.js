@@ -29,14 +29,10 @@ const Login = () => {
                     .then(json => {
                         setUser(json);
 
-                        console.log("retour login:", json);
-
                         const currentUserInfos = {
                             userId: json.userId,
                             username: json.username,
                             avatarUrl: json.avatarUrl,
-                            userJob: json.userJob,
-                            userService: json.userService,
                             isAdmin: json.isAdmin
                         }
                         localStorage.setItem("token", JSON.stringify(json.token));

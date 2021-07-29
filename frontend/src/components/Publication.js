@@ -33,19 +33,6 @@ const Publication = (props) => {
     const token = JSON.parse(localStorage.getItem("token"));
 
 
-    //TODO: seulement si le focus est TRUE
-    /*     const onKeyPressed = (e, postId) => {
-     
-            if (e.key === "Enter") {
-                const newTitle = inputTitle.current.value
-                setTitle(newTitle)
-                setIsEditMode(false)
-     
-                sendPostEdit(postId, newTitle)
-            }
-        } */
-
-
     // edition de la publication 
     const editPublication = () => {
         setIsEditMode(!isEditMode)
@@ -129,23 +116,6 @@ const Publication = (props) => {
                 .then((res) => res.json())
                 .catch((error) => console.error(error))
                 .then((res) => {
-
-                    //DEBUG
-                    // const newComments = [...comments, { postId, userId, username }];
-                    /* newComments.push({
-                        commentAuthorId: currentUserInfos.userId,
-                        commentAuthorUserName: currentUserInfos.username,
-                        commentAuthorAvatarUrl: currentUserInfos.avatarUrl,
-                        commentAuthorCommentDate: today,
-                        commentAuthorMessage: postCommentInput.current.value
-                    }) */
-                    // setComments(newComments);
-
-                    // console.log(newComments);
-
-                    /*      setComments(newComment)
-                         setComments(comments) */
-                    // setComments2(!comments2)
                 })
         } else {
             postCommentInput.current.classList.add("warning-field")

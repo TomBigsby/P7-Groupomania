@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
+import avatarPlaceHolder from '../assets/images/avatar.svg'
 
 import Comments from "./Comments";
 import Votes from './Votes';
@@ -11,7 +12,7 @@ const { zonedTimeToUtc } = require('date-fns-tz')
 
 const Publication = (props) => {
 
-    
+
     const [comments, setComments] = useState([]);
     // const [comments2, setComments2] = useState([]);
     const [displayComments, setDisplayComments] = useState(false);
@@ -137,7 +138,7 @@ const Publication = (props) => {
             .then((res) => {
 
 
-                setComments(comments)  
+                setComments(comments)
 
                 //DEBUG
                 // console.log(newComment);
@@ -203,7 +204,7 @@ const Publication = (props) => {
             </div>
 
             <div className="post-author" ref={cardHeader}>
-                <div className="post-author-avatar"><img src={props.publication.avatarUrl} alt="" onClick={() => { props.getThisPost(props.publication._id) }} /></div>
+                <div className="post-author-avatar"><img src={props.publication.avatarUrl === undefined ? avatarPlaceHolder : props.publication.avatarUrl} alt="" onClick={() => { props.getThisPost(props.publication._id) }} /></div>
                 <div><span className="post-author-name">{props.publication.username} <span>&nbsp;</span><span className="post-author-date">il y a {elapsedTime(props.publication.postDate)}</span></span></div>
 
                 {/* Si la publication a été créée par l'utilisateur actuel ou si c'est un admin, les boutons de modif/suppr s'affichent  */}
@@ -268,7 +269,7 @@ const Publication = (props) => {
             ))
             }
             <form form className="post-new-comment box" >
-                <div className="post-new-comment-avatar"><img src={currentUserInfos.avatarUrl} alt="" /></div>
+                <div className="post-new-comment-avatar"><img src={currentUserInfos.avatarUrl === undefined ? avatarPlaceHolder : currentUserInfos.avatarUrl} alt="" /></div>
                 <input type="text" className="post-new-comment-message" ref={postCommentInput} placeholder="Ecrire un commentaire" onChange={(e) => typingField(e)} />
 
                 <div className="post-new-comment-send" onClick={() => sendComment(props.publication._id)}><i className="fas fa-arrow-circle-right"></i></div>

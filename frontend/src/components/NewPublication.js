@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Redirect } from 'react-router'
 import { NavLink } from 'react-router-dom';
+import avatarPlaceHolder from '../assets/images/avatar.svg'
 
 const NewPublication = () => {
 
@@ -64,7 +65,7 @@ const NewPublication = () => {
         <>
             <div className="post-container new-post-container">
                 <div className="post-author">
-                    <div className="post-author-avatar"><img src={currentUserInfos.avatarUrl} alt="" /></div>
+                    <div className="post-author-avatar"><img src={currentUserInfos.avatarUrl === undefined ? avatarPlaceHolder : currentUserInfos.avatarUrl} alt="" /></div>
                     <div><span className="post-author-name">{currentUserInfos.username}</span></div>
                     <NavLink exact to="/publications" className="bt-close"><i className="fas fa-times"></i></NavLink>
                 </div>

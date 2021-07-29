@@ -101,15 +101,14 @@ const Comments = (props) => {
                     </div>
                 </div>
 
-
                 <div className="post-comment-bloc1">
                     <div className="post-comment-bloc1-a">
                         <div className="post-comment-avatar"><img src={props.comment.commentAuthorAvatarUrl} alt="" /></div>
                     </div>
                     <div className="post-comment-bloc1-b">
                         <div className="post-comment-name">{props.comment.commentAuthorUserName}</div>
-                        {/* <div className="post-comment-date"><span>&nbsp;</span>il y a {elapsedTime(props.comment.commentDate)}</div> */}
-                        <div className="post-comment-date"><span>&nbsp;</span>il y a {props.comment.commentDate}</div>
+                        {/* <div className="post-comment-date"><span>&nbsp;</span>il y a {elapsedTime(props.comment.commentAuthorCommentDate)}</div> */}
+
 
 
                         {(currentUserInfos.isAdmin || currentUserInfos.userId === props.comment.commentAuthorId) &&

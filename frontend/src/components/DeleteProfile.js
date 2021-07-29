@@ -20,6 +20,7 @@ const DeleteProfile = () => {
         })
             .catch((error) => console.error(error))
             .then(res => {
+
                 if (res.status === 200) {
                     setIsDelete(true)
                     setConfirmDeleted(!confirmDeleted)

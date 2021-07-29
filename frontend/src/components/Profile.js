@@ -27,11 +27,9 @@ const Profile = () => {
 
     let username
 
-    if (currentUserInfos) {
+   
         username = currentUserInfos.username
-    } else {
-        username = "Name"
-    }
+
 
     let userService = "Service"
     let userJob = "Poste occupé"
@@ -57,13 +55,13 @@ const Profile = () => {
         console.log(valueVar);
 
         currentUserInfos = {
+            ...currentUserInfos,
             username: usernameDiv.current.textContent,
-            userservice: userServiceDiv.current.textContent,
+            userService: userServiceDiv.current.textContent,
             userJob: userJobDiv.current.textContent
         }
 
         localStorage.setItem("currentUserInfos", JSON.stringify(currentUserInfos));
-
 
         sendProfileData()
     }
@@ -74,12 +72,14 @@ const Profile = () => {
         fetch('http://localhost:4200/api/auth/login', {
             method: 'PUT',
             body: JSON.stringify({
-                username: currentUserInfos.username,
-                userService: currentUserInfos.userService,
-                userJob: currentUserInfos.userJob
+                username: usernameDiv.current.textContent,
+                userService: userServiceDiv.current.textContent,
+                userJob: userJobDiv.current.textContent
             }),
             headers: { 'Content-Type': 'application/json', "authorization": "Bearer " + token }
         })
+
+        console.log(usernameDiv.current.textContent);
     }
 
     return (

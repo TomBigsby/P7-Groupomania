@@ -8,40 +8,14 @@ import PagePublications from "./pages/PagePublications";
 import PageNewPublication from "./pages/PageNewPublication";
 import Page404 from "./pages/Page404";
 
-// DEBUG
-// import PageTest1 from "./pages/PageTest1";
-// import PageTest2 from "./pages/PageTest2";
-
-
 
 function App() {
-
-
-  /*   const [userToken, setUserToken] = useState(false)
-  
-    useEffect(() => {
-      if (localStorage.getItem("token") === null) {
-        setUserToken(false)
-  
-        console.log("TOKEN false: " + userToken);
-      } else {
-        JSON.parse(localStorage.getItem("token"));
-  
-        setUserToken(true)
-        console.log("TOKEN true: " + userToken);
-      }
-    }, [userToken]) */
-
 
   return (
     <div className="App">
 
       <BrowserRouter>
         <Switch>
-
-          {/* <Route path="/test1" exact component={PageTest1} /> */}
-          {/* <Route path="/test2" exact component={PageTest2} /> */}
-
 
           <Route path="/" exact component={PageLogin} />
 

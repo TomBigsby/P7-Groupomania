@@ -29,9 +29,10 @@ exports.createComment = (req, res, next) => {
   const value1 = req.body.commentAuthorId
   const value2 = req.body.commentAuthorUserName
   const value3 = req.body.commentAuthorAvatarUrl
-  const value4 = req.body.commentDate
+  const value4 = req.body.commentAuthorCommentDate
   const value5 = addslashes(req.body.commentAuthorMessage)
   const value6 = req.params.id
+
 
   db.query("INSERT INTO Comments( commentAuthorId, commentAuthorUserName, commentAuthorAvatarUrl, commentAuthorCommentDate, commentAuthorMessage, postId) VALUES ('" + value1 + "','" + value2 + "','" + value3 + "','" + value4 + "','" + value5 + "', '" + value6 + "')", function (err, result) {
     if (err) throw err;
@@ -56,8 +57,6 @@ exports.getAllComments = (req, res, next) => {
 };
 
 
-
-
 exports.modifyComment = (req, res, next) => {
 
   console.log("req.params.id=", req.params.id);
@@ -75,7 +74,6 @@ exports.modifyComment = (req, res, next) => {
       res.status(200).json(result)
     }
   });
-
 };
 
 
@@ -88,6 +86,7 @@ exports.deleteComment = (req, res, next) => {
       error => res.status(400).json({ error })
     } else {
       console.log("Commentaire supprimé");
+      res.status(200).json(result)
     }
   })
 }

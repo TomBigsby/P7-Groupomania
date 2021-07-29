@@ -20,7 +20,7 @@ const Publication = (props) => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [title, setTitle] = useState(props.publication.postTitle);
     const [image, setImage] = useState({ preview: props.publication.imageUrl, imageUrl: "" })
-    
+
 
 
     const cardHeader = useRef()
@@ -108,59 +108,53 @@ const Publication = (props) => {
 
 
     // Ajout d'un nouveau commentaire
-    const sendComment = (postId) => {
-
-        // DEBUG
-        /*     let newComment = [...comments]
-    
-            newComment.push({
-                commentAuthorId: currentUserInfos.userId,
-                commentAuthorUserName: currentUserInfos.username,
-                commentAuthorAvatarUrl: currentUserInfos.avatarUrl,
-                commentDate: today,
-                commentAuthorMessage: postCommentInput.current.value
-            }) */
-        // --------------
+    const sendComment = (postId, userId, username) => {
 
         // Avertisseur visuel si le champ est vide à la validation
-        if (postCommentInput.current.value === "") {
+        if (postCommentInput.current.value !== "") {
+            const formData = new FormData();
+            formData.append("commentAuthorId", currentUserInfos.userId);
+            formData.append("commentAuthorUserName", currentUserInfos.username);
+            formData.append("commentAuthorAvatarUrl", currentUserInfos.avatarUrl);
+            formData.append("commentAuthorCommentDate", today);
+            formData.append("commentAuthorMessage", postCommentInput.current.value);
+
+            postCommentInput.current.value = ""
+
+            fetch('http://localhost:4200/api/publications/' + postId + '/comments', {
+                method: 'POST',
+                body: formData,
+                headers: { "authorization": "Bearer " + token }
+            })
+                .then((res) => res.json())
+                .catch((error) => console.error(error))
+                .then((res) => {
+
+                    //DEBUG
+                    // const newComments = [...comments, { postId, userId, username }];
+                    /* newComments.push({
+                        commentAuthorId: currentUserInfos.userId,
+                        commentAuthorUserName: currentUserInfos.username,
+                        commentAuthorAvatarUrl: currentUserInfos.avatarUrl,
+                        commentAuthorCommentDate: today,
+                        commentAuthorMessage: postCommentInput.current.value
+                    }) */
+                    // setComments(newComments);
+
+                    // console.log(newComments);
+
+                    /*      setComments(newComment)
+                         setComments(comments) */
+                    // setComments2(!comments2)
+                })
+        } else {
             postCommentInput.current.classList.add("warning-field")
         }
-
-        const formData = new FormData();
-        formData.append("commentAuthorId", currentUserInfos.userId);
-        formData.append("commentAuthorUserName", currentUserInfos.username);
-        formData.append("commentAuthorAvatarUrl", currentUserInfos.avatarUrl);
-        formData.append("commentDate", today);
-        formData.append("commentAuthorMessage", postCommentInput.current.value);
-
-        postCommentInput.current.value = ""
-
-        fetch('http://localhost:4200/api/publications/' + postId + '/comments', {
-            method: 'POST',
-            body: formData,
-            headers: { "authorization": "Bearer " + token }
-        })
-            .then((res) => res.json())
-            .catch((error) => console.error(error))
-            .then((res) => {
-
-
-                setComments(comments)
-
-                //DEBUG
-                // console.(newComment);
-
-                /*      setComments(newComment)
-                     setComments(comments) */
-                // setComments2(!comments2)
-            })
     }
 
     const typingField = (e) => {
         e.target.classList.remove("warning-field")
     }
-
 
 
     // compteur de commentaires
@@ -174,10 +168,9 @@ const Publication = (props) => {
     // Suppression du commentaire
     const deleteComment = (commentId) => {
 
-        console.log(commentId);
-
         fetch('http://localhost:4200/api/publications/comments/' + commentId, {
             method: 'DELETE',
+            headers: { "authorization": "Bearer " + token }
         })
             .catch((error) => console.error(error))
             // MAJ des commentaires dans le DOM
@@ -196,7 +189,6 @@ const Publication = (props) => {
     const elapsedTime = (startDate) => {
         return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
     }
-
 
     return (
         <>
@@ -284,7 +276,7 @@ const Publication = (props) => {
                 <div className="post-new-comment-avatar"><img src={currentUserInfos.avatarUrl} alt="" /></div>
                 <input type="text" className="post-new-comment-message" ref={postCommentInput} placeholder="Ecrire un commentaire" onChange={(e) => typingField(e)} />
 
-                <div className="post-new-comment-send" onClick={() => sendComment(props.publication.postId)}><i className="fas fa-arrow-circle-right"></i></div>
+                <div className="post-new-comment-send" onClick={() => sendComment(props.publication.postId, props.publication.userId, currentUserInfos.username)}><i className="fas fa-arrow-circle-right"></i></div>
                 {/* <div className="post-new-comment-send">[Retour] pour envoyer</div> */}
             </form>
 

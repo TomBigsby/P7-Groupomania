@@ -6,13 +6,11 @@ import avatarPlaceHolder from '../assets/images/avatar.svg'
 import { fr } from 'date-fns/locale';
 import { formatDistanceToNow } from 'date-fns';
 import { format } from 'date-fns'
-
 const { zonedTimeToUtc } = require('date-fns-tz')
 
 
 
 const Publication = (props) => {
-
 
     const [comments, setComments] = useState([]);
     // const [comments2, setComments2] = useState([]);
@@ -117,14 +115,24 @@ const Publication = (props) => {
                 .catch((error) => console.error(error))
                 .then((res) => {
 
-                    let newComments = [{ postId }, ...comments]
-                    setComments(newComments)
-                    // console.log(newComments);
+                    /*      let newComment = ([...comments, {
+                             commentAuthorId: currentUserInfos.userId,
+                             commentAuthorUserName: currentUserInfos.username,
+                             commentAuthorAvatarUrl: currentUserInfos.avatarUrl,
+                             commentDate: today,
+                             commentAuthorMessage: postCommentInput.current.value
+                         }]) */
+
+                    // setComments(newComment)
+
+                    // let newComments = [...comments, { postId }]
                 })
         } else {
             postCommentInput.current.classList.add("warning-field")
         }
     }
+
+
 
     const typingField = (e) => {
         e.target.classList.remove("warning-field")
@@ -156,6 +164,7 @@ const Publication = (props) => {
     }
 
 
+
     // gestion de la date affiché au temps passé
     // Attention : conversion au fomat UTC nécessaire (install package date-fns-tz)
     const today = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss")
@@ -163,6 +172,8 @@ const Publication = (props) => {
     const elapsedTime = (startDate) => {
         return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
     }
+
+
 
     return (
         <>
@@ -222,20 +233,23 @@ const Publication = (props) => {
                     </div>
             }
 
-
             <div className="post-interactions box">
-
-
                 <div className="separatorV"></div>
                 <div className="post-interactions-comments">
                     <div className="post-interactions-comments-picto"><i className="far fa-comment "></i></div>
                     <div className="post-interactions-comments-number">{commentsCount.length} commentaires</div>
 
                     {/* Si il y a au moins 1 commentaire le bouton s'affiche */}
-                    {commentsCount.length > 0 && < div onClick={() => setDisplayComments(!displayComments)}>{displayComments ? <i className="fas fa-caret-square-up" title="Masquer les commentaires"></i> : <i className="fas fa-caret-square-down" title="Afficher les commentaires"></i>}</div>}
-
+                    {commentsCount.length > 0 && < div onClick={() => setDisplayComments(!displayComments)}>{displayComments ?
+                        <>
+                            <i className="fas fa-caret-square-up" title="Masquer les commentaires"></i>
+                        </>
+                        :
+                        <i className="fas fa-caret-square-down" title="Afficher les commentaires"></i>}
+                    </div>}
                 </div>
             </div>
+
             {/* Masquage des commentaires par défaut - clic fleche pour les afficher */}
             {displayComments && comments.map((comment) => (
                 <>
@@ -251,7 +265,7 @@ const Publication = (props) => {
                 <div className="post-new-comment-avatar"><img src={currentUserInfos.avatarUrl === "undefined" ? avatarPlaceHolder : currentUserInfos.avatarUrl} alt="" /></div>
                 <input type="text" className="post-new-comment-message" ref={postCommentInput} placeholder="Ecrire un commentaire" onChange={(e) => typingField(e)} />
 
-                <div className="post-new-comment-send" onClick={() => sendComment(props.publication.postId, props.publication.userId, currentUserInfos.username)}><i className="fas fa-arrow-circle-right"></i></div>
+                <div className="post-new-comment-send" onClick={() => sendComment(props.publication.postId)}><i className="fas fa-arrow-circle-right"></i></div>
                 {/* <div className="post-new-comment-send">[Retour] pour envoyer</div> */}
             </form>
 

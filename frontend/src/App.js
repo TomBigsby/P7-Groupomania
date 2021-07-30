@@ -1,4 +1,6 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { Redirect } from 'react-router'
+
 
 import PageLogin from "./pages/PageLogin";
 import PageSignUp from "./pages/PageSignUp";
@@ -17,16 +19,27 @@ function App() {
       <BrowserRouter>
         <Switch>
 
+
           <Route path="/" exact component={PageLogin} />
+          
+          {localStorage.getItem("token") === null ?
+            <>
+              <Redirect to="/page404" />
+              <Route path="/page404" exact component={Page404} />
+            </>
+            :
+            <>
+              <Route path="/inscription" exact component={PageSignUp} />
+              <Route path="/profil" exact component={PageProfile} />
+              <Route path="/supression-profil" exact component={PageDeleteProfile} />
+              <Route path="/publications" exact component={PagePublications} />
+              <Route path="/nouvelle-publication" exact component={PageNewPublication} />
+            </>
+          }
+          
 
 
 
-          <Route path="/inscription" exact component={PageSignUp} />
-          <Route path="/profil" exact component={PageProfile} />
-          <Route path="/supression-profil" exact component={PageDeleteProfile} />
-          <Route path="/publications" exact component={PagePublications} />
-          <Route path="/nouvelle-publication" exact component={PageNewPublication} />
-          <Route component={Page404} />
 
 
 

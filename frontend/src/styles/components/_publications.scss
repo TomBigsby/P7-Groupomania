@@ -214,7 +214,8 @@
         }
 
         & .fa-caret-square-down,
-        .fa-caret-square-up {
+        .fa-caret-square-up,
+        .fa-sync {
             margin-left: 5px;
             padding: 8px;
             font-size: 1.2em;
@@ -227,6 +228,9 @@
             &:active {
                 color: darken($color-2, 20%);
             }
+        }
+        .fa-sync {
+            font-size: 15px;
         }
     }
 }

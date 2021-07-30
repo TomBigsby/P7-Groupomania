@@ -38,8 +38,7 @@ exports.createComment = (req, res, next) => {
     if (err) throw err;
 
     if (!result) {
-      console.log("Erreur d'enregistrement");
-      res.status(400).json({ error: error });
+      res.status(400).json({ error: "Erreur d'enregistrement" });
     } else {
       console.log("Commentaire ajouté");
       res.status(200).json(result)

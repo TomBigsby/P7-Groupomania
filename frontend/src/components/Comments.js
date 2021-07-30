@@ -5,6 +5,7 @@ import avatarPlaceHolder from '../assets/images/avatar.svg'
 
 import { fr } from 'date-fns/locale';
 import { formatDistanceToNow } from 'date-fns';
+import { format } from 'date-fns'
 const { zonedTimeToUtc } = require('date-fns-tz')
 
 const token = JSON.parse(localStorage.getItem("token"));
@@ -80,8 +81,8 @@ const Comments = (props) => {
         editComment(commentId)
     }
 
-
-    // Heure (dateTime) convertie en teps écoulé
+   
+    // Heure (dateTime) convertie en temps écoulé
     const elapsedTime = (startDate) => {
         return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
     }
@@ -104,7 +105,7 @@ const Comments = (props) => {
 
                 <div className="post-comment-bloc1">
                     <div className="post-comment-bloc1-a">
-                        <div className="post-comment-avatar"><img src={props.comment.commentAuthorAvatarUrl === undefined ? avatarPlaceHolder : props.comment.commentAuthorAvatarUrl} alt="" /></div>
+                        <div className="post-comment-avatar"><img src={props.comment.commentAuthorAvatarUrl === "undefined" ? avatarPlaceHolder : props.comment.commentAuthorAvatarUrl} alt="" /></div>
                     </div>
                     <div className="post-comment-bloc1-b">
                         <div className="post-comment-name">{props.comment.commentAuthorUserName}</div>

@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useState, useRef } from 'react'
+import { baseUrl } from '../config'
 
 const DeleteProfile = () => {
 
@@ -15,7 +16,7 @@ const DeleteProfile = () => {
     const quitMsg = () => {
 
         // Suppression de l'utilisateur
-        fetch('http://localhost:4200/api/auth/delete/' + currentUserInfos.userId, {
+        fetch(`${baseUrl}/api/auth/delete/` + currentUserInfos.userId, {
             method: 'DELETE',
         })
             .catch((error) => console.error(error))

@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState, useRef } from 'react';
 import { Redirect } from 'react-router'
+import { baseUrl } from '../config'
 
 const Login = () => {
     const [user, setUser] = useState(false)
@@ -20,7 +21,7 @@ const Login = () => {
         if (e.target.email.value !== "" && e.target.password.value !== "") {
             setMsgAlert({ email_error: "", password_error: "" })
 
-            fetch('http://localhost:4200/api/auth/login', {
+            fetch(`${baseUrl}/api/auth/login`, {
                 method: 'POST',
                 body: JSON.stringify({
                     email: inputEmail.current.value,
@@ -28,6 +29,7 @@ const Login = () => {
                 }),
                 headers: { 'Content-Type': 'application/json' },
             })
+
                 .then(res => res.json()
                     .then(json => {
                         setUser(json);

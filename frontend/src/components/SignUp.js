@@ -2,6 +2,7 @@ import avatar from '../assets/images/avatar.svg'
 import { useState, useRef } from 'react';
 import { Redirect } from 'react-router'
 import { NavLink } from "react-router-dom";
+import { baseUrl } from '../config'
 
 const SignUp = () => {
 
@@ -12,6 +13,7 @@ const SignUp = () => {
 
     const inputAdminPassword = useRef()
     const checkbox = useRef()
+
 
 
     const submit = e => {
@@ -25,7 +27,7 @@ const SignUp = () => {
         if (e.target.email.value !== "" && e.target.password.value !== "" && e.target.username.value !== "") {
             setMsgAlert({ email_error: "", password_error: "", username_error: "" })
 
-            fetch('http://localhost:4200/api/auth/signup', {
+            fetch(`${baseUrl}/api/auth/signup`, {
                 method: 'POST',
                 body: formData,
             })
@@ -127,7 +129,7 @@ const SignUp = () => {
                     <input type="text" id="username" name="username" />
                     <div className="error-msg"> {msgAlert.username_error}</div>
                 </div>
-              
+
                 <div className="adminConnexion">
                     <input className="checkbox" type="checkbox" id="admin" ref={checkbox} onClick={adminInputDisplay} />
                     <label htmlFor="admin">Compte administrateur</label>

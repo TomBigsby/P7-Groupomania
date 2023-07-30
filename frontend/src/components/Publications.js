@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import Publication from "./Publication";
-
+import { baseUrl } from '../config'
 
 const Publications = () => {
 
@@ -11,22 +10,24 @@ const Publications = () => {
 
     // Récupération des publications
     useEffect(() => {
-        fetch('http://localhost:4200/api/publications', {
+        fetch(`${baseUrl}/api/publications`, {
             method: 'GET',
-            // headers: { 'Content-Type': 'multipart/form-data' },
-            headers: { "authorization": "Bearer " + token }
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "authorization": "Bearer " + token
+            }
         })
             .then((res) => res.json())
             .then((res) => setPublications(res))
             .catch((error) => console.error(error));
 
-    }, []);
+    }, [token]);
 
 
     // Suppression de la publication
     const deletePost = (postId) => {
 
-        fetch('http://localhost:4200/api/publications/' + postId, {
+        fetch(`${baseUrl}/api/publications/` + postId, {
             method: 'DELETE',
             headers: { "authorization": "Bearer " + token }
         })
@@ -43,9 +44,8 @@ const Publications = () => {
     return (
         <>
             {publications && publications.map((publication) => (
-                <div className="post-container">
+                <div className="post-container" key={publication.postId}>
                     <Publication
-                        key={publication.postId}
                         publication={publication}
                         postToDelete={deletePost} />
                 </div >

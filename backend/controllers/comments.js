@@ -1,26 +1,6 @@
-const mysql = require('mysql');
-
-
-// Connexion à la BDD
-const db = mysql.createConnection({
-  host: "localhost",
-  user: process.env.ID_BDD_SQL,
-  password: process.env.PW_BDD_SQL,
-  database: 'p7_groupomania',
-  socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
-});
-
-// function permettant d'échapper certains caractères pour SQL
-let addslashes = (str) => {
-  str = str.replace(/\n/g, '\\\n')
-  str = str.replace(/\n/g, '\\\n')
-  str = str.replace(/\t/g, '\\\t')
-  str = str.replace(/\f/g, '\\\f')
-  str = str.replace(/\r/g, '\\\r')
-  str = str.replace(/'/g, '\\\'')
-  str = str.replace(/"/g, '\\\"')
-  return str
-}
+const { addslashes } = require('../utils/function_addslashes.js');
+const db = require('../utils/db_connexion_local');
+// const db = require('../utils/db_connexion');
 
 
 exports.createComment = (req, res, next) => {
@@ -40,12 +20,22 @@ exports.createComment = (req, res, next) => {
     if (!result) {
       res.status(400).json({ error: "Erreur d'enregistrement" });
     } else {
-      console.log("Commentaire ajouté");
-      res.status(200).json(result)
+      const insertedCommentId = result.insertId;
+
+      // Récupérer les détails du commentaire ajouté
+      db.query("SELECT * FROM Comments WHERE commentId = " + insertedCommentId, function (err, comment) {
+        if (err) throw err;
+
+        if (!comment || comment.length === 0) {
+          res.status(400).json({ error: "Erreur lors de la récupération du commentaire ajouté" });
+        } else {
+          console.log("Commentaire ajouté");
+          res.status(200).json(comment[0]);
+        }
+      });
     }
   });
 }
-
 
 exports.getAllComments = (req, res, next) => {
   db.query("SELECT * FROM Comments INNER JOIN Publications ON Comments.postId = Publications.postId", function (err, result) {

@@ -1,24 +1,29 @@
 import { useState, useRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize';
 import avatarPlaceHolder from '../assets/images/avatar.svg'
+import { baseUrl } from '../config'
 
 
 import { fr } from 'date-fns/locale';
 import { formatDistanceToNow } from 'date-fns';
-import { format } from 'date-fns'
+// import { format } from 'date-fns'
 const { zonedTimeToUtc } = require('date-fns-tz')
 
 const token = JSON.parse(localStorage.getItem("token"));
 
+
 const Comments = (props) => {
     const [fieldEnabled, setFieldEnabled] = useState(false);
     const [comment, setComment] = useState(props.comment.commentAuthorMessage);
+
 
     const inputMessage = useRef()
     const btEditMessage = useRef()
     const warningDeleteComment = useRef()
 
     const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
+
+
 
 
     // Modification d'un commentaire
@@ -28,17 +33,14 @@ const Comments = (props) => {
         formData.append("commentId", commentId);
         formData.append("commentAuthorMessage", messageValue);
 
-        fetch('http://localhost:4200/api/publications/comments/' + commentId, {
+        fetch(`${baseUrl}/api/publications/comments/` + commentId, {
             method: 'PUT',
             body: formData,
             headers: { "authorization": "Bearer " + token }
         })
-            .then(res => res.json()
-                .then(json => {
-                    // console.log("json.id: " + json.id);
-                }
-                ))
+            .then(res => res.json())
             .catch((error) => console.error(error));
+
     }
 
     // Edition des commentaires
@@ -81,11 +83,14 @@ const Comments = (props) => {
         editComment(commentId)
     }
 
-   
+
     // Heure (dateTime) convertie en temps écoulé
     const elapsedTime = (startDate) => {
         return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
     }
+
+
+    // console.log("commentAuthorMessage", props.comment.commentAuthorMessage)
 
 
     return (

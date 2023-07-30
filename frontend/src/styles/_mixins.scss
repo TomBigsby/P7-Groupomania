@@ -35,7 +35,10 @@
 
     &:active {
         background-color: darken($colour, 30%);
-    }
+    }//  NOTE:  Breakpoints Media queries 
+$breakpoint-mobile: 375px;
+$breakpoint-tablet: 750px;
+$breakpoint-desktop: 751px;
 }
 
 @mixin bt-icon($colour, $font-size) {

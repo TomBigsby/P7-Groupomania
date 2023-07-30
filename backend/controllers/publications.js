@@ -1,29 +1,8 @@
-const mysql = require('mysql');
-
 const fs = require('fs');
+const { addslashes } = require('../utils/function_addslashes.js');
+const db = require('../utils/db_connexion_local');
+// const db = require('../utils/db_connexion');
 
-
-// Connexion à la BDD
-const db = mysql.createConnection({
-  host: "localhost",
-  user: process.env.ID_BDD_SQL,
-  password: process.env.PW_BDD_SQL,
-  database: 'p7_groupomania',
-  socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
-});
-
-
-// function permettant d'échapper certains caractères pour SQL
-let addslashes = (str) => {
-  str = str.replace(/\n/g, '\\\n')
-  str = str.replace(/\n/g, '\\\n')
-  str = str.replace(/\t/g, '\\\t')
-  str = str.replace(/\f/g, '\\\f')
-  str = str.replace(/\r/g, '\\\r')
-  str = str.replace(/'/g, '\\\'')
-  str = str.replace(/"/g, '\\\"')
-  return str
-}
 
 exports.getAllPublications = (req, res, next) => {
   db.query("SELECT * FROM Publications ORDER BY postDate DESC", function (err, result) {
@@ -35,10 +14,20 @@ exports.getAllPublications = (req, res, next) => {
 
 
 exports.createPublication = (req, res, next) => {
-  // Vérififcation dela présence d'unn fichier image
+  let image = null;
+
   if (req.file !== undefined) {
-    var image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    const fileExtension = req.file.originalname.split('.').pop(); // Récupère l'extension du fichier d'origine
+    const uniqueFileName = `${Date.now()}-${Math.floor(Math.random() * 1000000)}.${fileExtension}`; // Génère un nom de fichier unique basé sur l'horodatage actuel et un nombre aléatoire entre 0 et 999999
+
+    // Déplace le fichier vers le dossier "images" avec le nouveau nom
+    const newPath = `images/${uniqueFileName}`;
+    fs.renameSync(req.file.path, newPath);
+
+    image = `${req.protocol}://${req.get('host')}/${newPath}`;
   }
+
+
 
   const value1 = req.body.userId
   const value2 = req.body.username
@@ -128,29 +117,4 @@ exports.deletePublication = (req, res, next) => {
       res.status(200).json(result)
     }
   })
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-/* exports.deletePublication = (req, res, next) => {
-  Publication.findOne({ _id: req.params.id })
-    .then((publication) => {
-      const filename = publication.imageUrl.split('/images/')[1];
-      fs.unlink(`images/${filename}`, () => {
-        Publication.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Publication supprimée !' }))
-          .catch(error => res.status(400).json({ error }));
-      });
-    })
-    .catch(error => res.status(500).json({ error }));
-}; */

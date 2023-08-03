@@ -1,3 +1,4 @@
+const { addslashes } = require('../utils/function_addslashes.js');
 const Comment = require('../models/Comment');
 const mongoose = require('mongoose');
 
@@ -17,11 +18,9 @@ exports.createComment = (req, res, next) => {
     commentAuthorMessage: req.body.commentAuthorMessage
   });
   comment.save()
-    .then(() => { res.status(201).json({ message: 'Commentaire ajoutée !' }); })
-    // .then((comment) => { res.status(200).json(comment) })
+    .then((newComment) => { res.status(201).json(newComment) })
     .catch((error) => { res.status(400).json({ error: error }); });
 };
-
 
 
 exports.getAllComments = (req, res, next) => {
@@ -42,13 +41,6 @@ exports.modifyComment = (req, res, next) => {
 
 exports.deleteComment = (req, res, next) => {
   Comment.deleteOne({ _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Commentaire supprimée !' }))
+    .then(() => res.status(200).json({ message: 'Commentaire supprimé !' }))
     .catch(error => res.status(400).json({ error }));
 };
-
-
-exports.deleteCommentsFromPublication = (req, res, next) => {
-  Comment.deleteMany({ "postId": req.params.id })
-    .then(() => res.status(200).json({ message: 'Commentaires de publication supprimés !' }))
-    .catch(error => res.status(400).json({ error }));
-}

@@ -1,71 +1,71 @@
 .header {
-    background-color: $color-4;
-    margin: auto;
-    width: 100%;
-    position: fixed;
-    z-index: 10;
-    top: 0;
-    border-bottom: 1px solid $color-1;
-    display: flex;
+	background-color: $color-4;
+	margin: auto;
+	width: 100%;
+	position: fixed;
+	z-index: 10;
+	top: 0;
+	border-bottom: 1px solid $color-1;
+	display: flex;
 }
 
 .bg-big {
-    height: 150px;
-    justify-content: center;
-    align-items: center;
+	height: 150px;
+	justify-content: center;
+	align-items: center;
 
-    @include mobile-only {
-        height: 100px;
-    }
+	@include mobile-only {
+		height: 100px;
+	}
 }
 
 .bg-small {
-    height: 100px;
-    justify-content: space-between;
+	height: 100px;
+	justify-content: space-between;
 }
 
 .logo {
-    background: url(../../assets/images/logo.svg)no-repeat;
+	background: url(../../assets/images/logo.svg)no-repeat;
 }
 
 .logo-big {
-    height: 80px;
-    max-height: 100%;
-    width: 380px;
-    max-width: calc(100% - 40px);
-    margin: 20px;
-    background-position: center;
-    background-size: contain;
+	height: 80px;
+	max-height: 100%;
+	width: 380px;
+	max-width: calc(100% - 40px);
+	margin: 20px;
+	background-position: center;
+	background-size: contain;
 
-    @include mobile-only {
-        height: 60px;
-        width: 280px;
-    }
+	@include mobile-only {
+		height: 60px;
+		width: 280px;
+	}
 }
 
 .logo-small {
-    height: 58px;
-    width: 100%;
-    margin: 20px;
-    background-size: contain;
-    align-self: center;
+	height: 58px;
+	width: 100%;
+	margin: 20px;
+	background-size: contain;
+	align-self: center;
 
-    @include mobile-only {
-        height: 40px;
-        margin: 15px;
-    }
+	@include mobile-only {
+		height: 40px;
+		margin: 15px;
+	}
 }
 
 .bg-avatar {
-    @include round-avatar ($color-3);
-    max-height: 62px;
-    max-width: 62px;
-    margin: 20px;
-    align-self: center;
+	@include round-avatar ($color-3);
+	max-height: 62px;
+	max-width: 62px;
+	margin: 20px;
+	align-self: center;
 
-    @include mobile-only {
-        max-height: 45px;
-        max-width: 45px;
-        margin: 15px;
-    }
+	@include mobile-only {
+		max-height: 45px;
+		max-width: 45px;
+		margin: 15px;
+	}
 }

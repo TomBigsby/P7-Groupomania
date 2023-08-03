@@ -61,20 +61,6 @@
     margin: 10px 0;
 }
 
-.service,
-.job {
-    font-weight: 500;
-    font-size: 1.6em;
-    margin: 10px 0;
-    // max-width: 85%;
-    position: relative;
-    text-align: center;
-
-    @include mobile-only {
-        font-size: 1.3em;
-    }
-}
-
 
 .picto {
     @include picto(22px, $color-1, 0.2);

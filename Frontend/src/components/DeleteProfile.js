@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useRef } from 'react'
+import { serverUrl } from '../config';
 
 const DeleteProfile = () => {
 
@@ -15,11 +16,12 @@ const DeleteProfile = () => {
     const quitMsg = () => {
 
         // Suppression de l'utilisateur
-        fetch('http://localhost:4200/api/auth/delete/' + currentUserInfos.userId, {
+        fetch(`${serverUrl}/api/auth/delete/` + currentUserInfos.userId, {
             method: 'DELETE',
         })
             .catch((error) => console.error(error))
             .then(res => {
+
                 if (res.status === 200) {
                     setIsDelete(true)
                     setConfirmDeleted(!confirmDeleted)
@@ -36,7 +38,7 @@ const DeleteProfile = () => {
                         <div className="cry-pic"></div>
                         <div className="msg-quit">Votre profil a été supprimé</div>
                         <div className="choices">
-                            {isDelete === true && <NavLink exact to="/"><button className="bt">Retour à l'accueil</button></NavLink>}
+                            {isDelete === true && <Link exact to="/login"><button className="bt">Retour à l'accueil</button></Link>}
                         </div>
                     </div>
                 </div>
@@ -51,7 +53,7 @@ const DeleteProfile = () => {
                             <span>Cette action est irréversible.</span>
                         </div>
                         <div className="choices">
-                            <NavLink exact to="/profil"><button className="bt-cancel">Non, je reste</button></NavLink>
+                            <Link exact to="/profil"><button className="bt-cancel">Non, je reste</button></Link>
                             <button className="bt bt-quit" onClick={quitMsg} >Oui, je supprime</button>
                         </div>
                     </div>

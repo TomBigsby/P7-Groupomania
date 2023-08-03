@@ -1,12 +1,12 @@
 import HeaderSmall from "../components/HeaderSmall"
 import Profile from "../components/Profile"
 
-const PageProfile = () => {
+const PageProfile = ({ setIsLoggedIn }) => {
     return (
         <>
             <HeaderSmall />
             <div className="main">
-                <Profile />
+                <Profile setIsLoggedIn={setIsLoggedIn} />
             </div>
         </>
     );

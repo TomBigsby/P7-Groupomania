@@ -8,8 +8,6 @@ const userSchema = mongoose.Schema({
     userId: { type: String },
     username: { type: String },
     avatarUrl: { type: String },
-    userService: { type: String },
-    userJob: { type: String },
     isAdmin: { type: Boolean }
 });
 

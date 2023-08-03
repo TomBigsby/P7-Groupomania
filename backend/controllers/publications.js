@@ -1,6 +1,6 @@
 const Publication = require('../models/Publication');
+const Comment = require('../models/Comment');
 const mongoose = require('mongoose');
-
 const fs = require('fs');
 
 
@@ -11,6 +11,7 @@ exports.createPublication = (req, res, next) => {
 
   if (req.file !== undefined) {
     var image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    console.log()
   }
   const publication = new Publication({
     ...publicationObject,
@@ -47,22 +48,34 @@ exports.modifyPublication = (req, res, next) => {
 };
 
 
+// Suppression de la publication ainsi que les commentaires rattachés
 exports.deletePublication = (req, res, next) => {
-  Publication.findOne({ _id: req.params.id })
-    .then((publication) => {
-      const filename = publication.imageUrl.split('/images/')[1];
-      fs.unlink(`images/${filename}`, () => {
-        Publication.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Publication supprimée !' }))
-          .catch(error => res.status(400).json({ error }));
-      });
+  const publicationId = req.params.id;
+
+  // Supprimer les commentaires associés à la publication
+  Comment.deleteMany({ postId: publicationId })
+    .then(() => {
+      // Trouver la publication pour obtenir le nom de l'image
+      Publication.findOne({ _id: publicationId })
+        .then((publication) => {
+          const filename = publication.imageUrl.split('/images/')[1];
+          fs.unlink(`images/${filename}`, () => {
+            // Supprimer la publication elle-même
+            Publication.deleteOne({ _id: publicationId })
+              .then(() => res.status(200).json({ message: 'Publication, commentaires associés et image supprimés avec succès !' }))
+              .catch(error => res.status(400).json({ error }));
+          });
+        })
+        .catch(error => res.status(500).json({ error }));
     })
     .catch(error => res.status(500).json({ error }));
-};
+}
+
+
 
 
 // Actions du like
-exports.likePublication = (req, res, next) => {
+/* exports.likePublication = (req, res, next) => {
 
   // Action du like si 1 ou -1
   const likeAction = (likeValue, action1, message1) => {
@@ -109,6 +122,6 @@ exports.likePublication = (req, res, next) => {
 
   // Si j'annule le like ou dislike, on supprime l'userId de l'array "usersLiked" ou "usersDisLiked" et on décrémente le nombre total de likes/dislikes
   likeAction0(req.body.like === 0);
-};
+}; */
 
 

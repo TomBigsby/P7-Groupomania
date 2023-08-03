@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react'
 import TextareaAutosize from 'react-textarea-autosize';
+import avatarPlaceHolder from '../assets/images/avatar.svg'
+import { serverUrl } from '../config';
 
 
 import { fr } from 'date-fns/locale';
@@ -22,21 +24,19 @@ const Comments = (props) => {
 
     // Modification d'un commentaire
     const sendCommentEdit = (commentId, messageValue) => {
+
         const formData = new FormData();
         formData.append("commentId", commentId);
         formData.append("commentAuthorMessage", messageValue);
 
-        fetch('http://localhost:4200/api/publications/comments/' + commentId, {
+        fetch(`${serverUrl}/api/publications/comments/` + commentId, {
             method: 'PUT',
             body: formData,
             headers: { "authorization": "Bearer " + token }
         })
-            .then(res => res.json()
-                .then(json => {
-                    // console.log("json.id: " + json.id);
-                }
-                ))
+            .then(res => res.json())
             .catch((error) => console.error(error));
+
     }
 
 
@@ -81,10 +81,14 @@ const Comments = (props) => {
     }
 
 
+    // Heure (dateTime) convertie en temps écoulé
+        const elapsedTime = (startDate) => {
+            return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
+        }
 
-    const elapsedTime = (startDate) => {
-        return formatDistanceToNow(zonedTimeToUtc(startDate), { locale: fr, includeSeconds: false });
-    }
+
+    // console.log("commentAuthorMessage", props.comment.commentAuthorMessage)
+
 
     return (
         <>
@@ -101,16 +105,13 @@ const Comments = (props) => {
                     </div>
                 </div>
 
-
                 <div className="post-comment-bloc1">
                     <div className="post-comment-bloc1-a">
-                        <div className="post-comment-avatar"><img src={props.comment.commentAuthorAvatarUrl} alt="" /></div>
+                        <div className="post-comment-avatar"><img src={props.comment.commentAuthorAvatarUrl === "undefined" ? avatarPlaceHolder : props.comment.commentAuthorAvatarUrl} alt="" /></div>
                     </div>
                     <div className="post-comment-bloc1-b">
                         <div className="post-comment-name">{props.comment.commentAuthorUserName}</div>
-                        <div className="post-comment-date"><span>&nbsp;</span>il y a {elapsedTime(props.comment.commentDate)}</div>
-
-
+                        <div className="post-comment-date">  <span>&nbsp;</span>il y a {elapsedTime(props.comment.commentDate)}</div>
 
                         {(currentUserInfos.isAdmin || currentUserInfos.userId === props.comment.commentAuthorId) &&
                             <div className="post-comment-pictos">
@@ -120,15 +121,13 @@ const Comments = (props) => {
                             </div>}
 
 
-
-
                     </div>
                 </div>
                 <div className="post-comment-bloc2">
                     {fieldEnabled ?
                         <div className="group">
                             <TextareaAutosize className="post-comment-message textareaAutosize highlight" onKeyDown={(e) => { onKeyPressed(e, props.comment._id) }} ref={inputMessage} defaultValue={comment} />
-                            <div className="bt-valid-comment" onClick={onClickValid}><i className="fas fa-check-square"></i></div>
+                            <div className="bt-valid-comment" onClick={() => { onClickValid(props.comment._id) }}><i className="fas fa-check-square"></i></div>
                         </div>
 
                         :

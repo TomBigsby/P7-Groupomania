@@ -11,6 +11,6 @@ router.post('/publications', auth, multer, publicationsCtrl.createPublication);
 router.put('/publications/:id', auth, multer, publicationsCtrl.modifyPublication);
 router.delete('/publications/:id', auth, publicationsCtrl.deletePublication);
 
-router.post('/publications/:id/like', auth, publicationsCtrl.likePublication);
+// router.post('/publications/:id/like', auth, publicationsCtrl.likePublication);
 
 module.exports = router;

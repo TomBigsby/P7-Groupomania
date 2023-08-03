@@ -1,4 +1,5 @@
 import { useState, } from 'react';
+import { serverUrl } from '../config';
 
 const Votes = (props) => {
 
@@ -10,7 +11,7 @@ const Votes = (props) => {
     const foundDislikes = props.publication.usersDisliked.find(element => element === currentUserInfos.userId);
 
 
-     let likeValue
+    let likeValue
     if (foundLikes !== undefined) {
         likeValue = 1
     } else if (foundDislikes !== undefined) {
@@ -57,7 +58,7 @@ const Votes = (props) => {
 
     // Envoi du vote
     const sendLike = (likeValue, currentPostId) => {
-        fetch('http://localhost:4200/api/publications/' + currentPostId + '/like', {
+        fetch(`${serverUrl}/api/publications/` + currentPostId + '/like', {
             method: 'POST',
             body: JSON.stringify({
                 like: likeValue,

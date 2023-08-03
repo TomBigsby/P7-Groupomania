@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { Redirect } from 'react-router'
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import avatarPlaceHolder from '../assets/images/avatar.svg'
+import { format } from 'date-fns'
+import { serverUrl } from '../config';
 
 const NewPublication = () => {
 
     const [image, setImage] = useState({ preview: "", imageUrl: "" })
     const [publication, setPublication] = useState(false);
-    // const [error, setError] = useState({});
     const [msgAlert, setMsgAlert] = useState({ title_error: "", image__error: "" });
-
 
 
     // chargement des infos utilisateur (Localstorage) au chargement de la page
@@ -19,7 +20,8 @@ const NewPublication = () => {
     const submit = e => {
         e.preventDefault()
 
-        const today = new Date()
+        const today = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss")
+
 
         // FormData prends en paramètre l'élément html du formulaire et vas chercher les "name" donc nous donne un objet ayant les mêmes noms que ceux précisés dans le html
         const formData = new FormData(e.target);
@@ -30,7 +32,7 @@ const NewPublication = () => {
 
         if ((e.target.postTitle.value !== "") && (e.target.image.files[0] !== undefined)) {
 
-            fetch('http://localhost:4200/api/publications', {
+            fetch(`${serverUrl}/api/publications`, {
                 method: 'POST',
                 body: formData,
                 // headers: { 'Content-Type': 'multipart/form-data' },
@@ -38,7 +40,9 @@ const NewPublication = () => {
             })
                 .then(res => res.json()
                     .then(json => { setPublication(json) }
+
                     ));
+
 
         } else {
             if (e.target.postTitle.value === "") {
@@ -64,9 +68,9 @@ const NewPublication = () => {
         <>
             <div className="post-container new-post-container">
                 <div className="post-author">
-                    <div className="post-author-avatar"><img src={currentUserInfos.avatarUrl} alt="" /></div>
+                    <div className="post-author-avatar"><img src={currentUserInfos.avatarUrl === "undefined" ? avatarPlaceHolder : currentUserInfos.avatarUrl} alt="" /></div>
                     <div><span className="post-author-name">{currentUserInfos.username}</span></div>
-                    <NavLink exact to="/publications" className="bt-close"><i className="fas fa-times"></i></NavLink>
+                    <Link exact to="/publications" className="bt-close"><i className="fas fa-times"></i></Link>
                 </div>
                 <form className="post-new-publication" onSubmit={submit}>
                     <input type="text" name="postTitle" id="titre" placeholder="Titre de la publication" />

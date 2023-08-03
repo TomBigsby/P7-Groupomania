@@ -30,7 +30,6 @@ exports.signup = (req, res, next) => {
                 var image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
             }
 
-
             if (req.body.adminPassword !== "" && req.body.adminPassword === "admin") {
                 admin = true
             } else {
@@ -44,8 +43,6 @@ exports.signup = (req, res, next) => {
                         email: CryptoJS.HmacSHA1(clean, process.env.CRYPT_EMAIL).toString(),
                         password: hash,
                         username: req.body.username,
-                        userService: req.body.userService,
-                        userJob: req.body.userJob,
                         avatarUrl: image,
                         isAdmin: admin
                     });
@@ -86,10 +83,15 @@ exports.login = (req, res, next) => {
                     }
                     res.status(200).json({
                         userId: user._id,
+                        username: user.username,
+                        avatarUrl: user.avatarUrl,
+                        isAdmin: user.isAdmin,
                         token: jwt.sign(
                             { userId: user._id },
                             process.env.TOKEN_PASS,
                             { expiresIn: '24h' }
+
+
                         )
                     });
                 })

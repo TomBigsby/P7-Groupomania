@@ -1,67 +1,62 @@
-
 import { useState, useEffect } from 'react';
 import Publication from "./Publication";
-
+import { serverUrl } from '../config';
 
 const Publications = () => {
 
     const [publications, setPublications] = useState([]);
-
-    // const [userData, setUserData] = useState("");
-    // const [items, setItems] = useState([]);
-
-    // const currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
     const token = JSON.parse(localStorage.getItem("token"));
 
-    // chargement des infos utilisateur (Localstorage) au chargement de la page
-    // const savedUser = JSON.parse(localStorage.getItem('currentUserInfos'))
 
     // Récupération des publications
     useEffect(() => {
-        fetch('http://localhost:4200/api/publications', {
+        fetch(`${serverUrl}/api/publications`, {
             method: 'GET',
-            // headers: { 'Content-Type': 'multipart/form-data' },
-            headers: { "authorization": "Bearer " + token }
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                "authorization": "Bearer " + token
+            }
         })
             .then((res) => res.json())
             .then((res) => setPublications(res))
             .catch((error) => console.error(error));
-    }, []);
+
+    }, [token]);
 
 
     // Suppression de la publication
     const deletePost = (postId) => {
 
-        fetch('http://localhost:4200/api/publications/' + postId, {
+        fetch(`${serverUrl}/api/publications/` + postId, {
             method: 'DELETE',
             headers: { "authorization": "Bearer " + token }
         })
-            .catch((error) => console.error(error))
+            .then((res) => {
 
-            // suppression de la publication via son ID et MAJ du tableau
-            .then(() => {
-                setPublications(publications.filter(publication => publication._id !== postId))
+                // TODO: vérifier si OK
+                if (res.ok) {
+                    // Suppression réussie, récupérer les publications mises à jour
+                    return fetch(`${serverUrl}/api/publications`, {
+                        method: 'GET',
+                        headers: { "authorization": "Bearer " + token }
+                    });
+                } else {
+                    throw new Error('Erreur lors de la suppression de la publication');
+                }
             })
-        deletePostComments(postId)
-    }
-
-
-    // Suppression des commentaires liés à la publication
-    const deletePostComments = (postId) => {
-
-        fetch('http://localhost:4200/api/publications/' + postId + "/comments", {
-            method: 'DELETE',
-            headers: { "authorization": "Bearer " + token }
-        })
-            .catch((error) => console.error(error))
+            .then((res) => res.json())
+            .then((data) => setPublications(data))
+            .catch((error) => console.error(error));
     }
 
 
     return (
         <>
             {publications && publications.map((publication) => (
-                <div className="post-container">
-                    <Publication key={publication._id} publication={publication} mysPost={publication} postToDelete={deletePost} />
+                <div className="post-container" key={publication._id}>
+                    <Publication
+                        publication={publication}
+                        postToDelete={deletePost} />
                 </div >
             ))
             }

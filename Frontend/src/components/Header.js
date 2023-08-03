@@ -1,13 +1,10 @@
-import { NavLink } from "react-router-dom";
-
 const Header = () => {
 
 
-    console.log("header");
     return (
         <>
             <div className="header bg-big">
-                <NavLink exact to="/"><div className="logo logo-big"></div></NavLink>
+                <div className="logo logo-big"></div>
             </div>
             <div className="main-position bg-big"></div>
         </>

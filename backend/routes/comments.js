@@ -12,6 +12,6 @@ router.get('/publications/:id/comments', auth, commentsCtrl.getAllComments);
 router.put('/publications/comments/:id', auth, multer, commentsCtrl.modifyComment);
 router.delete('/publications/comments/:id', auth, commentsCtrl.deleteComment)
 
-router.delete('/publications/:id/comments', auth, commentsCtrl.deleteCommentsFromPublication);
+// router.delete('/publications/:id/comments', auth, commentsCtrl.deleteCommentsFromPublication);
 
 module.exports = router;

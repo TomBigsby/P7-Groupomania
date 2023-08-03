@@ -1,34 +1,38 @@
-import { NavLink } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
+import { useState } from 'react';
 import avatarPlaceHolder from '../assets/images/avatar.svg'
-// import Avatar from "./Avatar";
-
 
 
 
 const HeaderSmall = () => {
 
-    const [avatarDelay, setAvatarDelay] = useState(avatarPlaceHolder)
+    const [avatarDelay, setAvatarDelay] = useState("")
     let currentUserInfos = JSON.parse(localStorage.getItem("currentUserInfos"));
+
+
+
+    const placeHolder = currentUserInfos.avatarUrl === "undefined" ? avatarPlaceHolder : currentUserInfos.avatarUrl
+
+
 
 
     const delay = () => {
         const timer = setTimeout(() => {
-            setAvatarDelay(currentUserInfos.avatarUrl);
+            currentUserInfos.avatarUrl !== "undefined" && setAvatarDelay(currentUserInfos.avatarUrl);
+
         }, 100);
         return () => clearTimeout(timer);
     }
     delay()
 
 
-    console.log("headerSmall");
-
     return (
         <>
             <div className="header bg-small">
-                <NavLink className="logo logo-small" exact to="/"></NavLink>
+                <div className="logo logo-small"></div>
 
-                <NavLink className="bg-avatar" exact to="/profil"><img src={avatarDelay ? avatarDelay : avatarPlaceHolder} alt="" /></NavLink>
+                <Link className="bg-avatar" exact to="/profil"><img src={avatarDelay ? avatarDelay : placeHolder} alt="" /></Link>
+
 
 
             </div>

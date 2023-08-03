@@ -1,17 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const path = require('path');
 
+const path = require('path');
 require('dotenv').config()
+
 
 const publicationsRoutes = require('./routes/publications');
 const commentsRoutes = require('./routes/comments');
 const userRoutes = require('./routes/user');
 
-
 const app = express();
-
 
 mongoose.connect(process.env.DB_ID_PASS, {
     useNewUrlParser: true,
@@ -19,7 +18,6 @@ mongoose.connect(process.env.DB_ID_PASS, {
 })
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
-
 
 
 app.use((req, res, next) => {
